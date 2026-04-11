@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StyleLoop — جرّبي الملابس قبل الشراء</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pink:#E91E63;--pink2:#F06292;--pink3:#F8BBD0;--pink4:#FCE4EC;--pink5:#FFF0F5;
+  --gold:#C9A96E;--gold2:#D4AF37;--gold3:#F5E6C8;--gold4:#FFF8E8;
+  --sage:#8FAE8B;--sage2:#A8C4A4;--sage3:#E8F0E7;
+  --coral:#FF7043;--lavender:#B39DDB;--lavender3:#F0EAF5;
+  --sky:#64B5F6;--sky3:#E3F2FD;
+  --bg:#FFFFFF;--bg2:#FAFAF8;--bg3:#F5F3F0;
+  --card:#FFFFFF;--card-hover:#FFF8FA;
+  --line:#F0E8EA;--line2:#E8DDE0;
+  --t1:#2A2A2A;--t2:#666666;--t3:#999999;--t4:#CCCCCC;
+  --shadow:0 2px 20px rgba(233,30,99,.06);
+  --shadow2:0 8px 40px rgba(233,30,99,.1);
+  --shadow3:0 20px 60px rgba(0,0,0,.06);
+  --shadow4:0 4px 15px rgba(0,0,0,.04);
+  --radius:14px;--radius2:20px;--radius3:28px;
+  --fc:'Cairo',sans-serif;--fp:'Poppins',sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:var(--fc);background:var(--bg);color:var(--t1);line-height:1.8;font-weight:400;-webkit-font-smoothing:antialiased}
+::selection{background:var(--pink3);color:var(--pink)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--pink3);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:var(--pink2)}
+
+/* ====== NAV ====== */
+.nv{position:fixed;top:0;inset-inline:0;z-index:10000;padding:.9rem 2.5rem;display:flex;align-items:center;justify-content:space-between;transition:all .5s var(--ease);background:rgba(255,255,255,.88);backdrop-filter:blur(24px);border-bottom:1px solid transparent}
+.nv.scrolled{box-shadow:0 2px 30px rgba(0,0,0,.04);border-bottom-color:var(--line);padding:.65rem 2.5rem}
+.nv-logo{display:flex;align-items:center;gap:.5rem;cursor:pointer;text-decoration:none}
+.nv-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--pink),var(--pink2));border-radius:50%;display:grid;place-items:center;color:#fff;font-size:.95rem;font-weight:800;transition:all .4s var(--ease)}
+.nv-logo:hover .nv-logo-icon{transform:rotate(180deg);border-radius:var(--radius)}
+.nv-logo-text{font-family:var(--fp);font-size:1.35rem;font-weight:700;color:var(--t1);letter-spacing:-.02em}
+.nv-logo-text span{color:var(--pink)}
+.nv-links{display:flex;align-items:center;gap:1.5rem;list-style:none}
+.nv-links a{color:var(--t2);text-decoration:none;font-size:.8rem;font-weight:500;transition:color .3s;position:relative}
+.nv-links a:hover{color:var(--pink)}
+.nv-links a::after{content:'';position:absolute;bottom:-4px;inset-inline-end:0;width:0;height:2px;background:var(--pink);border-radius:2px;transition:width .3s var(--ease)}
+.nv-links a:hover::after{width:100%}
+.nv-actions{display:flex;align-items:center;gap:.7rem}
+.nv-cart{position:relative;width:38px;height:38px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;cursor:pointer;transition:all .3s;font-size:1rem;border:none}
+.nv-cart:hover{background:var(--pink4)}
+.nv-cart-badge{position:absolute;top:-3px;inset-inline-start:-3px;min-width:18px;height:18px;background:var(--pink);border-radius:50%;font-size:.55rem;color:#00;padding:0 4px}
+.nv-user{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--pink3),var(--gold3));display:grid;place-items:center;cursor:pointer;font-size:.75rem;font-weight:700;color:var(--pink);border:2px solid #fff;box-shadow:var(--shadow4)}
+.btn-p{padding:.7rem 1.8rem;background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff;border:none;border-radius:var(--radius);font-family:var(--fc);font-size:.85rem;font-weight:700;cursor:pointer;transition:all .3s var(--ease);box-shadow:0 4px 15px rgba(233,30,99,.2)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(233,30,99,.3)}
+.btn-s{padding:.7rem 1.8rem;background:transparent;border:2px solid var(--pink3);color:var(--pink);border-radius:var(--radius);font-family:var(--fc);font-size:.85rem;font-weight:600;cursor:pointer;transition:all .3s var(--ease)}
+.btn-s:hover{background:var(--pink4);border-color:var(--pink)}
+.btn-g{padding:.7rem 1.8rem;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border:none;border-radius:var(--radius);font-family:var(--fc);font-size:.85rem;font-weight:700;cursor:pointer;transition:all .3s var(--ease);box-shadow:0 4px 15px rgba(201,169,110,.2)}
+.btn-g:hover{transform:translateY(-2px)}
+.btn-outline-g{padding:.7rem 1.8rem;background:transparent;border:2px solid var(--gold3);color:var(--gold);border-radius:var(--radius);font-family:var(--fc);font-size:.85rem;font-weight:600;cursor:pointer;transition:all .3s}
+.btn-outline-g:hover{background:var(--gold4);border-color:var(--gold)}
+.nv-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.nv-burger span{width:22px;height:2px;background:var(--t1);border-radius:2px;transition:all .3s}
+
+/* ====== HERO ====== */
+.hero{min-height:100vh;position:relative;display:grid;grid-template-columns:1fr 1frfff;display:grid;place-items:center;font-weight:7;overflow:hidden;background:linear-gradient(135deg,var(--pink5) 0%,#FFFFFF 35%,var(--gold4) 70%,#FFFFFF 100%)}
+.hero::before{content:'';position:absolute;top:-150px;inset-inline-start:-150px;width:500px;height:500px;background:radial-gradient(circle,rgba(233,30,99,.04),transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-100px;inset-inline-end:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(201,169,110,.04),transparent 70%);pointer-events:none}
+.hero-l{display:flex;flex-direction:column;justify-content:center;padding:7rem 3rem 4rem 5rem;position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem .9rem;background:#fff;border:1px solid var(--pink3);border-radius:50px;font-size:.72rem;color:var(--pink);font-weight:600;width:fit-content;margin-bottom:1.5rem;animation:fiu .8s var(--ease) both;box-shadow:var(--shadow4)}
+.hero-badge i{width:6px;height:6px;background:var(--pink);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.hero-h1{font-family:var(--fp);font-size:clamp(2.4rem,5vw,4.2rem);font-weight:800;line-height:1.15;letter-spacing:-.03em;margin-bottom:1rem;animation:fiu .8s var(--ease) .1s both}
+.hero-h1 em{font-style:italic;color:var(--pink);font-weight:400}
+.hero-h1 .hl{display:block;font-size:.52em;color:var(--t2);font-weight:400;margin-top:.2em;font-family:var(--fc)}
+.hero-p{font-size:1rem;color:var(--t2);max-width:440px;line-height:2;margin-bottom:1.8rem;animation:fiu .8s var(--ease) .2s both}
+.hero-acts{display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;animation:fiu .8s var(--ease) .3s both}
+.hero-features{display:flex;gap:1.8rem;margin-top:2.5rem;animation:fiu .8s var(--ease) .4s both}
+.hf{display:flex;align-items:center;gap:.5rem}
+.hf-icon{width:38px;height:38px;border-radius:var(--radius);background:#fff;display:grid;place-items:center;font-size:1rem;box-shadow:var(--shadow4);flex-shrink:0}
+.hf-text{font-size:.72rem;color:var(--t2);font-weight:500}
+.hf-text strong{color:var(--t1);display:block;font-size:.8rem}
+.hero-r{position:relative;display:grid;place-items:center;overflow:hidden}
+.hero-img-wrap{position:relative;width:80%;max-width:380px;aspect-ratio:3/4;border-radius:var(--radius3);overflow:hidden;box-shadow:var(--shadow3);background:linear-gradient(180deg,var(--pink4),var(--pink3))}
+.hero-img{width:100%;height:100%;display:grid;place-items:center;font-size:5rem}
+.hero-float{position:absolute;background:#fff;border-radius:var(--radius);padding:.7rem .9rem;box-shadow:var(--shadow2);animation:bob 4s ease-in-out infinite}
+.hero-float:nth-child(2){top:8%;inset-inline-start:-8%}
+.hero-float:nth-child(3){bottom:10%;inset-inline-end:-4%;animation-delay:1.5s}
+.hero-float:nth-child(4){top:48%;inset-inline-end:-10%;animation-delay:3s}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.hfl-label{font-size:.58rem;color:var(--t3);font-weight:500}
+.hfl-value{font-family:var(--fp);font-size:.9rem;font-weight:700;color:var(--pink)}
+.hfl-value.gold{color:var(--gold)}
+.hfl-value.sage{color:var(--sage)}
+
+/* ====== SECTIONS ====== */
+.sec{padding:5.5rem 4rem}
+.sec-center{text-align:center}
+.sec-tag{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;color:var(--pink);font-weight:600;margin-bottom:.5rem;letter-spacing:.04em}
+.sec-tag::before{content:'';width:18px;height:2px;background:var(--pink);border-radius:2px}
+.sec-h2{font-family:var(--fp);font-size:clamp(1.6rem,3vw,2.6rem);font-weight:700;line-height:1.3;max-width:550px}
+.sec-h2 em{font-style:italic;color:var(--pink);font-weight:400}
+.sec-center .sec-h2{margin:0 auto}
+.sec-sub{font-size:.9rem;color:var(--t2);max-width:500px;margin-top:.6rem;line-height:1.9}
+.sec-center .sec-sub{margin:.6rem auto 0}
+
+/* ====== FEATURES STRIP ====== */
+.feat-strip{background:#fff;border-radius:var(--radius2);padding:1.8rem 2.5rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin:-2.5rem 4rem 0;position:relative;z-index:5;box-shadow:var(--shadow2);border:1px solid var(--line)}
+.feat-item{display:flex;align-items:center;gap:.7rem}
+.feat-icon{width:44px;height:44px;border-radius:var(--radius);background:var(--pink4);display:grid;place-items:center;font-size:1.2rem;flex-shrink:0}
+.feat-text h4{font-size:.82rem;font-weight:700;margin-bottom:.05rem}
+.feat-text p{font-size:.68rem;color:var(--t3)}
+
+/* ====== PRODUCTS ====== */
+.products{background:var(--bg2)}
+.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.3rem;margin-top:2.5rem}
+.prod-card{background:#fff;border-radius:var(--radius2);overflow:hidden;transition:all .4s var(--ease);box-shadow:var(--shadow4);cursor:pointer;positionpx;font-weight::relative;border:1px solid var(--line)}
+.prod-card:hover{transform:translateY(-5px);box-shadow:var(--shadow2);border-color:var(--pink3)}
+.prod-img{aspect-ratio:3/4;position:relative;overflow:hidden}
+.prod-img-bg{width:100%;height:100%;display:grid;place-items:center;font-size:3.5rem;transition:transform .6s var(--ease)}
+.prod-card:hover .prod-img-bg{transform:scale(1.05)}
+.prod-badge{position:absolute;top:.7rem;inset-inline-start:.7rem;padding:.2rem .6rem;border-radius:50px;font-size:.58rem;font-weight:700;color:#fff}
+.prod-badge.new{background:var(--pink)}
+.prod-badge.hot{background:var(--coral)}
+.prod-badge.sale{background:var(--gold)}
+.prod-badge.eco{background:var(--sage)}
+.prod-tryon{position:absolute;bottom:.7rem;inset-inline:.7rem;padding:.5rem;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-radius:var(--radius);text-align:center;font-size:.72rem;font-weight:700;color:var(--pink);opacity:0;transform:translateY(8px);transition:all .3s var(--ease);cursor:pointer;border:none;width:calc(100% - 1.4rem)}
+.prod-card:hover .prod-tryon{opacity:1;transform:translateY(0)}
+.prod-tryon:hover{background:var(--pink);color:#fff}
+.prod-body{padding:1rem}
+.prod-brand{font-family:var(--t3);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.prod-name{font-size:.85rem;font-weight:600;margin:.25rem 0}
+.prod-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:.4rem}
+.prod-price{font-family:var(--fp);font-size:1rem;font-weight:700;color:var(--pink)}
+.prod-price .old{text-decoration:line-through;color:var(--t4);font-size:.75rem;font-weight:400;margin-inline-start:.25rem}
+.prod-size{font-size:.6rem;color:var(--t3);padding:.12rem .45rem;background:var(--bg2);border-radius:50px;font-weight:500}
+.prod-match{display:inline-flex;align-items:center;gap:.2rem;font-size:.58rem;font-weight:600;margin-top:.3rem;padding:.15rem .45rem;border-radius:50px}
+.prod-match.perf{background:var(--sage3);color:var(--sage)}
+.prod-match.good{background:var(--gold4);color:var(--gold)}
+.prod-actions{display:flex;gap:.35rem;margin-top:.5rem}
+.prod-act-btn{flex:1;padding:.45rem;border:1.5px solid var(--line2);border-radius:var(--radius);background:transparent;font-family:var(--fc);font-size:.68rem;font-weight:600;cursor:pointer;transition:all .3s;color:var(--t2)}
+.prod-act-btn:hover{border-color:var(--pink);color:var(--pink);background:var:var(--fp);font-size:.58rem;color(--pink4)}
+.prod-act-btn.primary{background:var(--pink);color:#fff;border-color:var(--pink)}
+.prod-act-btn.primary:hover{background:var(--pink2)}
+
+/* ====== TRY-ON STUDIO ====== */
+.tryon-studio{background:linear-gradient(180deg,var(--pink5),#fff,var(--gold4))}
+.studio-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-top:2.5rem;align-items:start}
+.studio-user{background:#fff;border-radius:var(--radius2);padding:1.8rem;box-shadow:var(--shadow);border:1px solid var(--line);position:sticky;top:5rem}
+.studio-user-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem}
+.studio-user-header h3{font-family:var(--fp);font-size:1rem;font-weight:700}
+.studio-user-badge{font-size:.58rem;padding:.2rem .55rem;background:var(--sage3);color:var(--sage);border-radius:50600}
+8rem}
+.studio-section-title{font-family:var(--fp);font-size:.95rem;font-weight:700;margin-bottom:.3rem;display:flex;justify-content:space-between;align-items:center}
+.studio-section-title .view-all{font-size:.68rem;color:var(--pink);cursor:pointer;font-weight:600}
+.studio-prod-list{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.sp-item{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow4);cursor:pointer;transition:all .3s;border:2px solid transparent}
+.sp-item:hover{border-color:var(--pink3);transform:translateY(-2px)}
+.sp-item.selected{border-color:var(--pink);box-shadow:var(--shadow)}
+.sp-item-img{aspect-ratio:1;background:var(--bg2);display:grid;place-items:center;font-size:1.8rem;position:relative}
+.sp-item-check{position:absolute;top:.35rem;inset-inline-start:.35rem;width:18px;height:18px;border-radius:50%;background:var(--pink);color:#fff;display:grid;place-items:center;font-size:.55rem;opacity:0;transition:all .3s}
+.sp-item.selected .sp-item-check{opacity:1}
+.sp-item-body{padding:.5rem}
+.sp-item-name{font-size:.68rem;font-weight:600}
+.sp-item-price{font-family:var(--fp);font-size:.75rem;font-weight:700;color:var(--pink)}
+.sp-item-size{font-size:.52rem;color:var(--t3)}
+.studio-generate{margin-top:1rem}
+.studio-generate-btn{width:100%;padding:.9rem;background:linear-gradient(135deg,var(--pink),#D81B60);color:#fff;border:none;border-radius:var(--radius);font-family:var(--fc);font-size:.92rem;font-weight:700;cursor:pointer;transition:all .3s var(--ease);box-shadow:0 6px 25px rgba(233,30,99,.25);position:relative;overflow:hidden}
+.studio-generate-btn:hover{transform:translateY(-2px);box-shadow:0 8px 35px rgba(233,30,99,.35)}
+.studio-generate-btn.loading{pointer-events:none}
+.studio-generate-btn .sg-text{position:relative;z-index:1}
+.studio-generate-btn .sg-loader{display:none;position:relative;z-index:1}
+.studio-generate-btn.loading .sg-text{display:none}
+.studio-generate-btn.loading .sg-loader{display:flex;align-items:center;justify-content:center;gap:.4rem}
+.sg-dot{width:7px;height:7px;background:#fff;border-radius:50%;animation:sgB .6s ease-in-out infinite}
+.sg-dot:nth-child(2){animation-delay:.1s}
+.sg-dot:nth-child(3){animation-delay:.2s}
+@keyframes sgB{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.studio-info{margin-top:.8rem;padding:.8rem;background:var(--pink5);border-radius:var(--radius);border:1px solid var(--pink4)}
+.studio-info h4{font-size:.82rem;font-weight:700;margin-bottom:.3rem}
+.studio-info p{font-size:.7rem;color:var(--t2);line-height:1.7}
+
+/* AI Overlay */
+.ai-overlay{position:fixed;inset:0;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);z-index:100000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:1.2rem}
+.ai-overlay.on{display:flex}
+.ai-spinner{width:60px;height:60px;border-radius:50%;border:3px solid var(--pink4);border-top-color:var(--pink);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ai-overlay h3{font-family:var(--fp);font-size:1.1rem;font-weight:700;color:var(--t1)}
+.ai-overlay p{font-size:.82rem;color:var(--t2)}
+.ai-progress{width:200px;height:4px;background:var(--pink4);border-radius:4px;overflow:hidden}
+.ai-progress-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--pink2));border-radius:4px;width:0;transition:width .3s}
+
+/* ====== REGISTRATION ====== */
+.register{background:var(--bg2)}
+.reg-grid{display:grid;grid-template-columns:280px 1fr;gap:2.5rem;margin-top:2.5rem}
+.reg-steps{display:flex;flex-direction:column;gap:0}
+.reg-step{display:flex;gap:.8rem;align-items:flex-start;padding:1rem 0;border-bottom:1px solid var(--line);cursor:pointer;transition:all .3s;position:relative}
+.reg-step::before{content:'';position:absolute;inset-inline-end:-1.2rem;top:0;bottom:0;width:2px;background:transparent;transition:background .3s}
+.reg-step.on::before{background:var(--pink)}
+.reg-step.on .rs-num{background:var(--pink);color:#fff;border-color:var(--pink)}
+.reg-step.done .rs-num{background:var(--sage);color:#fff;border-color:var(--sage)}
+.rs-num{width:30px;height:30px;border:1.5px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-family:var(--fp);font-size:.62rem;font-weight:700;color:var(--t3);transition:all .3s;flex-shrink:0}
+.reg-step h4{font-size:.85rem;font-weight:700;margin-bottom:.05rem}
+.reg-step p{font-size:.68rem;color:var(--t3);line-height:1.5}
+.reg-form{background:#fff;border-radius:var(--radius2);padding:2rem;box-shadow:var(--shadow);border:1px solid var(--line)}
+.reg-form-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--line)}
+.reg-form-header h3{font-family:var(--fp);font-size:1.2rem;font-weight:700}
+.reg-form-header span{font-size:.6rem;color:var(--t3);font-weight:500}
+.fg{margin-bottom:1rem}
+.fl{display:block;font-size:.68rem;color:var(--t2);font-weight:600;margin-bottom:.35rem}
+.fi{width:100%;padding:.7rem .9rem;background:var(--bg2);border:2px solid transparent;border-radius:var(--radius);color:var(--t1);font-family:var(--fc);font-size:.85rem;outline:none;transition:all .3s}
+.fi:focus{border-color:var(--pink3);background:#fff;box-shadow:0 0 0 4px rgba(233,30,99,.06)}
+.fi::placeholder{color:var(--t4)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.fs{width:100%;padding:.7rem .9rem;background:var(--bg2);border:2px solid transparent;border-radius:var(--radius);color:var(--t1);font-family:var(--fc);font-size:.85rem;appearance:none;cursor:pointer;outline:none;transition:all .3s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' stroke='%23999' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:inset-inline-start .8rem center}
+.fs:focus{border-color:var(--pink3);background:#fff}
+.ai-m-block{background:linear-gradient(135deg,var(--pink5),#FFF8FA);border-radius:var(--radius2);padding:1.5rem;margin-top:.8rem;border:1px solid rgba(233,30,99,.08)}
+.ai-m-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem;background:#fff;border-radius:50px;font-size:.58remss-icon{font;color:var(--pink);font-weight:600;margin-bottom:.6rem;box-shadow:var(--shadow4)}
+.ai-m-badge i{width:5px;height:5px;background:var(--pink);border-radius:50%;animation:pulse 1.5s infinite}
+.ai-m-block h4{font-family:var(--fp);font-size:1rem;font-weight:700;margin-bottom:.25rem}
+.ai-m-block>p{font-size:.75rem;color:var(--t2);line-height:1.7;margin-bottom:.8rem}
+.ai-cam-btn{display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem;background:#fff;border:2px dashed var(--pink3);border-radius:var(--radius);cursor:pointer;transition:all .3s;width:100%;font-family:var(--fc)}
+.ai-cam-btn:hover{border-style:solid;border-color:var(--pink);background:var(--pink4)}
+.ai-cam-icon{width:42px;height:42px;border-radius:50%;background:var(--pink4);display:grid;place-items:center;font-size:1.1rem;flex-shrink:0;transition:all .3s}
+.ai-cam-btn:hover .ai-cam-icon{background:var(--pink3)}
+.ai-cam-btn h5{font-size:.82rem;font-weight:700;margin-bottom:.05rem}
+.ai-cam-btn p{font-size:.68rem;color:var(--t3)}
+.m-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-top:.8rem}
+.m-item{background:#fff;border-radius:var(--radius);padding:.6rem;text-align:center;position:relative;transition:all .3s;border:1px solid var(--line)}
+.m-item.ok{border-color:rgba(143,174,139,.3);background:rgba(143,174,139,.03)}
+.m-item.ok::after{content:'✓';position:absolute;top:.25rem;inset-inline-start:.25rem;color:var(--sage);font-size:.58rem;font-weight:700}
+.m-item .mi-icon{font-size:1.1rem;margin-bottom:.15rem}
+.m-item .mi-label{font-size:.48rem;color:var(--t3);font-weight:600}
+.m-item .mi-val{font-family:var(--fp);font-size:1rem;font-weight:700;color:var(--t1)}
+.m-item .mi-val.empty{color:var(--t4);font-size:.8rem}
+.m-item .mi-unit{font-size:.48rem;color:var(--t3)}
+.sz-prof{background:#fff;border-radius:var(--radius);padding:1rem;margin-top:.8rem;border:1px solid var(--line)}
+.sz-prof-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem}
+.sz-prof-head h4{font-family:var(--fp);font-size:.85rem;font-weight:700}
+.sz-prof-badge{font-size:.52rem;padding:.12rem .45rem;background:var(--sage3);color:var(--sage);border-radius:50px;font-weight:600}
+.sz-chart{display:grid;grid-template-columns:1fr 1fr;gap:.3rem}
+.sz-r{display:flex;justify-content:space-between;align-items:center;padding:.35rem 0;border-bottom:1px solid var(--line)}
+.sz-r:last-child{border-bottom:none}
+.sz-r .srl{font-size:.72rem;color:var(--t2)}
+.sz-r .srv{font-family:var(--fp);font-size:.7rem;color:var(--pink);font-weight:600}
+
+/* ====== SELL ====== */
+.sell{background:linear-gradient(135deg,var(--pink5),#fff,var(--gold4))}
+.sell-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-top:2.5rem;align-items:start}
+.sell-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}
+.sell-step{background:#fff;border-radius:var(--radius);padding:1.3rem;text-align:center;box-shadow:var(--shadow4);transition:all .3s;border:1px solid var(--line)}
+.sell-step:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--pink3)}
+.sell-step .-size:1.1.5rem;font-weight:700;line-height:1}
+.d-stat .ds-val.pink{color:var(--pink)}.ds-val.gold{color:var(--gold)}.ds-val.sage{color:var(--sage)}.ds-val.lav{color:var(--lavender)}
+.d-stat .ds-label{font-size:.62rem;color:var(--t3);font-weight:500;margin-top:.15rem}
+.d-stat .ds-change{font-size:.58rem;margin-top:.25rem;font-weight:600;display:flex;align-items:center;gap:.2rem}
+.d-stat .ds-change.up{color:var(--sage)}.ds-change.down{color:var(--coral)}
+.d-wallet{background:linear-gradient(135deg,var(--pink),#D81B60);border-radius:var(--radius2);padding:1.6rem;color:#fff;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;align-items:center;box-shadow:0 8px 30px rgba(233,30,99,.2)}
+.dw-amount{font-family:var(--fp);font-size:2.2rem;font-weight:800;line-height:1}
+.dw-amount .cur{font-size:.85rem;font-weight:400;opacity:.7}
+.dw-label{font-size:.58rem;opacity:.7;letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:.25rem}
+.dw-break{display:flex;flex-direction:column;gap:.4rem}
+.dw-row{display:flex;justify-content:space-between;align-items:center;padding:.25rem 0;border-bottom:1px solid rgba(255,255,255,.15)}
+.dw-row:last-child{border-bottom:none}
+.dw-row .dw-l{font-size:.75rem;opacity:.8}
+.dw-row .dw-v{font-family:var(--fp);font-size:.78rem;font-weight:700}
+.dw-acts{display:flex;flex-direction:column;gap:.35rem}
+.dw-btn{padding:.5rem;border-radius:var(--radius);border:1.5px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-family:var(--fc);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .3s;text-align:center}
+.dw-btn:hover{background:rgba(255,255,255,.15);border-color:#fff}
+.dw-btn.pri{background:#fff;color:var(--pink);border-color:#fff;font-weight:700}
+.dw-btn.pri:hover{background:rgba(255,255,255,.9)}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--line);margin-bottom:.8rem}
+.tab{padding:.5rem 1rem;background:none;border:none;color:var(--t3);font-family:var(--fc);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .3s;position:relative}
+.tab::after{content:'';position:absolute;bottom:-2px;inset-inline:0;height:2px;background:var(--pink);border-radius:2px;transform:scaleX(0);transition:transform .3s var(--ease)}
+.tab.on{color:var(--pink)}.tab.on::after{transform:scaleX(1)}
+.tc{display:none}.tc.on{display:block}
+.act{display:flex;gap:.7rem;align-items:center;padding:.7rem 0;border-bottom:1px solid var(--line);transition:all .3s}
+.act:last-child{border-bottom:none}
+.act:hover{background:var(--pink5);padding-inline-start:.4rem;border-radius:var(--radius)}
+.act-ico{width:36px;height:36px;border-radius:var(--radius);display:grid;place-items:center;font-size:.95rem;flex-shrink:0}
+.act-ico.sell{background:var(--pink4)}.act-ico.swap{background:var(--sage3)}.act-ico.buy{background:var(--gold4)}.act-ico.bonus{background:var(--lavender3)}
+.act-info{flex:1}
+.act-info .ai-t{font-size:.8rem;font-weight:600}
+.act-info .ai-m{font-size:.65rem;color:var(--t3);margin-top:.05rem}
+.act-amt{font-family:var(--fp);font-size:.78rem;font-weight:700}
+.act-amt.pos{color:var(--sage)}.act-amt.neg{color:var(--pink)}.act-amt.neu{color:var(--gold)}
+.items-g{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+.it-card{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow4);transition:all .3s;cursor:pointer;border:1px solid var(--line)}
+.it-card:hover{box-shadow:var(--shadow);transform:translateY(-2px);border-color:var(--pink3)}
+.it-thumb{height:120px;background:var(--bg2);display:grid;place-items:center;font-size:2.2rem;position:relative}
+.it-status{position:absolute;top:.4rem;inset-inline-start:.4rem;font-size:.48rem;padding:.12rem .35rem;border-radius:50px;font-weight:700}
+.it-status.a{background:var(--sage3);color:var(--sage)}
+.it-status.p{background:var(--gold4);color:var(--gold)}
+.it-status.d{background:var(--pink4);color:var(--pink)}
+.it-body{padding:.7rem}
+.it-body .ib-n{font-size:.78rem;font-weight:600;margin-bottom:.15rem}
+.it-body .ib-b{font-size:.55rem;color:var(--t3);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.it-body .ib-bot{display:flex;justify-content:space-between;align-items:center;margin-top:.3rem}
+.it-body .ib-pr{font-family:var(--fp);font-size:.9rem;font-weight:700;color:var(--pink)}
+.it-body .ib-sz{font-size:.52rem;color:var(--t3);padding:.1rem .35rem;background:var(--bg2);border-radius:50px}
+.match-card{display:flex;align-items:center;gap:.7rem;padding:.7rem;background:#fff;border-radius:var(--radius);border:1px solid var(--line);transition:all .3s;margin-bottom:.4rem}
+.match-card:hover{border-color:var(--pink3);box-shadow:var(--shadow)}
+.match-card .mc-i{font-size:1.2rem}
+.match-card .mc-info{flex:1}
+.match-card .mc-info h5{font-size:.78rem;font-weight:600;margin-bottom:.05rem}
+.match-card .mc-info p{font-size:.65rem;color:var(--t3)}
+.match-card .mc-pr{font-family:var(--fp);font-size:.9rem;font-weight:700;color:var(--pink)}
+.sz-match{display:inline-flex;align-items:center;gap:.15rem;font-size:.52rem;padding:.12rem .35rem;border-radius:50px;font-weight:700}
+.sz-match.perf{background:var(--sage3);color:var(--sage)}
+.sz-match.cl{background:var(--gold4);color:var(--gold)}
+.sz-match.no{background:rgba(255,112,67,.1);color:var(--coral)}
+
+/* ====== CTA ====== */
+.cta{text-align:center;padding:7rem 3rem;background:linear-gradient(180deg,var(--pink5),#fff,var(--gold4));position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 80%,rgba(233,30,99,.03),transparent 60%);pointer-events:none}
+.cta h2{font-family:var(--fp);font-size:clamp(1.8rem,4vw,3.2rem);font-weight:800;line-height:1.2;margin-bottom:.8rem}
+.cta h2 em{font-style:italic;color:var(--pink);font-weight:400}
+.cta p{font-size:.95rem;color:var(--t2);max-width:480px;margin:0 auto 1.8rem;line-height:1.9}
+.cta-acts{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap}
+
+/* ====== FOOTER ====== */
+.ft{padding:3.5rem 4rem 1.2rem;background:var(--bg2);border-top:1px solid var(--line)}
+.ft-g{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem}
+.ft-brand .nv-logo{margin-bottom:.6rem}
+.ft-brand p{font-size:.75rem;color:var(--t3);line-height:1.8;max-width:260px}
+.ft-col h4{font-size:.72rem;color:var(--t1);font-weight:700;margin-bottom:.6rem}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.ft-col a{color:var(--t3);text-decoration:none;font-size:.75rem;transition:color .3s}
+.ft-col a:hover{color:var(--pink)}
+.ft-bot{display:flex;justify-content:space-between;align-items:center;padding-top:1.2rem;border-top:1px solid var(--line);font-size:.65rem;color:var(--t3)}
+
+/* ====== ANIMATIONS ====== */
+@keyframes fiu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.rv{opacity:0;transform:translateY(22px);transition:all .7s var(--ease)}
+.rv.vis{opacity:1;transform:translateY(0)}
+.rv-d1{transition-delay:.1s}.rv-d2{transition-delay:.2s}.rv-d3{transition-delay:.3s}
+
+/* ====== RESPONSIVE ====== */
+@media(max-width:1100px){
+  .sec{padding:4rem 2rem}
+  .hero{grid-template-columns:1fr}.hero-r{display:none}.hero-l{padding:6rem 2rem 3rem}
+  .nv{padding:.7rem 1.5rem}.nv-links{display:none}.nv-burger{display:flex}
+  .feat-strip{grid-template-columns:repeat(2,1fr);margin:-2rem 2rem 0;padding:1.5rem}
+  .prod-grid{grid-template-columns:repeat(2,1fr)}
+  .studio-grid{grid-template-columns:1fr}
+  .reg-grid{grid-template-columns:1fr}
+  .reg-steps{flex-direction:row;overflow-x:auto;gap:.8rem}
+  .reg-step{flex-shrink:0;min-width:160px;border-bottom:none;border-inline-end:1px solid var(--line);padding-inline-end:.8rem}
+  .reg-step::before{display:none}
+  .sell-grid{grid-template-columns:1fr}
+  .sell-steps{grid-template-columns:repeat(3,1fr)}
+  .dash-grid{grid-template-columns:1fr}
+  .dash-side{flex-direction:row;overflow-x:auto;gap:.4rem}
+  .d-stats{grid-template-columns:repeat(2,1fr)}
+  .d-wallet{grid-template-columns:1fr}
+  .items-g{grid-template-columns:repeat(2,1fr)}
+  .m-grid{grid-template-columns:repeat(2,1fr)}
+  .ft-g{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .sec{padding:3rem 1rem}
+  .hero-l{padding:5rem 1rem 2rem}
+  .hero-features{flex-direction:column;gap:.8rem}
+  .feat-strip{grid-template-columns:1fr;margin:-2rem 1rem 0;padding:1.2rem}
+  .prod-grid{grid-templatefl-value">+-columns:1fr}
+  .studio-prod-list{grid-template-columns:1fr}
+  .sell-steps{grid-template-columns:1fr}
+  .cta-acts{flex-direction:column;align-items:center}
+  .ft-g{grid-template-columns:1fr}
+  .ft{padding:2.5rem 1rem 1rem}
+  .ft-bot{flex-direction:column;gap:.3rem;text-align:center}
+  .d-stats{grid-template-columns:1fr}
+  .items-g{grid-template-columns:1fr}
+  .m-grid{grid-template-columns:1fr}
+  .fr{grid-template-columns:1fr}
+  .sell-form-row{grid-template-columns:1fr}
+  .sz-chart{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nv" id="nv">
+  <a class="nv-logo" onclick="go('hero')"><div class="nv-logo-icon">S</div><span class="nv-logo-text">Style<span>Loop</span></span></a>
+  <ul class="nv-links">
+    <li><a href="#products">المنتجات</a></li>
+    <li><a href="#tryon">جرّبي الآن</a></li>
+    <li><a href="#sell">بيعي ملابسك</a></li>
+    <li><a href="#register">التسجيل</a></li>
+    <li><a href="#dash">حسابي</a></li>
+  </ul>
+  <div class="nv-actions">
+    <button class="nv-cart" onclick="go('dash')">🛒<span class="nv-cart-badge">3</span></button>
+    <button class="btn-p" onclick="go('register')">سجّلي الآن</button>
+    <div class="nv-user">س</div>
+  </div>
+  <button class="nv-burger"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-l">
+    <div class="hero-badge"><i></i> جرّبي قبل ما تشترون</div>
+    <h1 class="hero-h1"><em>جرّبي</em> ملابسك<span class="hl">بالذكاء الاصطناعي قبل لا تشترين</span></h1>
+    <p class="hero-p">StyleLoop — منصة ذكية تخلّيكي تشوفين نفسك بالملابس قبل ما تدفعين. سجّلي مقاساتك، جرّبي أي قطعة، واشتري بثقة.</p>
+    <div class="hero-acts">
+      <button class="btn-p" onclick="go('tryon')">✨ جرّبي الآن مجانًا</button>
+      <button class="btn-s" onclick="go('products')">تصفحي المنتجات</button>
+      <button class="btn-g" onclick="go('sell')">💰 بيعي ملابسك</button>
+    </div>
+    <div class="hero-features">
+      <div class="hf"><div class="hf-icon">🤖</div><div class="hf-text"><strong>AI Try-On</strong>جرّبي أي قطعة عليك</div></div>
+      <div class="hf"><div class="hf-icon">📐</div><div class="hf-text"><strong>مقاساتك م class="prod-حفوظة</strong>مرة واحدة وبس</div></div>
+      <div class="hf"><div class="hf-icon">💰</div><div class="hf-text"><strong>رصيدك ينمو</strong>بيعي واشتري بذكاء</div></div>
+    </div>
+  </div>
+  <div class="hero-r">
+    <div class="hero-img-wrap"><div class="hero-img">👗</div></div>
+    <div class="hero-float" style="top:8%;inset-inline-start:-8%"><div class="hfl-label">تطابق المقاس</div><div class="hfl-value sage">٩٦٪</div></div>
+    <div class="hero-float" style="bottom:12%;inset-inline-end:-5%"><div class="hfl-label">رصيد المحفظة</div><div class="hfl-value gold">٤٥٠ ر.س</div></div>
+    <div class="hero-float" style="top:50%;inset-inline-end:-10%"><div class="hfl-label">قطع متداولة</div><div class="h١٢بي</em><br>قبل ما تشترون</h2>
+    <p class="sec-sub">كل قطعة تقدرين تجرّبينها عليك بالذكاء الاصطناعي.</p></div>
+  <div class="prod-grid rv">
+    <div class="prod-card">
+      <div class="prod-img"><div class="prod-img-bg" style="background:linear-gradient(135deg,#F8BBD0,#FCE4EC)">👗</div><span class="prod-badge new">جديد</span><button class="prod-tryon" onclick="go('tryon')">✨ جرّبي عليك</button></div>
+      <div class="prod-body"><div class="prod-brand">Zara</div><div class="prod-name">فستان زهري صيفي</div><div class="prod-bottom"><span class="prod-price">١٢٠ ر.س</span><span class="prod-size">M</span></div><div class="prod-match perf">✓ يناسب مقاسك ١٠٠٪</div><div class="prod-actions"><button class="prod-act-btn primary">أضيفي للسلة</button><button class="prod-act-btn" onclick="go('tryon')">جرّبي</button></div></div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-img"><div class="prod-img-bg" style="background:linear-gradient(135deg,#F5E6C8,#FFF8E1)">🧥</div><span class="prod-badge hot">الأكثر طلبًا</span><button class="prod-tryon" onclick="go('tryon')">✨ جرّبي عليك</button></div>
+      <div class="prod-body"><div class="prod-brand">Mango</div><div class="prod-name">جاكت جلد أسود</div><div class="prod-bottom"><span class="prod-price">١٨٠ ر.س</span><span class="prod-size">M</span></div><div class="prod-match perf">✓ يناسب مقاسك ٩٨٪</div><div class="prod-actions"><button class="prod-act-btn primary">أضيفي للسلة</button><button class="prod-act-btn" onclick="go('tryon')">جرّبي</button></div></div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-img"><div class="prod-img-bg" style="background:linear-gradient(135deg,#E1BEE7,#F3E5F5)">👚</div><span class="prod-badge sale">خصم</span><button class="prod-tryon" onclick="go('tryon')">✨ جرّبي عليك</button></div>
+      <div class="prod-body"><div class="prod-brand">H&M</div><div class="prod-name">بلوزة حرير بنفسجية</div><div class="prod-bottom"><span class="prod-price">٨٥ ر.س <span class="old">١٢٠</span></span><span class="prod-size">S</span></div><div class="prod-match good">~ يناسب مقاسك ٨٥٪</div><div class="prod-actions"><button class="prod-act-btn primary">أضيفي للسلة</button><buttonact-btn" onclick✨ جرّبي عليك</button></div>
+      <div class="prod-body"><div class="prod-brand">Nike</div><div class="prod-name">حذاء رياضي أبيض</div><div class="prod-bottom"><span class="prod-price">٢٠٠ ر.س</span><span class="prod-size">EU 38</span></div><div class="prod-match perf">✓ يناسب مقاسك ١٠٠٪</div><div class="prod-actions"><button class="prod-act-btn primary">أضيفي للسلة</button><button class="prod-act-btn" onclick="go('tryon')">جرّبي</button></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRY-ON STUDIO -->
+<section class="sec tryon-studio" id="tryon">
+  <div class="sec-center rv"><span class="sec-tag">استوديو التجربة</span>
+    <h2 class="sec-h2">جرّبي الملابس <em>عليك</em><br>بالذكاء الاصطناعي</h2>
+    <p class="sec-sub">اختاري قطعة، وشوفي كيف تطلع عليك.</p></div>
+  <div class="studio-grid rv">
+    <div class="studio-user">
+      <div class="studio-user-header"><h3>صورتك + مقاساتك</h3><span class="studio-user-badge">✓ ملف مكتمل</span></div>
+      <div class="studio-canvas" id="studioCanvas">
+        <div class="studio-canvas-placeholder" id="canvasPlaceholder"><div class="scp-icon">👤</div><p>اختاري قطعة واضغطي "جرّبي الآن"</p></div>
+        <div class="studio-canvas-result" id="canvasResult" style="display:none">👗✨</div>
+      </div>
+      <div class="studio-measurements">
+        <div class="sm-item"><div class="sm-val">٩٨</div><div class="sm-label">الصدر سم</div></div>
+        <div class="sm-item"><div class="sm-val">٨٢</div><div class="sm-label">الخصر سم</div></div>
+        <div class="sm-item"><div class="sm-val">٩٦</div><div class="sm-label">الأرداف سم</div></div>
+        <div class="sm-item"><div class="sm-val">M</div><div class="sm-label">قمصان</div></div>
+        <div class="sm-item"><div class="sm-val">32</div><div class="sm-label">جينز</div></div>
+        <div class="sm-item"><div class="sm-val">EU 38</div><div class="sm-label">حذاء</div></div>
+      </div>
+      <div class="studio-controls">
+        <button class="studio-ctrl-btn">📷 صورة جديدة</button>
+        <button class="studio-ctrl-btn">📐 تعديل المقاسات</button>
+      </div>
+    </div>
+    <div class="studio-products">
+      <div class="studio-section-title"><span>اختاري قطعة للتجربة</span><span class="view-all">عرض الكل</span></div>
+      <div class="studio-prod-list">
+        <div class="sp-item selected" onclick="selectSP(this)"><div class="sp-item-img" style="background:linear-gradient(135deg,#F8BBD0,#FCE4EC)">👗<span class="sp-item-check">✓</span></div><div class="sp-item-body"><div class="sp-item-name">فستان زهري — Zara</div><div class="sp-item-price">١٢٠ ر.س</div><div class="sp-item-size">M — يناسبك ١٠٠٪</div></div></div>
+        <div class="sp-item" onclick="selectSP(this)"><div class="sp-item-img" style="background:linear-gradient(135deg,#F5E6C8,#FFF8E1)">🧥<span class="sp-item-check">✓</span></div><div class="sp-item-body"><div class="sp-item-name">جاكت جلد — Mango</div><div class="sp-item-price">١٨٠ ر.س</div><div class="sp-item-size">M — يناسبك ٩٨٪</div></div></div>
+        <div class="sp-item" onclick="selectSP(this)"><div class="sp-item-img" style="background:linear-gradient(135deg,#E1BEE7,#F3E5F5)">👚<span class="sp-item-check">✓</span></div><div class="sp-item-body"><div class="sp-item-name">بلوزة حرير — H&M</div><div class="sp-item-price">٨٥ ر.س</div><div class="sp-item-size">S — يناسبك ٨٥٪</div></div></div>
+        <div class="sp-item" onclick="selectSP(this)"><div class="sp-item-img" style="background:linear-gradient(135deg,#C8E6C9,#E8F5E9)">👖<span class="sp-item-check">✓</span></div><div class="sp-item-body"><div class="sp-item-name">جينز واسع — Levi's</div><div class="sp-item-price">١٥٠ ر.س</div><div class="sp-item-size">32 — يناسبك ٩٥٪</div></div></div>
+      </div>
+      <div class="studio-generate"><button class="studio-generate-btn" id="genBtn" onclick="generateTryOn()"><span class="sg-text">✨ جرّبي الآن بالذكاء الاصطناعي</span><span class="sg-loader"><span class="sg-dot"></span><span class="sg-dot"></span><span class="sg-dot"></span></span></button></div>
+      <div class="studio-info"><h4>💡 كيف يعمل Try-On؟</h4><p>الـ AI يأخذ صورتك + مقاساتك المحفوظة + صورة القطعة → يفهم شكل جسمك وطريقة سقوط القماش → يولّد صورة واقعية. النتيجة أدق لأن مقاساتك محفوظة!</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- AI OVERLAY -->
+<div class="ai-overlay" id="aiOverlay">
+  <div class="ai-spinner"></div>
+  <h3>جاري تحليل الصورة...</h3>
+  <p>StyleLoop AI يحسب كيف تطلع عليك القطعة</p>
+  <div class="ai-progress"><div class="ai-progress-fill" id="aiProgress"></div></div>
+</div>
+
+<!-- REGISTRATION -->
+<section class="sec register" id="register">
+  <div class="sec-center rv"><span class="sec-tag">التسجيل والمقاسات</span>
+    <h2 class="sec-h2">سجّلي و <em>مقاساتك</em><br>تتحفظ للأبد</h2>
+    <p class="sec-sub">الذكاء الاصطناعي يحسب ١٢ قياس من صورتين.</p></div>
+  <div class="reg-grid rv">
+    <div class="reg-steps">
+      <div class="reg-step done"><div class="rs-num">✓</div><div><h4>البيانات الأساسية</h4><p>الاسم، البريد، الجوال</p></div></div>
+      <div class="reg-step on"><div class="rs-num">2</div><div><h4>القياسات بالـ AI</h4><p>صورتين + ١٢ قياس</p></div></div>
+      <div class="reg-step"><div class="rs-num">3</div><div><h4>تفضيلات الأسلوب</h4><p>ماركات، ألوان، ستايل</p></div></div>
+      <div class="reg-step"><div class="rs-num">4</div><div><h4>تأكيد وإطلاق</h4><p>مراجعة وتفعيل</p></div></div>
+    </div>
+    <div class="reg-form">
+      <div class="reg-form-header"><h3>البيانات الأساسية</h3><span>الخطوة 1 من 4</span></div>
+      <div class="fg"><label class="fl">الاسم الكامل</label><input class="fi" placeholder="أدخلي اسمك"></div>
+      <div class="fg"><label class="fl">البريد الإلكتروني</label><input class="fi" type="email" placeholder="example@email.com"></div>
+      <div class="fr">
+        <div class="fg"><label class="fl">رقم الجوال</label><input class="fi" placeholder="+966 5XX XXX XXXX"></div>
+        <div class="fg"><label class="fl">الجنس</label><select class="fs"><option>أنثى</option><option>ذكر</option></select></div>
+      </div>
+      <div class="fg"><label class="fl">كلمة المرور</label><input class="fi" type="password" placeholder="٨ أحرف على الأقل"></div>
+      <div class="ai-m-block">
+        <div class="ai-m-badge"><i></i> الخطوة التالية: قياساتك بالـ AI</div>
+        <h4>StyleLoop AI يحسب مقاساتك</h4>
+        <p>بعد التسجيل، التقطي صورتين. AI يحسب ١٢ قياس ويحفظها في ملفك.</p>
+        <button class="ai-cam-btn" onclick="simAI(this)"><div class="ai-cam-icon">📷</div><div><h5>التقاط صورتين للجسم</h5><p>أمامية + جانبية — AI يحسب الباقي</p></div></button>
+        <div class="m-grid">
+          <div class="m-item ok"><div class="mi-icon">📏</div><div class="mi-label">الصدر</div><div class="mi-val">٩٨</div><div class="mi-unit">سم</div></div>
+          <div class="m-item ok"><div class="mi-icon">📐</div><div class="mi-label">الخصر</div><div class="mi-val">٨٢</div><div class="mi-unit">سم</div></div>
+          <div class="m-item ok"><div class="mi-icon">🦴</div><div class="mi-label">الأرداف</div><div class="mi-val">٩٦</div><div class="mi-unit">سم</div></div>
+          <div class="m-item ok"><div class="mi-icon">💪</div><div class="mi-label">الذراع</div><div class="mi-val">٣٢</div><div class="mi-unit">سم</div></div>
+          <div class="m-item ok"><div class="mi-icon">🦵</div><div class="mi-label">الفخذ</div><div class="mi-val">٥٦</div><div class="mi-unit">سم</div></div>
+          <div class="m-item"><div class="mi-icon">🖐️</div><div class="mi-label">الرقبة</div><div class="mi-val empty">—</div><div class="mi-unit">بانتظار</div></div>
+        </div>
+        <div class="sz-prof">
+          <div class="sz-prof-head"><h4>ملف المقاسات</h4><span class="sz-prof-badge">✓ AI</span></div>
+          <div class="sz-chart">
+            <div class="sz-r"><span class="srl">قمصان</span><span class="srv">M</span></div>
+            <div class="sz-r"><span class="srl">جينز</span><span class="srv">32×32</span></div>
+            <div class="sz-r"><span class="srl">فساتين</span><span class="srv">EU 40</span></div>
+            <div class="sz-r"><span class="srl">أحذية</span><span class="srv">EU 38</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.7rem;margin-top:1.2rem">
+        <button class="btn-s" style="flex:1">السابق</button>
+        <button class="btn-p" style="flex:2">متابعة — قياسات AI</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SELL -->
+<section class="sec sell" id="sell">
+  <div class="sec-center rv"><span class="sec-tag">بيعي ملابسك</span>
+    <h2 class="sec-h2">ملابسك تستحق <em>حياة ثانية</em><br>وارصيدك ينمو</h2>
+    <p class="sec-sub">صوّري قطعك، الـ AI يقيّمها ويقترح سعرًا.</p></div>
+  <div class="sell-grid rv">
+    <div class="sell-steps">
+      <div class="sell-step"><div class="ss-num">01</div><div class="ss-icon">📸</div><h4>صوّري</h4><p>٣ صور: أمامية، جانبية، تفاصيل</p></div>
+      <div class="sell-step"><div class="ss-num">02</div><div class="ss-icon">🤖</div><h4>الـ AI يقيّم</h4><p>تقييم تلقائي: الحالة، الماركة، السعر</p></div>
+      <div class="sell-step"><div class="ss-num">03</div><div class="ss-icon">💰</div><h4>تبيعي وتحصلي</h4><p>نقد + رصيد إضافي في محفظتك</p></div>
+    </div>
+    <div class="sell-preview">
+      <h3>أضيفي قطعة للبيع</h3>
+      <div class="sell-upload"><div class="su-icon">📸</div><p>اضغطي لرفع صور القطعة<br><strong>٣ صور مطلوبة</strong></p></div>
+      <div class="sell-form-row">
+        <div class="fg"><label class="fl">الماركة</label><input class="fi" placeholder="Zara, H&M, Nike..."></div>
+        <div class="fg"><label class="fl">المقاس</label><input class="fi" placeholder="M, 32, EU 38..."></div>
+      </div>
+      <div class="fg"><label class="fl">الحالة</label><select class="fs"><option>جديد (بدون استخدام)</option><option>ممتاز (مرتين أو أقل)</option><option>جيد (استخدام خفيف)</option></select></div>
+      <div class="fg"><label class="fl">وصف مختصر</label><input class="fi" placeholder="فستان زهري صيفي، مرتدى مرتين فقط"></div>
+      <div class="sell-estimate"><div class="se-label">🤖 السعر المقترح بالـ AI</div><div class="se-value">١٢٠ ر.س</div></div>
+      <div style="margin-top:.5rem;font-size:.68rem;color:var(--t2);line-height:1.7">ستحصلين على: <strong style="color:var(--sage)">٨٤ ر.س نقد</strong> + <strong style="color:var(--pink)">١٢ ر.س رصيد بونص</strong> (عمولة StyleLoop ٢٠٪)</div>
+      <button class="btn-p" style="width:100%;margin-top:.8rem;text-align:center">أضيفي القطعة للبيع</button>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section class="sec dash" id="dash">
+  <div class="sec-center rv"><span class="sec-tag">حسابي في StyleLoop</span>
+    <h2 class="sec-h2">كل شيء في <em>مكان واحد</em></h2></div>
+  <div class="dash-grid rv">
+    <div class="dash-side">
+      <div class="dash-nav on" onclick="sDN(this)"><span class="dn-icon">📊</span>نظرة عامة</div>
+      <div class="dash-nav" onclick="sDN(this)"><span class="dn-icon">💳</span>المحفظة</div>
+      <div class="dash-nav" onclick="sDN(this)"><span class="dn-icon">👗</span>قطع للبيع</div>
+      <div class="dash-nav" onclick="sDN(this)"><span class="dn-icon">🛒</span>مشترياتي</div>
+      <div class="dash-nav" onclick="sDN(this)"><span class="dn-icon">📐</span>مقاساتي</div>
+      <div class="dash-nav" onclick="sDN(this)"><span class="dn-icon">🎯</span>تطابقات</div>
+    </div>
+    <div class="dash-main">
+      <div class="d-stats">
+        <div class="d-stat"><div class="ds-icon">👗</div><div class="ds-val pink">٢٣</div><div class="ds-label">قطعة نشطة</div><div class="ds-change up">↑ ٣ هذا الأسبوع</div></div>
+        <div class="d-stat"><div class="ds-icon">🔄</div><div class="ds-val sage">١٤</div><div class="ds-label">عملية تداول</div><div class="ds-change up">↑ ٥٠٪</div></div>
+        <div class="d-stat"><div class="ds-icon">💰</div><div class="ds-val gold">١,٨٥٠</div><div class="ds-label">إجمالي المبيعات ر.س</div><div class="ds-change up">↑ ٢٢٪</div></div>
+        <div class="d-stat"><div class="ds-icon">🎯</div><div class="ds-val lav">٩٦٪</div><div class="ds-label">دقة التطابق</div><div class="ds-change up">↑ ممتاز</div></div>
+      </div>
+      <div class="d-wallet">
+        <div><div class="dw-label">رصيد المحفظة</div><div class="dw-amount"><span class="cur">ر.س </span>٦٨٠</div></div>
+        <div class="dw-break">
+          <div class="dw-row"><span class="dw-l">نقد متاح</span><span class="dw-v">٤٢٠</span></div>
+          <div class="dw-row"><span class="dw-l">رصيد داخلي</span><span class="dw-v">٢٠٠</span></div>
+          <div class="dw-row"><span class="dw-l">بونص</span><span class="dw-v">٦٠</span></div>
+        </div>
+        <div class="dw-acts">
+          <button class="dw-btn pri">أضيفي قطعة للبيع</button>
+          <button class="dw-btn">سحبي الأرباح</button>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tab on" onclick="sTab(this,'tAct')">آخر النشاط</button>
+        <button class="tab" onclick="sTab(this,'tItm')">قطع للبيع</button>
+        <button class="tab" onclick="sTab(this,'tMtch')">تطابقات المقاس</button>
+      </div>
+      <div class="tc on" id="tAct">
+        <div class="act"><div class="act-ico sell">💰</div><div class="act-info"><div class="ai-t">بيع: فستان أزرق — Zara</div><div class="ai-m">المقاس M — تطابق ١٠٠٪</div></div><div class="act-amt pos">+١٢٠ ر.س</div></div>
+        <div class="act"><div class="act-ico bonus">🎁</div><div class="act-info"><div class="ai-t">بونص مكافأة البيع</div><div class="ai-m">١٥٪ رصيد إضافي</div></div><div class="act-amt neu">+١٨ ر.س</div></div>
+        <div class="act"><div class="act-ico swap">🔄</div><div class="act-info"><div class="ai-t">استبدال: جاكت ↔ بلوزة</div><div class="ai-m">تطابق ٩٦٪ — فرق ٣٥ ر.س</div></div><div class="act-amt neg">-٣٥ ر.س</div></div>
+        <div class="act"><div class="act-ico buy">🛒</div><div class="act-info"><div class="ai-t">شراء: حذاء Nike</div><div class="ai-m">مقاسك EU 38 — توصية AI</div></div><div class="act-amt neg">-٢٠٠ ر.س</div></div>
+      </div>
+      <div class="tc" id="tItm">
+        <div class="items-g">
+          <div class="it-card"><div class="it-thumb" style="background:linear-gradient(135deg,#F8BBD0,#FCE4EC)">👗<span class="it-status a">نشط</span></div><div class="it-body"><div class="ib-n">فستان زهري صيفي</div><div class="ib-b">Zara — ٢٠٢٤</div><div class="ib-bot"><span class="ib-pr">١٢٠ ر.س</span><span class="ib-sz">M</span></div></div></div>
+          <div class="it-card"><div class="it-thumb" style="background:linear-gradient(135deg,#F5E6C8,#FFF8E1)">🧥<span class="it-status p">قيد البيع</span></div><div class="it-body"><div class="ib-n">جاكت جلد أسود</div><div class="ib-b">Mango — ٢٠٢٣</div><div class="ib-bot"><span class="ib-pr">١٨٠ ر.س</span><span class="ib-sz">M</span></div></div></div>
+          <div class="it-card"><div class="it-thumb" style="background:linear-gradient(135deg,#C8E6C9,#E8F5E9)">👟<span class="it-status d">مباع</span></div><div class="it-body"><div class="ib-n">حذاء رياضي أبيض</div><div class="ib-b">Nike — ٢٠٢٤</div><div class="ib-bot"><span class="ib-pr">٢٠٠ ر.س</span><span class="ib-sz">EU 38</span></div></div></div>
+        </div>
+      </div>
+      <div class="tc" id="tMtch">
+        <div class="match-card" style="background:var(--sage3);border-color:rgba(143,174,139,.2)"><div class="mc-i">👗</div><div class="mc-info"><h5>فستان سهرة أسود — Massimo Dutti</h5><p>المقاس M — نفس مقاسك</p></div><div class="mc-pr">٢٥٠ ر.س</div><div class="sz-match perf">١٠٠٪</div></div>
+        <div class="match-card" style="background:var(--gold4);border-color:rgba(201,169,110,.2)"><div class="mc-i">👖</div><div class="mc-info"><h5>جينز واسع أزرق — Levi's</h5><p>المقاس 32 — أطول بـ ٢ سم</p></div><div class="mc-pr">١٥٠ ر.س</div><div class="sz-match cl">٩٢٪</div></div>
+        <div class="match-card"><div class="mc-i">🧥</div><div class="mc-info"><h5>بالطو صوف كحلي — COS</h5><p>المقاس S — أصغر من مقاسك</p></div><div class="mc-pr">٣٢٠ ر.س</div><div class="sz-match no">لا يتطابق</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="cta">
+  <h2 class="rv">جرّبي قبل <em>ما تشترون</em></h2>
+  <p class="rv">سجّلي في StyleLoop الآن، دعي الـ AI يأخذ مقاساتك، وابدأي تجربي أي قطعة عليك.</p>
+  <div class="cta-acts rv">
+    <button class="btn-p" onclick="go('register')">✨ سجّلي وجرّبي الآن</button>
+    <button class="btn-g" onclick="go('sell')">💰 بيعي ملابسك</button>
+    <button class="btn-outline-g">شاهدي العرض الاستثماري</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="ft">
+  <div class="ft-g">
+    <div class="ft-brand"><a class="nv-logo"><div class="nv-logo-icon">S</div><span class="nv-logo-text">Style<span>Loop</span></span></a><p>جرّبي الملابس عليك بالذكاء الاصطناعي قبل ما تشترون. بيعي، استبدلي، واشتري بثقة.</p></div>
+    <div class="ft-col"><h4>StyleLoop</h4><ul><li><a href="#">المنتجات</a></li><li><a href="#">جرّبي الآن</a></li><li><a href="#">بيعي ملابسك</a></li><li><a href="#">الأسعار</a></li></ul></div>
+    <div class="ft-col"><h4>حسابي</h4><ul><li><a href="#">التسجيل</a></li><li><a href="#">المحفظة</a></li><li><a href="#">مقاساتي</a></li><li><a href="#">الطلبات</a></li></ul></div>
+    <div class="ft-col"><h4>الدعم</h4><ul><li><a href="#">مركز المساعدة</a></li><li><a href="#">الشروط</a></li><li><a href="#">الخصوصية</a></li><li><a href="#">تواصلي</a></li></ul></div>
+  </div>
+  <div class="ft-bot"><span>© ٢٠٢٦ StyleLoop. جميع الحقوق محفوظة.</span><span>صُنع بـ 💗 لمستقبل أجمل</span></div>
+</footer>
+
+<script>
+const nv=document.getElementById('nv');
+window.addEventListener('scroll',()=>{nv.classList.toggle('scrolled',window.scrollY>40)});
+const ro=new IntersectionObserver(e=>{e.forEach(n=>{if(n.isIntersecting)n.target.classList.add('vis')})},{threshold:.08});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+function go(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'})}
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();go(a.getAttribute('href').slice(1))})});
+function sDN(el){document.querySelectorAll('.dash-nav').forEach(n=>n.classList.remove('on'));el.classList.add('on')}
+function sTab(b,id){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.querySelectorAll('.tc').forEach(c=>c.classList.remove('on'));b.classList.add('on');document.getElementById(id).classList.add('on')}
+function selectSP(el){document.querySelectorAll('.sp-item').forEach(i=>i.classList.remove('selected'));el.classList.add('selected')}
+function generateTryOn(){
+  const btn=document.getElementById('genBtn'),overlay=document.getElementById('aiOverlay'),progress=document.getElementById('aiProgress'),placeholder=document.getElementById('canvasPlaceholder'),result=document.getElementById('canvasResult'),canvas=document.getElementById('studioCanvas');
+  btn.classList.add('loading');overlay.classList.add('on');canvas.classList.add('active');
+  let p=0;const i=setInterval(()=>{p+=Math.random()*15;if(p>100)p=100;progress.style.width=p+'%';
+    if(p>=100){clearInterval(i);setTimeout(()=>{overlay.classList.remove('on');btn.classList.remove('loading');placeholder.style.display='none';result.style.display='grid';progress.style.width='0'},500)}
+  },300);
+}
+function simAI(btn){
+  const o=btn.innerHTML;
+  btn.innerHTML='<div class="ai-cam-icon" style="background:var(--pink3)">🔄</div><div><h5 style="color:var(--pink)">جاري التحليل...</h5><p>تحليل واستخراج القياسات</p></div>';btn.style.borderColor='var(--pink)';btn.style.borderStyle='solid';
+  setTimeout(()=>{btn.innerHTML='<div class="ai-cam-icon" style="background:var(--sage3)">✅</div><div><h5 style="color:var(--sage)">تم بنجاح!</h5><p>١٢ قياسًا محفوظة</p></div>';btn.style.borderColor='var(--sage)';
+    const e=document.querySelector('.mi-val.empty');if(e){e.textContent='٣٨';e.classList.remove('empty');e.closest('.m-item').classList.add('ok');e.closest('.m-item').querySelector('.mi-unit').textContent='سم'}
+    setTimeout(()=>{btn.innerHTML=o;btn.style.borderColor='var(--pink3)';btn.style.borderStyle='dashed'},3000)
+  },2500);
+}
+</script>
+</body>
+</html>
