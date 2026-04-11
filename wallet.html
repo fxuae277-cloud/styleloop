@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet</title>
+</head>
+<body>
+    <h1>Wallet Page</h1>
+    <div>
+        <h2>Balance</h2>
+        <p>Your available balance: <strong>$1,000.00</strong></p>
+        <p>Pending balance: <strong>$200.00</strong></p>
+        <p>Bonus points: <strong>150</strong></p>
+    </div>
+    <div>
+        <h2>Actions</h2>
+        <button onclick="withdrawFunds()">Withdraw Funds</button>
+        <button onclick="transferBalance()">Transfer Balance</button>
+    </div>
+    <div>
+        <h2>Wallet Rules</h2>
+        <ul>
+            <li>Available balance: This is the amount you can use for transactions.</li>
+            <li>Pending balance: This is the amount that is currently being processed and is not yet available for use.</li>
+            <li>Bonus points: These are points earned from transactions that can be redeemed for rewards.</li>
+        </ul>
+    </div>
+    <script>
+        function withdrawFunds() {
+            // Logic for withdrawing funds
+            alert('Withdraw Funds function called');
+        }
+
+        function transferBalance() {
+            // Logic for transferring balance
+            alert('Transfer Balance function called');
+        }
+    </script>
+</body>
+</html>
