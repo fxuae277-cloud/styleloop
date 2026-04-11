@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Your Clothes</title>
+</head>
+<body>
+    <h1>Sell Your Clothes</h1>
+    <form id="sell-form">
+        <label for="brand">Brand:</label><br>
+        <input type="text" id="brand" name="brand" required><br><br>
+
+        <label for="size">Size:</label><br>
+        <input type="text" id="size" name="size" required><br><br>
+
+        <label for="condition">Condition:</label><br>
+        <select id="condition" name="condition" required>
+            <option value="new">New</option>
+            <option value="like new">Like New</option>
+            <option value="used">Used</option>
+            <option value="worn">Worn</option>
+        </select><br><br>
+
+        <label for="photos">Upload Photos:</label><br>
+        <input type="file" id="photos" name="photos" accept="image/*" multiple required><br><br>
+
+        <label for="price-estimate">AI Price Estimate:</label><br>
+        <input type="text" id="price-estimate" name="price-estimate" readonly><br><br>
+        <button type="submit">Get Price Estimate</button>
+    </form>
+
+    <script>
+        // Placeholder for AI price estimation logic
+        document.getElementById('sell-form').onsubmit = function(event) {
+            event.preventDefault();
+            // Here the AI logic would estimate price
+            const brand = document.getElementById('brand').value;
+            const size = document.getElementById('size').value;
+            const condition = document.getElementById('condition').value;
+            // Simple mock price estimation
+            const estimatedPrice = 50; // Should be computed by your AI
+            document.getElementById('price-estimate').value = '$' + estimatedPrice;
+        };
+    </script>
+</body>
+</html>
