@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="tryon.html">Try-On</a></li>
+            <li><a href="wallet.html">Wallet</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="sell.html">Sell</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="user-stats">
+        <div class="card active-items">Active Items: <span id="active-items">0</span></div>
+        <div class="card total-sales">Total Sales: <span id="total-sales">0</span></div>
+        <div class="card transactions">Transactions: <span id="transactions">0</span></div>
+        <div class="card accuracy">Accuracy: <span id="accuracy">0%</span></div>
+    </div>
+
+    <section class="recent-activity">
+        <h2>Recent Activity</h2>
+        <ul id="activity-list">
+            <!-- Activity items will go here -->
+        </ul>
+    </section>
+
+    <section class="items-for-sale">
+        <h2>Items for Sale</h2>
+        <div class="grid">
+            <!-- Items for sale will go here -->
+        </div>
+    </section>
+
+    <section class="measurements">
+        <h2>Your Measurements</h2>
+        <div>
+            <label for="height">Height:</label>
+            <input type="number" id="height" placeholder="Enter height" />
+            <button onclick="editMeasurement('height')">Edit</button>
+        </div>
+        <div>
+            <label for="weight">Weight:</label>
+            <input type="number" id="weight" placeholder="Enter weight" />
+            <button onclick="editMeasurement('weight')">Edit</button>
+        </div>
+        <div>
+            <label for="chest">Chest:</label>
+            <input type="number" id="chest" placeholder="Enter chest size" />
+            <button onclick="editMeasurement('chest')">Edit</button>
+        </div>
+        <div>
+            <label for="waist">Waist:</label>
+            <input type="number" id="waist" placeholder="Enter waist size" />
+            <button onclick="editMeasurement('waist')">Edit</button>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Your Company. All rights reserved.</p>
+    </footer>
+    <script>
+        function editMeasurement(measurement) {
+            const value = document.getElementById(measurement).value;
+            console.log(`Updated ${measurement}: ${value}`);
+            // Implement further logic to update measurements.
+        }
+    </script>
+</body>
+</html>
