@@ -315,7 +315,7 @@ function closeModal() {
 
 // ---- Sidebar ----
 function toggleSidebar() {
-  ['sidebar','adminHeader','adminMain'].forEach(id => document.getElementById(id).classList.toggle('collapsed'));
+  document.getElementById('sidebar').classList.toggle('collapsed');
   document.getElementById('adminHeader').classList.toggle('sidebar-collapsed');
   document.getElementById('adminMain').classList.toggle('sidebar-collapsed');
 }

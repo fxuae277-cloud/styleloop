@@ -162,7 +162,7 @@ function renderBranches() {
   const grid = document.getElementById('branchesGrid');
   grid.innerHTML = branches.map(b => `
     <div class="card" style="transition:transform .3s var(--ease);cursor:pointer;" onmouseenter="this.style.transform='translateY(-4px)'" onmouseleave="this.style.transform=''">
-      <div style="background:linear-gradient(135deg,var(--${b.color}4,var(--pink4)),var(--${b.color}3,var(--pink3)));padding:1.25rem;display:flex;align-items:center;gap:.85rem;border-bottom:1px solid var(--line);">
+      <div style="background:linear-gradient(135deg,var(--${b.color}4),var(--${b.color}3));padding:1.25rem;display:flex;align-items:center;gap:.85rem;border-bottom:1px solid var(--line);">
         <div style="width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.7);display:grid;place-items:center;font-size:1.6rem;">${b.icon}</div>
         <div style="flex:1;">
           <div style="font-size:.95rem;font-weight:700;color:var(--t1);">${b.name}</div>
