@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<!--
+  admin-login.html — StyleLoop Admin Panel Login
+  Entry point for the admin dashboard. RTL Arabic interface.
+  Depends on: admin-styles.css, admin-common.js
+-->
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="تسجيل الدخول إلى لوحة تحكم StyleLoop" />
+
+  <title>تسجيل الدخول — لوحة تحكم StyleLoop</title>
+
+  <!-- Google Fonts: Cairo (Arabic) + Poppins (Latin) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+  />
+
+  <!-- Admin stylesheet -->
+  <link rel="stylesheet" href="admin-styles.css" />
+
+  <!-- Login-specific page styles -->
+  <style>
+    /* ── Login page layout ─────────────────────────────────────── */
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-6) var(--space-4);
+      background: linear-gradient(
+        135deg,
+        var(--color-primary) 0%,
+        #ad1457 60%,
+        #880e4f 100%
+      );
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative background circles */
+    .login-page::before,
+    .login-page::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      pointer-events: none;
+    }
+    .login-page::before {
+      width: 500px;
+      height: 500px;
+      top: -180px;
+      right: -150px;
+    }
+    .login-page::after {
+      width: 350px;
+      height: 350px;
+      bottom: -120px;
+      left: -80px;
+    }
+
+    /* ── Login card ────────────────────────────────────────────── */
+    .login-card {
+      width: 100%;
+      max-width: 440px;
+      background-color: var(--bg-surface);
+      border-radius: var(--border-radius-xl, 16px);
+      box-shadow:
+        0 24px 48px rgba(0, 0, 0, 0.22),
+        0 8px 16px rgba(0, 0, 0, 0.12);
+      padding: var(--space-10, 2.5rem) var(--space-8, 2rem);
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp var(--transition-base, 300ms) ease both;
+    }
+
+    /* ── Branding header ───────────────────────────────────────── */
+    .login-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-8, 2rem);
+      text-align: center;
+    }
+
+    .login-brand__logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      text-decoration: none;
+    }
+
+    .login-brand__icon {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, var(--color-primary) 0%, #ad1457 100%);
+      border-radius: var(--border-radius-lg, 12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .login-brand__name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .login-brand__subtitle {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      font-weight: var(--font-weight-medium);
+      margin-top: var(--space-1);
+    }
+
+    /* ── Password wrapper with toggle ─────────────────────────── */
+    .input-password-wrapper {
+      position: relative;
+    }
+
+    .input-password-wrapper .form-control {
+      padding-inline-start: var(--space-4);
+      padding-inline-end: 44px; /* reserve space for toggle button */
+    }
+
+    .btn-password-toggle {
+      position: absolute;
+      inset-inline-start: var(--space-2);
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: var(--space-1) var(--space-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--border-radius-sm);
+      transition: color var(--transition-fast), background-color var(--transition-fast);
+      line-height: 1;
+      font-size: 1.1rem;
+    }
+
+    .btn-password-toggle:hover {
+      color: var(--color-primary);
+      background-color: var(--color-primary-alpha-10, rgba(233, 30, 99, 0.08));
+    }
+
+    .btn-password-toggle:focus-visible {
+      outline: 3px solid var(--color-primary-alpha-20, rgba(233, 30, 99, 0.2));
+      outline-offset: 2px;
+    }
+
+    /* ── Remember me + forgot password row ───────────────────── */
+    .login-form__footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-6);
+    }
+
+    .login-form__forgot {
+      font-size: var(--font-size-sm);
+      color: var(--color-primary);
+      text-decoration: none;
+      font-weight: var(--font-weight-medium);
+      transition: opacity var(--transition-fast);
+    }
+
+    .login-form__forgot:hover {
+      opacity: 0.75;
+      text-decoration: underline;
+    }
+
+    .login-form__forgot:focus-visible {
+      outline: 3px solid var(--color-primary-alpha-20, rgba(233, 30, 99, 0.2));
+      outline-offset: 2px;
+      border-radius: var(--border-radius-sm);
+    }
+
+    /* ── Submit button ─────────────────────────────────────────── */
+    .login-form__submit {
+      width: 100%;
+      height: 46px;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    /* ── Error alert banner ────────────────────────────────────── */
+    .login-alert {
+      display: none; /* hidden by default */
+      align-items: flex-start;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--border-radius);
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--space-5);
+      animation: fadeIn var(--transition-fast, 150ms) ease;
+    }
+
+    .login-alert--error {
+      background-color: rgba(231, 76, 60, 0.1);
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      color: var(--color-danger);
+    }
+
+    .login-alert--visible {
+      display: flex;
+    }
+
+    .login-alert__icon {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Responsive tweaks ─────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .login-card {
+        padding: var(--space-8, 2rem) var(--space-5, 1.25rem);
+      }
+
+      .login-form__footer-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ── Skip navigation link (accessibility) ──────────────────── -->
+  <a href="#loginForm" class="skip-link">التخطي إلى نموذج الدخول</a>
+
+  <!-- ── Login page wrapper ────────────────────────────────────── -->
+  <main
+    class="login-page"
+    id="main"
+    role="main"
+    aria-label="صفحة تسجيل الدخول"
+  >
+
+    <!-- ── Login card ─────────────────────────────────────────── -->
+    <article
+      class="login-card"
+      aria-labelledby="loginHeading"
+    >
+
+      <!-- Brand / logo -->
+      <header class="login-brand">
+        <a
+          href="../index.html"
+          class="login-brand__logo"
+          aria-label="StyleLoop — العودة إلى الصفحة الرئيسية"
+        >
+          <span class="login-brand__icon" aria-hidden="true">S</span>
+          <span class="login-brand__name">StyleLoop</span>
+        </a>
+        <h1 id="loginHeading" class="login-brand__subtitle">لوحة التحكم</h1>
+      </header>
+
+      <!-- Error alert banner (hidden by default) -->
+      <div
+        id="loginAlert"
+        class="login-alert login-alert--error"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <span class="login-alert__icon" aria-hidden="true">⚠️</span>
+        <span id="loginAlertMessage"></span>
+      </div>
+
+      <!-- Login form -->
+      <form
+        id="loginForm"
+        class="login-form"
+        novalidate
+        aria-label="نموذج تسجيل الدخول"
+        autocomplete="on"
+      >
+
+        <!-- Email field -->
+        <div class="form-group">
+          <label
+            for="loginEmail"
+            class="form-label form-label--required"
+          >
+            البريد الإلكتروني
+          </label>
+          <input
+            type="email"
+            id="loginEmail"
+            name="email"
+            class="form-control"
+            placeholder="admin@styleloop.com"
+            required
+            autocomplete="email"
+            inputmode="email"
+            aria-required="true"
+            aria-describedby="emailError"
+            data-error-required="يرجى إدخال البريد الإلكتروني."
+            data-error-email="يرجى إدخال بريد إلكتروني صحيح."
+          />
+          <span
+            id="emailError"
+            class="form-error"
+            role="alert"
+            aria-live="polite"
+            hidden
+          ></span>
+        </div>
+
+        <!-- Password field -->
+        <div class="form-group">
+          <label
+            for="loginPassword"
+            class="form-label form-label--required"
+          >
+            كلمة المرور
+          </label>
+          <div class="input-password-wrapper">
+            <input
+              type="password"
+              id="loginPassword"
+              name="password"
+              class="form-control"
+              placeholder="••••••••"
+              required
+              autocomplete="current-password"
+              minlength="6"
+              aria-required="true"
+              aria-describedby="passwordError"
+              data-error-required="يرجى إدخال كلمة المرور."
+              data-error-minlength="يجب أن تتكون كلمة المرور من 6 أحرف على الأقل."
+            />
+            <!-- Show / hide password toggle -->
+            <button
+              type="button"
+              id="passwordToggle"
+              class="btn-password-toggle"
+              aria-label="إظهار كلمة المرور"
+              aria-controls="loginPassword"
+              aria-pressed="false"
+              title="إظهار / إخفاء كلمة المرور"
+            >
+              <!-- Eye icon (visible when password is hidden) -->
+              <span id="eyeIcon" aria-hidden="true">👁️</span>
+            </button>
+          </div>
+          <span
+            id="passwordError"
+            class="form-error"
+            role="alert"
+            aria-live="polite"
+            hidden
+          ></span>
+        </div>
+
+        <!-- Remember me + Forgot password -->
+        <div class="login-form__footer-row">
+          <label class="form-check" for="rememberMe">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              name="remember"
+              class="form-check__input"
+              aria-label="تذكرني في هذا الجهاز"
+            />
+            <span>تذكرني</span>
+          </label>
+          <a
+            href="#"
+            class="login-form__forgot"
+            id="forgotPasswordLink"
+            aria-label="نسيت كلمة المرور؟ اضغط هنا لاسترداد الحساب"
+          >
+            نسيت كلمة المرور؟
+          </a>
+        </div>
+
+        <!-- Submit button -->
+        <button
+          type="submit"
+          id="loginSubmit"
+          class="btn btn--primary login-form__submit"
+          aria-live="polite"
+        >
+          <span id="loginBtnText">تسجيل الدخول</span>
+        </button>
+
+      </form>
+      <!-- /login form -->
+
+    </article>
+    <!-- /login card -->
+
+  </main>
+  <!-- /login page -->
+
+  <!-- Admin common utilities (AdminApp global) -->
+  <script src="admin-common.js"></script>
+
+  <!-- ── Inline login logic ───────────────────────────────────── -->
+  <script>
+    'use strict';
+
+    // ── DOM references ──────────────────────────────────────────
+    const form            = document.getElementById('loginForm');
+    const emailInput      = document.getElementById('loginEmail');
+    const passwordInput   = document.getElementById('loginPassword');
+    const passwordToggle  = document.getElementById('passwordToggle');
+    const eyeIcon         = document.getElementById('eyeIcon');
+    const submitBtn       = document.getElementById('loginSubmit');
+    const loginBtnText    = document.getElementById('loginBtnText');
+    const loginAlert      = document.getElementById('loginAlert');
+    const loginAlertMsg   = document.getElementById('loginAlertMessage');
+    const forgotLink      = document.getElementById('forgotPasswordLink');
+    const rememberMe      = document.getElementById('rememberMe');
+
+    // ── Initialise theme (prevent flash-of-wrong-theme) ─────────
+    if (typeof AdminApp !== 'undefined') {
+      AdminApp.initTheme();
+    }
+
+    // ── Restore remembered email ─────────────────────────────────
+    (function restoreRemembered() {
+      const saved = localStorage.getItem('styleloop_admin_email');
+      if (saved) {
+        emailInput.value       = saved;
+        rememberMe.checked     = true;
+      }
+    })();
+
+    // ── Helpers ──────────────────────────────────────────────────
+
+    /**
+     * Shows the inline error alert banner with the given message.
+     * @param {string} message
+     */
+    function showLoginAlert(message) {
+      loginAlertMsg.textContent = message;
+      loginAlert.classList.add('login-alert--visible');
+      loginAlert.removeAttribute('hidden');
+      // Move focus to the alert so screen readers announce it immediately.
+      loginAlert.focus();
+    }
+
+    /** Hides the inline error alert banner. */
+    function hideLoginAlert() {
+      loginAlert.classList.remove('login-alert--visible');
+    }
+
+    /**
+     * Puts the submit button into a loading / disabled state.
+     * @param {boolean} loading
+     */
+    function setLoading(loading) {
+      if (loading) {
+        submitBtn.classList.add('btn--loading');
+        submitBtn.disabled          = true;
+        submitBtn.setAttribute('aria-busy', 'true');
+        loginBtnText.textContent    = 'جارٍ التحقق…';
+      } else {
+        submitBtn.classList.remove('btn--loading');
+        submitBtn.disabled          = false;
+        submitBtn.setAttribute('aria-busy', 'false');
+        loginBtnText.textContent    = 'تسجيل الدخول';
+      }
+    }
+
+    /**
+     * Validates the email format independently (mirrors AdminApp internals).
+     * @param {string} email
+     * @returns {boolean}
+     */
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    /**
+     * Clears all inline field error states on the login form.
+     */
+    function clearFieldErrors() {
+      [emailInput, passwordInput].forEach((field) => {
+        field.classList.remove('form-control--invalid', 'is-invalid');
+        field.removeAttribute('aria-invalid');
+      });
+
+      const emailErr    = document.getElementById('emailError');
+      const passwordErr = document.getElementById('passwordError');
+      if (emailErr)    { emailErr.hidden    = true; emailErr.textContent    = ''; }
+      if (passwordErr) { passwordErr.hidden = true; passwordErr.textContent = ''; }
+    }
+
+    /**
+     * Marks a field as invalid and shows an error message beneath it.
+     * @param {HTMLInputElement} field
+     * @param {string}           message
+     * @param {string}           errorId  - ID of the sibling error <span>
+     */
+    function markFieldError(field, message, errorId) {
+      field.classList.add('form-control--invalid', 'is-invalid');
+      field.setAttribute('aria-invalid', 'true');
+      const errEl = document.getElementById(errorId);
+      if (errEl) {
+        errEl.textContent = message;
+        errEl.hidden      = false;
+      }
+    }
+
+    /**
+     * Runs client-side validation on the login form.
+     * Uses AdminApp.validateForm when available, falls back to manual checks.
+     * @returns {boolean} true if the form is valid.
+     */
+    function validateLoginForm() {
+      clearFieldErrors();
+      hideLoginAlert();
+
+      // Prefer the shared AdminApp validator.
+      if (typeof AdminApp !== 'undefined' && typeof AdminApp.validateForm === 'function') {
+        return AdminApp.validateForm(form);
+      }
+
+      // Manual fallback validation ────────────────────────────────
+      let valid = true;
+      const email    = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email) {
+        markFieldError(emailInput, 'يرجى إدخال البريد الإلكتروني.', 'emailError');
+        valid = false;
+      } else if (!isValidEmail(email)) {
+        markFieldError(emailInput, 'يرجى إدخال بريد إلكتروني صحيح.', 'emailError');
+        valid = false;
+      }
+
+      if (!password) {
+        markFieldError(passwordInput, 'يرجى إدخال كلمة المرور.', 'passwordError');
+        valid = false;
+      } else if (password.length < 6) {
+        markFieldError(passwordInput, 'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.', 'passwordError');
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    /**
+     * Simulated async authentication.
+     * Replace this with a real API call in production.
+     * @param {string} email
+     * @param {string} _password  - Not verified client-side; sent to server only.
+     * @returns {Promise<{ok: boolean, message?: string}>}
+     */
+    function authenticate(email, _password) {
+      return new Promise((resolve) => {
+        // Simulate a short network delay.
+        setTimeout(() => {
+          // Accept any well-formed email/password combination.
+          resolve({ ok: true });
+        }, 800);
+      });
+    }
+
+    // ── Password show / hide toggle ───────────────────────────────
+    passwordToggle.addEventListener('click', () => {
+      const isHidden = passwordInput.type === 'password';
+      passwordInput.type               = isHidden ? 'text' : 'password';
+      eyeIcon.textContent              = isHidden ? '🙈' : '👁️';
+      passwordToggle.setAttribute('aria-label',  isHidden ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور');
+      passwordToggle.setAttribute('aria-pressed', String(isHidden));
+      // Return focus to the password field so the user can continue typing.
+      passwordInput.focus();
+    });
+
+    // ── Forgot password placeholder ───────────────────────────────
+    forgotLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (typeof AdminApp !== 'undefined') {
+        AdminApp.showToast('سيتم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني.', 'info');
+      }
+    });
+
+    // ── Clear alerts on user input ────────────────────────────────
+    [emailInput, passwordInput].forEach((input) => {
+      input.addEventListener('input', () => {
+        input.classList.remove('form-control--invalid', 'is-invalid');
+        input.removeAttribute('aria-invalid');
+        hideLoginAlert();
+      });
+    });
+
+    // ── Form submission ───────────────────────────────────────────
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // 1. Validate
+      if (!validateLoginForm()) {
+        // Focus the first invalid field.
+        const firstInvalid = form.querySelector('[aria-invalid="true"]');
+        if (firstInvalid) firstInvalid.focus();
+
+        if (typeof AdminApp !== 'undefined') {
+          AdminApp.showToast('يرجى تصحيح الأخطاء قبل المتابعة.', 'error');
+        }
+        return;
+      }
+
+      // 2. Show loading state
+      setLoading(true);
+      hideLoginAlert();
+
+      const email    = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      try {
+        const result = await authenticate(email, password);
+
+        if (result.ok) {
+          // Persist remembered email
+          if (rememberMe.checked) {
+            localStorage.setItem('styleloop_admin_email', email);
+          } else {
+            localStorage.removeItem('styleloop_admin_email');
+          }
+
+          if (typeof AdminApp !== 'undefined') {
+            AdminApp.showToast('مرحباً بك! جارٍ التوجيه…', 'success', 1500);
+          }
+
+          // Brief delay to let the toast display before navigating.
+          setTimeout(() => {
+            window.location.href = 'admin-dashboard.html';
+          }, 900);
+
+        } else {
+          setLoading(false);
+          showLoginAlert(result.message || 'البريد الإلكتروني أو كلمة المرور غير صحيحة.');
+          if (typeof AdminApp !== 'undefined') {
+            AdminApp.showToast('فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.', 'error');
+          }
+          passwordInput.value = '';
+          passwordInput.focus();
+        }
+
+      } catch (err) {
+        setLoading(false);
+        showLoginAlert('حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى لاحقاً.');
+        if (typeof AdminApp !== 'undefined') {
+          AdminApp.showToast('خطأ في الشبكة. يرجى التحقق من الاتصال.', 'error');
+        }
+        console.error('[AdminLogin] Authentication error:', err);
+      }
+    });
+
+    // ── Focus the email field on page load ────────────────────────
+    window.addEventListener('DOMContentLoaded', () => {
+      // Only auto-focus if the email is not already pre-filled (better UX).
+      if (!emailInput.value) {
+        emailInput.focus();
+      } else {
+        passwordInput.focus();
+      }
+    });
+  </script>
+</body>
+</html>
