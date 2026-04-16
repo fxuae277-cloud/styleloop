@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branch Management</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Branch Management System</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Branch Name</th>
+                <th>Date Created</th>
+                <th>Last Updated</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>feature-1</td>
+                <td>2026-01-10</td>
+                <td>2026-02-15</td>
+                <td>Active</td>
+                <td>
+                    <button onclick="viewBranch('feature-1')">View</button>
+                    <button onclick="editBranch('feature-1')">Edit</button>
+                    <button onclick="deleteBranch('feature-1')">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>feature-2</td>
+                <td>2026-01-12</td>
+                <td>2026-04-10</td>
+                <td>Active</td>
+                <td>
+                    <button onclick="viewBranch('feature-2')">View</button>
+                    <button onclick="editBranch('feature-2')">Edit</button>
+                    <button onclick="deleteBranch('feature-2')">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>bugfix-1</td>
+                <td>2026-01-20</td>
+                <td>2026-02-18</td>
+                <td>Inactive</td>
+                <td>
+                    <button onclick="viewBranch('bugfix-1')">View</button>
+                    <button onclick="editBranch('bugfix-1')">Edit</button>
+                    <button onclick="deleteBranch('bugfix-1')">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>feature-3</td>
+                <td>2026-02-05</td>
+                <td>2026-03-10</td>
+                <td>Active</td>
+                <td>
+                    <button onclick="viewBranch('feature-3')">View</button>
+                    <button onclick="editBranch('feature-3')">Edit</button>
+                    <button onclick="deleteBranch('feature-3')">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>bugfix-2</td>
+                <td>2026-02-15</td>
+                <td>2026-02-25</td>
+                <td>Inactive</td>
+                <td>
+                    <button onclick="viewBranch('bugfix-2')">View</button>
+                    <button onclick="editBranch('bugfix-2')">Edit</button>
+                    <button onclick="deleteBranch('bugfix-2')">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>feature-4</td>
+                <td>2026-02-20</td>
+                <td>2026-04-01</td>
+                <td>Active</td>
+                <td>
+                    <button onclick="viewBranch('feature-4')">View</button>
+                    <button onclick="editBranch('feature-4')">Edit</button>
+                    <button onclick="deleteBranch('feature-4')">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>feature-5</td>
+                <td>2026-02-28</td>
+                <td>2026-03-30</td>
+                <td>Inactive</td>
+                <td>
+                    <button onclick="viewBranch('feature-5')">View</button>
+                    <button onclick="editBranch('feature-5')">Edit</button>
+                    <button onclick="deleteBranch('feature-5')">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>bugfix-3</td>
+                <td>2026-03-01</td>
+                <td>2026-03-20</td>
+                <td>Active</td>
+                <td>
+                    <button onclick="viewBranch('bugfix-3')">View</button>
+                    <button onclick="editBranch('bugfix-3')">Edit</button>
+                    <button onclick="deleteBranch('bugfix-3')">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>feature-6</td>
+                <td>2026-03-10</td>
+                <td>2026-04-05</td>
+                <td>Active</td>
+                <td>
+                    <button onclick="viewBranch('feature-6')">View</button>
+                    <button onclick="editBranch('feature-6')">Edit</button>
+                    <button onclick="deleteBranch('feature-6')">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>bugfix-4</td>
+                <td>2026-03-15</td>
+                <td>2026-03-25</td>
+                <td>Inactive</td>
+                <td>
+                    <button onclick="viewBranch('bugfix-4')">View</button>
+                    <button onclick="editBranch('bugfix-4')">Edit</button>
+                    <button onclick="deleteBranch('bugfix-4')">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>Statistics</h2>
+    <p>Total Branches: 10</p>
+    <p>Active Branches: 6</p>
+    <p>Inactive Branches: 4</p>
+    
+    <script>
+        function viewBranch(branchName) {
+            alert('Viewing branch: ' + branchName);
+        }
+
+        function editBranch(branchName) {
+            alert('Editing branch: ' + branchName);
+        }
+
+        function deleteBranch(branchName) {
+            alert('Deleting branch: ' + branchName);
+        }
+    </script>
+</body>
+</html>
