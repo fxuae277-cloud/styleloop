@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Orders</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        .badge-pending { background-color: orange; }
+        .badge-completed { background-color: green; }
+        .badge-cancelled { background-color: red; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Orders Management System</h2>
+        <input type="text" id="searchBox" class="form-control mb-3" placeholder="Search orders...">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="ordersTable">
+                <!-- Sample Orders -->
+                <tr>
+                    <td>1</td>
+                    <td>John Doe</td>
+                    <td>2026-04-01</td>
+                    <td>$100</td>
+                    <td><span class="badge badge-pending">Pending</span></td>
+                    <td>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(1)">View</button>
+                        <button class="btn btn-warning">Print Invoice</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Jane Smith</td>
+                    <td>2026-04-02</td>
+                    <td>$200</td>
+                    <td><span class="badge badge-completed">Completed</span></td>
+                    <td>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(2)">View</button>
+                        <button class="btn btn-warning">Print Invoice</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Bob Johnson</td>
+                    <td>2026-04-03</td>
+                    <td>$150</td>
+                    <td><span class="badge badge-cancelled">Cancelled</span></td>
+                    <td>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(3)">View</button>
+                        <button class="btn btn-warning">Print Invoice</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Alice Blue</td>
+                    <td>2026-04-04</td>
+                    <td>$300</td>
+                    <td><span class="badge badge-pending">Pending</span></td>
+                    <td>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(4)">View</button>
+                        <button class="btn btn-warning">Print Invoice</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Chris Green</td>
+                    <td>2026-04-05</td>
+                    <td>$80</td>
+                    <td><span class="badge badge-completed">Completed</span></td>
+                    <td>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(5)">View</button>
+                        <button class="btn btn-warning">Print Invoice</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Emily White</td>
+                    <td>2026-04-06</td>
+                    <td>$250</td>
+                    <td><span class="badge badge-completed">Completed</span></td>
+                    <td>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(6)">View</button>
+                        <button class="btn btn-warning">Print Invoice</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Michael Black</td>
+                    <td>2026-04-07</td>
+                    <td>$90</td>
+                    <td><span class="badge badge-pending">Pending</span></td>
+                    <td>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(7)">View</button>
+                        <button class="btn btn-warning">Print Invoice</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>Olivia Red</td>
+                    <td>2026-04-08</td>
+                    <td>$340</td>
+                    <td><span class="badge badge-completed">Completed</span></td>
+                    <td>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(8)">View</button>
+                        <button class="btn btn-warning">Print Invoice</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>James Gray</td>
+                    <td>2026-04-09</td>
+                    <td>$120</td>
+                    <td><span class="badge badge-cancelled">Cancelled</span></td>
+                    <td>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(9)">View</button>
+                        <button class="btn btn-warning">Print Invoice</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>Linda Orange</td>
+                    <td>2026-04-10</td>
+                    <td>$500</td>
+                    <td><span class="badge badge-completed">Completed</span></td>
+                    <td>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(10)">View</button>
+                        <button class="btn btn-warning">Print Invoice</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-primary" onclick="exportToCSV()">Export to CSV</button>
+    </div>
+
+    <!-- Modal for Order Details -->
+    <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalLabel">Order Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="orderDetails"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function viewDetails(orderId) {
+            // Fetch order details based on orderId and display in modal
+            const details = `Order ID: ${orderId} <br/> Customer: John Doe <br/> Items: Item 1, Item 2 <br/> Status: Pending <br/> Total: $100`;
+            document.getElementById('orderDetails').innerHTML = details;
+        }
+
+        function exportToCSV() {
+            // Logic to export orders to CSV
+            alert('Export to CSV feature is not implemented in this demo.');
+        }
+    </script>
+</body>
+</html>
