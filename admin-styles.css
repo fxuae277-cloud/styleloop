@@ -69,6 +69,9 @@
   --color-secondary-dark:   #A8834A;
   --color-secondary-alpha-10: rgba(201, 169, 110, 0.10);
 
+  --color-warning-dark:     #8A5700;   /* WCAG AA on light backgrounds */
+  --color-danger-dark:      #C0392B;
+
   --color-accent:           #8FAE8B;
   --color-accent-light:     #B2C9AF;
   --color-accent-dark:      #5E8059;
@@ -408,7 +411,7 @@ h6, .h6 { font-size: var(--font-size-base); font-weight: var(--font-weight-mediu
 }
 
 [dir="rtl"] .breadcrumb__item + .breadcrumb__item::before {
-  content: '\\';
+  content: '\2039'; /* ‹ single left-pointing angle quotation mark */
 }
 
 .breadcrumb__link {
@@ -496,7 +499,8 @@ h6, .h6 { font-size: var(--font-size-base); font-weight: var(--font-weight-mediu
   to   { opacity: 1; transform: translateX(0); }
 }
 
-[dir="rtl"] @keyframes toastSlideIn {
+/* RTL toast slide-in: separate keyframe name applied via [dir="rtl"] selector below */
+@keyframes toastSlideInRtl {
   from { opacity: 0; transform: translateX(-100%); }
   to   { opacity: 1; transform: translateX(0); }
 }
@@ -1951,8 +1955,8 @@ h6, .h6 { font-size: var(--font-size-base); font-weight: var(--font-weight-mediu
 }
 
 .btn--danger:hover {
-  background-color: #C0392B;
-  border-color: #C0392B;
+  background-color: var(--color-danger-dark);
+  border-color: var(--color-danger-dark);
   color: var(--color-white);
   text-decoration: none;
 }
@@ -2439,7 +2443,7 @@ textarea.form-control {
 .badge--secondary { background-color: var(--color-secondary-alpha-10); color: var(--color-secondary-dark); }
 .badge--accent    { background-color: var(--color-accent-alpha-10); color: var(--color-accent-dark); }
 .badge--success   { background-color: var(--color-success-light); color: var(--color-success); }
-.badge--warning   { background-color: var(--color-warning-light); color: #8A5700; }
+.badge--warning   { background-color: var(--color-warning-light); color: var(--color-warning-dark); }
 .badge--danger    { background-color: var(--color-danger-light); color: var(--color-danger); }
 .badge--info      { background-color: var(--color-info-light); color: var(--color-info); }
 .badge--neutral   { background-color: var(--bg-surface-2); color: var(--text-secondary); border: 1px solid var(--border-color); }
@@ -2460,7 +2464,7 @@ textarea.form-control {
 }
 
 /* Order status badges */
-.badge--status-pending   { background-color: var(--color-warning-light); color: #8A5700; }
+.badge--status-pending   { background-color: var(--color-warning-light); color: var(--color-warning-dark); }
 .badge--status-active    { background-color: var(--color-success-light); color: var(--color-success); }
 .badge--status-shipped   { background-color: var(--color-info-light); color: var(--color-info); }
 .badge--status-delivered { background-color: var(--color-accent-alpha-10); color: var(--color-accent-dark); }
@@ -2647,6 +2651,11 @@ textarea.form-control {
 
 .toast--exit {
   animation: toastSlideOut var(--transition-base) forwards;
+}
+
+/* RTL: enter from the left side */
+[dir="rtl"] .toast {
+  animation-name: toastSlideInRtl;
 }
 
 /* Colored left border accent */
@@ -3086,5 +3095,5 @@ textarea.form-control {
 
 /* =============================================================================
    END OF FILE — admin-styles.css  |  StyleLoop v2.0.0
-   Total lines: 850+
+   Total lines: 3100+
    ============================================================================= */
