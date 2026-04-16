@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التقارير — StyleLoop Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="admin-dashboard.html" class="sb-brand">
+    <div class="sb-brand-icon">SL</div>
+    <div class="sb-brand-text">
+      <div class="sb-brand-name">Style<span style="color:var(--pink)">Loop</span></div>
+      <div class="sb-brand-sub">لوحة الإدارة</div>
+    </div>
+    <button class="sb-toggle" onclick="toggleSidebar()">&#9001;</button>
+  </a>
+  <nav class="sb-nav">
+    <div class="sb-section-label">القائمة الرئيسية</div>
+    <div class="sb-item"><a href="admin-dashboard.html" class="sb-link" data-tooltip="لوحة التحكم"><span class="sb-icon">🏠</span><span class="sb-label">لوحة التحكم</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="التشغيل"><span class="sb-icon">⚙️</span><span class="sb-label">التشغيل</span></a></div>
+    <div class="sb-item"><a href="admin-pos.html" class="sb-link" data-tooltip="نقطة البيع"><span class="sb-icon">🛒</span><span class="sb-label">نقطة البيع</span></a></div>
+    <div class="sb-item"><a href="admin-orders.html" class="sb-link" data-tooltip="الطلبات"><span class="sb-icon">📦</span><span class="sb-label">الطلبات</span><span class="sb-badge">12</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="قوائم نقطة البيع"><span class="sb-icon">📋</span><span class="sb-label">قوائم نقطة البيع</span></a></div>
+    <div class="sb-item"><a href="admin-customers.html" class="sb-link" data-tooltip="العملاء"><span class="sb-icon">👥</span><span class="sb-label">العملاء</span></a></div>
+    <div class="sb-section-label">البيانات الأساسية</div>
+    <div class="sb-item" id="item-basic">
+      <button class="sb-link" onclick="toggleMenu('basic')" data-tooltip="البيانات الأساسية"><span class="sb-icon">🗃️</span><span class="sb-label">البيانات الأساسية</span><span class="sb-arrow">&#9002;</span></button>
+      <div class="sb-submenu" id="submenu-basic">
+        <div class="sb-item"><a href="admin-branches.html" class="sb-link" data-tooltip="الفروع"><span class="sb-icon">🏢</span><span class="sb-label">الفروع</span></a></div>
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الفئات"><span class="sb-icon">🏷️</span><span class="sb-label">الفئات</span></a></div>
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الموردون والمشترون"><span class="sb-icon">🤝</span><span class="sb-label">الموردون والمشترون</span></a></div>
+        <div class="sb-item"><a href="admin-products.html" class="sb-link" data-tooltip="المنتجات والأسعار"><span class="sb-icon">👗</span><span class="sb-label">المنتجات والأسعار</span></a></div>
+      </div>
+    </div>
+    <div class="sb-section-label">العمليات</div>
+    <div class="sb-item" id="item-ops">
+      <button class="sb-link" onclick="toggleMenu('ops')" data-tooltip="العمليات"><span class="sb-icon">📊</span><span class="sb-label">العمليات</span><span class="sb-arrow">&#9002;</span></button>
+      <div class="sb-submenu" id="submenu-ops">
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="قوائم الشراء"><span class="sb-icon">🛍️</span><span class="sb-label">قوائم الشراء</span></a></div>
+      </div>
+    </div>
+    <div class="sb-section-label">الإدارة</div>
+    <div class="sb-item"><a href="admin-reports.html" class="sb-link active" data-tooltip="التقارير"><span class="sb-icon">📈</span><span class="sb-label">التقارير</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الملك"><span class="sb-icon">👑</span><span class="sb-label">الملك</span></a></div>
+  </nav>
+  <div class="sb-footer">
+    <div class="sb-user-card">
+      <div class="sb-avatar">م</div>
+      <div class="sb-user-info"><div class="sb-user-name">المدير العام</div><div class="sb-user-role">Admin · StyleLoop</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- HEADER -->
+<header class="admin-header" id="adminHeader">
+  <div class="hdr-start">
+    <button class="hdr-menu-btn" onclick="toggleSidebar()">☰</button>
+    <div class="hdr-breadcrumb"><span>StyleLoop</span><span class="sep">›</span><span>التقارير والإحصائيات</span></div>
+  </div>
+  <div class="hdr-end">
+    <div class="hdr-search"><span>🔍</span><input type="text" placeholder="بحث في التقارير…"></div>
+    <button class="hdr-icon-btn">🔔<span class="hdr-notif-dot"></span></button>
+    <div class="hdr-avatar">م</div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="admin-main" id="adminMain">
+
+  <div class="page-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1.5rem;">
+    <div>
+      <h1><span class="pg-icon">📊</span> التقارير والإحصائيات</h1>
+      <p>نظرة شاملة على أداء StyleLoop</p>
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+      <select class="form-control" style="width:auto;font-size:.78rem;" id="reportPeriod" onchange="renderAll()">
+        <option value="week">هذا الأسبوع</option>
+        <option value="month" selected>هذا الشهر</option>
+        <option value="quarter">هذا الربع</option>
+        <option value="year">هذا العام</option>
+      </select>
+      <button class="btn btn-primary btn-sm">📥 تصدير PDF</button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="stats-grid">
+    <div class="stat-card pink"><div class="stat-icon">💰</div><div class="stat-body"><div class="stat-label">إجمالي الإيرادات</div><div class="stat-value" id="kpi-rev">125,840</div><div class="stat-change up" id="kpi-rev-ch">↑ 18.3% عن الشهر الماضي</div></div></div>
+    <div class="stat-card gold"><div class="stat-icon">📦</div><div class="stat-body"><div class="stat-label">إجمالي الطلبات</div><div class="stat-value" id="kpi-orders">1,042</div><div class="stat-change up" id="kpi-orders-ch">↑ 8% عن الشهر الماضي</div></div></div>
+    <div class="stat-card sage"><div class="stat-icon">🛒</div><div class="stat-body"><div class="stat-label">متوسط قيمة الطلب</div><div class="stat-value" id="kpi-avg">620</div><div class="stat-change up" id="kpi-avg-ch">↑ 5.2% ر.س</div></div></div>
+    <div class="stat-card coral"><div class="stat-icon">👥</div><div class="stat-body"><div class="stat-label">عملاء جدد</div><div class="stat-value" id="kpi-cust">87</div><div class="stat-change up" id="kpi-cust-ch">↑ 12% هذا الشهر</div></div></div>
+    <div class="stat-card lavender"><div class="stat-icon">📈</div><div class="stat-body"><div class="stat-label">هامش الربح الصافي</div><div class="stat-value" id="kpi-margin">32%</div><div class="stat-change up" id="kpi-margin-ch">↑ 2% تحسن</div></div></div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="content-grid two-col">
+
+    <!-- Revenue Chart -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct-icon">📈</span> الإيرادات الشهرية (2026)</div>
+      </div>
+      <div class="card-body">
+        <div style="height:220px;display:flex;align-items:flex-end;gap:6px;padding:.5rem 0;" id="revenueChart"></div>
+        <div style="display:flex;justify-content:center;gap:1.5rem;margin-top:.75rem;font-size:.72rem;color:var(--t3);">
+          <span>يناير</span><span>فبراير</span><span>مارس</span><span>أبريل</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Sales Pie -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct-icon">🏷️</span> مبيعات حسب الفئة</div>
+      </div>
+      <div class="card-body">
+        <div id="catSales" style="display:flex;flex-direction:column;gap:.6rem;margin-top:.25rem;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Branch Performance + Top Products -->
+  <div class="content-grid two-col">
+
+    <!-- Branch Performance -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct-icon">🏢</span> أداء الفروع</div>
+        <a href="admin-branches.html" class="btn btn-secondary btn-sm">عرض الكل</a>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>الفرع</th>
+                <th>المبيعات</th>
+                <th>الطلبات</th>
+                <th>المتوسط</th>
+                <th>النمو</th>
+              </tr>
+            </thead>
+            <tbody id="branchPerfBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Products -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct-icon">🔥</span> أعلى المنتجات مبيعاً</div>
+        <a href="admin-products.html" class="btn btn-secondary btn-sm">عرض الكل</a>
+      </div>
+      <div class="card-body" id="topProdsBody" style="padding:.75rem 1.25rem;display:flex;flex-direction:column;gap:.9rem;"></div>
+    </div>
+
+  </div>
+
+  <!-- Payment Methods + Recent Sales Table -->
+  <div class="content-grid two-col">
+
+    <!-- Payment Methods -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct-icon">💳</span> توزيع طرق الدفع</div>
+      </div>
+      <div class="card-body" id="paymentMethods" style="display:flex;flex-direction:column;gap:.85rem;"></div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct-icon">📋</span> ملخص سريع</div>
+      </div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem;">
+          <div style="background:var(--pink5);border-radius:10px;padding:1rem;text-align:center;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--pink)">94%</div>
+            <div style="font-size:.72rem;color:var(--t3);">معدل الرضا</div>
+          </div>
+          <div style="background:var(--gold4);border-radius:10px;padding:1rem;text-align:center;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--gold)">2.2%</div>
+            <div style="font-size:.72rem;color:var(--t3);">نسبة الإرجاع</div>
+          </div>
+          <div style="background:var(--sage4);border-radius:10px;padding:1rem;text-align:center;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--sage)">4.8 ⭐</div>
+            <div style="font-size:.72rem;color:var(--t3);">تقييم المتجر</div>
+          </div>
+          <div style="background:var(--lavender3);border-radius:10px;padding:1rem;text-align:center;">
+            <div style="font-size:1.4rem;font-weight:800;color:var(--lavender)">68%</div>
+            <div style="font-size:.72rem;color:var(--t3);">عملاء متكررون</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+// ---- Data ----
+const monthlyRev = [
+  {m:'يناير',v:32000},
+  {m:'فبراير',v:41000},
+  {m:'مارس', v:38500},
+  {m:'أبريل', v:125840},
+];
+const catData = [
+  {cat:'فساتين',      pct:42, color:'pink',    icon:'👗'},
+  {cat:'عبايات',      pct:28, color:'gold',     icon:'👘'},
+  {cat:'إكسسوارات',   pct:18, color:'sage',     icon:'👒'},
+  {cat:'جاكيتات',     pct:12, color:'lavender', icon:'🧥'},
+];
+const branchPerf = [
+  {name:'الرياض المركزي', sales:38500, orders:188, growth:'+12%'},
+  {name:'جدة البحري',     sales:29800, orders:142, growth:'+8%'},
+  {name:'مكة المكرمة',    sales:31200, orders:156, growth:'+15%'},
+  {name:'الدمام الخليج',  sales:22400, orders:112, growth:'+6%'},
+  {name:'المدينة المنورة',sales:18600, orders:93,  growth:'+4%'},
+];
+const topProds = [
+  {name:'فستان صيفي وردي', icon:'👗', units:142, rev:45440, pct:85},
+  {name:'عباية ذهبية فاخرة',icon:'👘',units:98,  rev:83300, pct:60},
+  {name:'شال كاشمير بيج',  icon:'🧣', units:76,  rev:13680, pct:45},
+  {name:'حقيبة يد ذهبية',  icon:'👜', units:54,  rev:24300, pct:32},
+];
+const payMethods = [
+  {method:'بطاقة ائتمانية', pct:48, color:'pink'},
+  {method:'تحويل بنكي',     pct:32, color:'gold'},
+  {method:'نقداً',          pct:20, color:'sage'},
+];
+
+function renderAll() {
+  // Revenue chart
+  const chartWrap = document.getElementById('revenueChart');
+  const maxV = Math.max(...monthlyRev.map(d=>d.v));
+  chartWrap.innerHTML = monthlyRev.map(d=>`
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <div style="font-size:.65rem;color:var(--t3);font-weight:600;">${Math.round(d.v/1000)}K</div>
+      <div style="width:100%;height:${(d.v/maxV*180)}px;background:linear-gradient(to top,var(--pink),var(--pink2));border-radius:6px 6px 0 0;transition:height .5s var(--ease);cursor:pointer;" title="${d.m}: ${d.v.toLocaleString('ar-SA')} ر.س" onmouseenter="this.style.opacity=.8" onmouseleave="this.style.opacity=1"></div>
+      <div style="font-size:.65rem;color:var(--t3);">${d.m}</div>
+    </div>
+  `).join('');
+
+  // Category sales
+  document.getElementById('catSales').innerHTML = catData.map(c=>`
+    <div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:.3rem;font-size:.8rem;">
+        <span>${c.icon} ${c.cat}</span>
+        <span style="font-weight:700;color:var(--${c.color})">${c.pct}%</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar ${c.color}" style="width:${c.pct}%"></div></div>
+    </div>
+  `).join('');
+
+  // Branch performance
+  document.getElementById('branchPerfBody').innerHTML = branchPerf.map(b=>`
+    <tr>
+      <td><strong>${b.name}</strong></td>
+      <td><strong style="color:var(--pink)">${b.sales.toLocaleString('ar-SA')} ر.س</strong></td>
+      <td>${b.orders}</td>
+      <td>${Math.round(b.sales/b.orders).toLocaleString('ar-SA')} ر.س</td>
+      <td><span class="badge badge-green">${b.growth}</span></td>
+    </tr>
+  `).join('');
+
+  // Top products
+  document.getElementById('topProdsBody').innerHTML = topProds.map((p,i)=>`
+    <div>
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.3rem;">
+        <span style="background:var(--bg2);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:.7rem;font-weight:700;color:var(--t2);">${i+1}</span>
+        <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--pink4),var(--gold4));display:grid;place-items:center;font-size:1rem;">${p.icon}</div>
+        <div style="flex:1;">
+          <div style="font-size:.8rem;font-weight:600;color:var(--t1);">${p.name}</div>
+          <div style="font-size:.7rem;color:var(--t3);">${p.units} قطعة &nbsp;|&nbsp; ${p.rev.toLocaleString('ar-SA')} ر.س</div>
+        </div>
+        <div style="font-size:.75rem;font-weight:700;color:var(--pink)">${p.pct}%</div>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar pink" style="width:${p.pct}%"></div></div>
+    </div>
+  `).join('');
+
+  // Payment methods
+  document.getElementById('paymentMethods').innerHTML = payMethods.map(p=>`
+    <div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:.3rem;font-size:.82rem;">
+        <span>💳 ${p.method}</span>
+        <span style="font-weight:700;color:var(--${p.color})">${p.pct}%</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar ${p.color}" style="width:${p.pct}%"></div></div>
+    </div>
+  `).join('');
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('collapsed');
+  document.getElementById('adminHeader').classList.toggle('sidebar-collapsed');
+  document.getElementById('adminMain').classList.toggle('sidebar-collapsed');
+}
+function toggleMenu(k){document.getElementById('item-'+k).classList.toggle('open');}
+
+if(window.innerWidth<=900){
+  document.getElementById('sidebar').classList.add('collapsed');
+  document.getElementById('adminHeader').classList.add('sidebar-collapsed');
+  document.getElementById('adminMain').classList.add('sidebar-collapsed');
+}
+
+renderAll();
+</script>
+</body>
+</html>

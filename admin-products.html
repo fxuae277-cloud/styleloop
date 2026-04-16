@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المنتجات — StyleLoop Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="admin-dashboard.html" class="sb-brand">
+    <div class="sb-brand-icon">SL</div>
+    <div class="sb-brand-text">
+      <div class="sb-brand-name">Style<span style="color:var(--pink)">Loop</span></div>
+      <div class="sb-brand-sub">لوحة الإدارة</div>
+    </div>
+    <button class="sb-toggle" onclick="toggleSidebar()">&#9001;</button>
+  </a>
+  <nav class="sb-nav">
+    <div class="sb-section-label">القائمة الرئيسية</div>
+    <div class="sb-item"><a href="admin-dashboard.html" class="sb-link" data-tooltip="لوحة التحكم"><span class="sb-icon">🏠</span><span class="sb-label">لوحة التحكم</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="التشغيل"><span class="sb-icon">⚙️</span><span class="sb-label">التشغيل</span></a></div>
+    <div class="sb-item"><a href="admin-pos.html" class="sb-link" data-tooltip="نقطة البيع"><span class="sb-icon">🛒</span><span class="sb-label">نقطة البيع</span></a></div>
+    <div class="sb-item"><a href="admin-orders.html" class="sb-link" data-tooltip="الطلبات"><span class="sb-icon">📦</span><span class="sb-label">الطلبات</span><span class="sb-badge">12</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="قوائم نقطة البيع"><span class="sb-icon">📋</span><span class="sb-label">قوائم نقطة البيع</span></a></div>
+    <div class="sb-item"><a href="admin-customers.html" class="sb-link" data-tooltip="العملاء"><span class="sb-icon">👥</span><span class="sb-label">العملاء</span></a></div>
+    <div class="sb-section-label">البيانات الأساسية</div>
+    <div class="sb-item open" id="item-basic">
+      <button class="sb-link" onclick="toggleMenu('basic')" data-tooltip="البيانات الأساسية"><span class="sb-icon">🗃️</span><span class="sb-label">البيانات الأساسية</span><span class="sb-arrow">&#9002;</span></button>
+      <div class="sb-submenu" id="submenu-basic">
+        <div class="sb-item"><a href="admin-branches.html" class="sb-link" data-tooltip="الفروع"><span class="sb-icon">🏢</span><span class="sb-label">الفروع</span></a></div>
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الفئات"><span class="sb-icon">🏷️</span><span class="sb-label">الفئات</span></a></div>
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الموردون والمشترون"><span class="sb-icon">🤝</span><span class="sb-label">الموردون والمشترون</span></a></div>
+        <div class="sb-item"><a href="admin-products.html" class="sb-link active" data-tooltip="المنتجات والأسعار"><span class="sb-icon">👗</span><span class="sb-label">المنتجات والأسعار</span></a></div>
+      </div>
+    </div>
+    <div class="sb-section-label">العمليات</div>
+    <div class="sb-item" id="item-ops">
+      <button class="sb-link" onclick="toggleMenu('ops')" data-tooltip="العمليات"><span class="sb-icon">📊</span><span class="sb-label">العمليات</span><span class="sb-arrow">&#9002;</span></button>
+      <div class="sb-submenu" id="submenu-ops">
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="قوائم الشراء"><span class="sb-icon">🛍️</span><span class="sb-label">قوائم الشراء</span></a></div>
+      </div>
+    </div>
+    <div class="sb-section-label">الإدارة</div>
+    <div class="sb-item"><a href="admin-reports.html" class="sb-link" data-tooltip="التقارير"><span class="sb-icon">📈</span><span class="sb-label">التقارير</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الملك"><span class="sb-icon">👑</span><span class="sb-label">الملك</span></a></div>
+  </nav>
+  <div class="sb-footer">
+    <div class="sb-user-card">
+      <div class="sb-avatar">م</div>
+      <div class="sb-user-info"><div class="sb-user-name">المدير العام</div><div class="sb-user-role">Admin · StyleLoop</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- HEADER -->
+<header class="admin-header" id="adminHeader">
+  <div class="hdr-start">
+    <button class="hdr-menu-btn" onclick="toggleSidebar()">☰</button>
+    <div class="hdr-breadcrumb"><span>StyleLoop</span><span class="sep">›</span><span>البيانات الأساسية</span><span class="sep">›</span><span>المنتجات والأسعار</span></div>
+  </div>
+  <div class="hdr-end">
+    <div class="hdr-search"><span>🔍</span><input type="text" placeholder="بحث عن منتج…" oninput="filterProds(this.value)"></div>
+    <button class="hdr-icon-btn">🔔<span class="hdr-notif-dot"></span></button>
+    <div class="hdr-avatar">م</div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="admin-main" id="adminMain">
+
+  <div class="page-title">
+    <h1><span class="pg-icon">👗</span> المنتجات والأسعار</h1>
+    <p>إدارة كتالوج المنتجات وأسعارها</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card pink"><div class="stat-icon">👗</div><div class="stat-body"><div class="stat-label">إجمالي المنتجات</div><div class="stat-value">596</div><div class="stat-change up">↑ 12 منتج جديد</div></div></div>
+    <div class="stat-card gold"><div class="stat-icon">⚠️</div><div class="stat-body"><div class="stat-label">مخزون منخفض</div><div class="stat-value">18</div><div class="stat-change down">تحتاج تجديد</div></div></div>
+    <div class="stat-card sage"><div class="stat-icon">🏷️</div><div class="stat-body"><div class="stat-label">الفئات</div><div class="stat-value">12</div><div class="stat-change neutral">فئة</div></div></div>
+    <div class="stat-card coral"><div class="stat-icon">💰</div><div class="stat-body"><div class="stat-label">متوسط السعر</div><div class="stat-value">385</div><div class="stat-change neutral">ر.س</div></div></div>
+  </div>
+
+  <!-- Products Table -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="ct-icon">👗</span> قائمة المنتجات</div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <select class="form-control" style="width:auto;font-size:.78rem;padding:.35rem .65rem;" onchange="setCategory(this.value)">
+          <option value="all">جميع الفئات</option>
+          <option value="فساتين">👗 فساتين</option>
+          <option value="عبايات">👘 عبايات</option>
+          <option value="إكسسوارات">👒 إكسسوارات</option>
+          <option value="جاكيتات">🧥 جاكيتات</option>
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="openAddProduct()">+ منتج جديد</button>
+      </div>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>المنتج</th>
+              <th>الفئة</th>
+              <th>سعر التكلفة</th>
+              <th>سعر البيع</th>
+              <th>هامش الربح</th>
+              <th>المخزون</th>
+              <th>الحالة</th>
+              <th>إجراء</th>
+            </tr>
+          </thead>
+          <tbody id="prodsBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="prodsPag"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Add/Edit Product Modal -->
+<div class="modal-overlay" id="prodModal">
+  <div class="modal" style="width:min(95vw,580px)">
+    <div class="modal-header">
+      <div class="modal-title" id="prodModalTitle">👗 منتج جديد</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">اسم المنتج <span>*</span></label>
+          <input class="form-control" id="prodName" type="text" placeholder="مثال: فستان صيفي وردي">
+        </div>
+        <div class="form-group">
+          <label class="form-label">الفئة <span>*</span></label>
+          <select class="form-control" id="prodCat">
+            <option>فساتين</option>
+            <option>عبايات</option>
+            <option>إكسسوارات</option>
+            <option>جاكيتات</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row three">
+        <div class="form-group">
+          <label class="form-label">سعر التكلفة (ر.س)</label>
+          <input class="form-control" id="prodCost" type="number" placeholder="0.00" oninput="calcMargin()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">سعر البيع (ر.س) <span>*</span></label>
+          <input class="form-control" id="prodPrice" type="number" placeholder="0.00" oninput="calcMargin()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">هامش الربح</label>
+          <input class="form-control" id="prodMargin" type="text" placeholder="—" readonly style="background:var(--bg3)">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">الكمية في المخزون</label>
+          <input class="form-control" id="prodStock" type="number" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">المورد</label>
+          <select class="form-control">
+            <option>اختر المورد</option>
+            <option>مورد الرياض للأقمشة</option>
+            <option>جدة للتصميم</option>
+            <option>استيراد تركيا</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">وصف المنتج</label>
+        <textarea class="form-control" placeholder="وصف تفصيلي للمنتج…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveProduct()">💾 حفظ المنتج</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const products = [
+  {name:'فستان صيفي وردي',    cat:'فساتين',    icon:'👗', cost:120, price:320, stock:45, active:true},
+  {name:'فستان سهرة أسود',    cat:'فساتين',    icon:'🩱', cost:450, price:1200,stock:12, active:true},
+  {name:'فستان كاجوال أزرق',  cat:'فساتين',    icon:'👗', cost:70,  price:195, stock:60, active:true},
+  {name:'عباية ذهبية فاخرة',  cat:'عبايات',    icon:'👘', cost:300, price:850, stock:28, active:true},
+  {name:'عباية سوداء كلاسيك', cat:'عبايات',    icon:'👘', cost:250, price:680, stock:35, active:true},
+  {name:'شال كاشمير بيج',     cat:'إكسسوارات', icon:'🧣', cost:55,  price:180, stock:5,  active:true},
+  {name:'حقيبة يد ذهبية',     cat:'إكسسوارات', icon:'👜', cost:150, price:450, stock:20, active:true},
+  {name:'جاكيت جينز',         cat:'جاكيتات',   icon:'🧥', cost:100, price:290, stock:40, active:true},
+  {name:'بلوزة حرير وردية',   cat:'فساتين',    icon:'👚', cost:50,  price:150, stock:3,  active:false},
+  {name:'إيشارب حريري',        cat:'إكسسوارات', icon:'🎀', cost:30,  price:95,  stock:80, active:true},
+  {name:'جاكيت كلاسيك بيج',   cat:'جاكيتات',   icon:'🧥', cost:130, price:380, stock:22, active:true},
+  {name:'تنورة مطرزة',         cat:'فساتين',    icon:'👗', cost:80,  price:230, stock:18, active:true},
+];
+
+let prodSearch='', prodCat='all', prodPage=1;
+const PSIZE=8;
+
+function margin(cost,price){ return cost>0?Math.round((price-cost)/price*100)+'%':'—'; }
+function getFiltered(){
+  return products.filter(p=>
+    (prodCat==='all'||p.cat===prodCat)&&
+    (p.name.includes(prodSearch)||p.cat.includes(prodSearch))
+  );
+}
+function renderProds(){
+  const data=getFiltered();
+  const page=data.slice((prodPage-1)*PSIZE,prodPage*PSIZE);
+  document.getElementById('prodsBody').innerHTML=page.map(p=>`
+    <tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:.6rem;">
+          <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--pink4),var(--gold4));display:grid;place-items:center;font-size:1.1rem;">${p.icon}</div>
+          <strong>${p.name}</strong>
+        </div>
+      </td>
+      <td>${p.cat}</td>
+      <td>${p.cost.toLocaleString('ar-SA')} ر.س</td>
+      <td><strong style="color:var(--pink)">${p.price.toLocaleString('ar-SA')} ر.س</strong></td>
+      <td><span class="badge badge-sage">${margin(p.cost,p.price)}</span></td>
+      <td>
+        <span class="badge ${p.stock<=5?'badge-red':p.stock<=20?'badge-orange':'badge-green'}">
+          ${p.stock} قطعة
+        </span>
+      </td>
+      <td>${p.active?'<span class="badge badge-green">✅ نشط</span>':'<span class="badge badge-gray">⏸ موقوف</span>'}</td>
+      <td>
+        <div style="display:flex;gap:.3rem;">
+          <button class="btn btn-secondary btn-sm" onclick="editProduct('${p.name}')">✏️</button>
+          <button class="btn btn-danger btn-sm">🗑️</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+  const pages=Math.ceil(data.length/PSIZE);
+  document.getElementById('prodsPag').innerHTML=
+    Array.from({length:pages},(_,i)=>`<button class="page-btn ${i+1===prodPage?'active':''}" onclick="goPage(${i+1})">${i+1}</button>`).join('');
+}
+
+function filterProds(v){prodSearch=v;prodPage=1;renderProds();}
+function setCategory(v){prodCat=v;prodPage=1;renderProds();}
+function goPage(n){prodPage=n;renderProds();}
+function openAddProduct(){
+  document.getElementById('prodModalTitle').textContent='👗 منتج جديد';
+  document.getElementById('prodName').value='';
+  document.getElementById('prodCost').value='';
+  document.getElementById('prodPrice').value='';
+  document.getElementById('prodMargin').value='';
+  document.getElementById('prodStock').value='';
+  document.getElementById('prodModal').classList.add('open');
+}
+function editProduct(name){
+  const p=products.find(x=>x.name===name);
+  document.getElementById('prodModalTitle').textContent='✏️ تعديل: '+p.name;
+  document.getElementById('prodName').value=p.name;
+  document.getElementById('prodCost').value=p.cost;
+  document.getElementById('prodPrice').value=p.price;
+  document.getElementById('prodMargin').value=margin(p.cost,p.price);
+  document.getElementById('prodStock').value=p.stock;
+  document.getElementById('prodModal').classList.add('open');
+}
+function calcMargin(){
+  const cost=parseFloat(document.getElementById('prodCost').value)||0;
+  const price=parseFloat(document.getElementById('prodPrice').value)||0;
+  document.getElementById('prodMargin').value=cost>0&&price>0?Math.round((price-cost)/price*100)+'%':'—';
+}
+function closeModal(){document.getElementById('prodModal').classList.remove('open');}
+function saveProduct(){alert('تم حفظ المنتج بنجاح!');closeModal();}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('collapsed');
+  document.getElementById('adminHeader').classList.toggle('sidebar-collapsed');
+  document.getElementById('adminMain').classList.toggle('sidebar-collapsed');
+}
+function toggleMenu(k){document.getElementById('item-'+k).classList.toggle('open');}
+
+if(window.innerWidth<=900){
+  document.getElementById('sidebar').classList.add('collapsed');
+  document.getElementById('adminHeader').classList.add('sidebar-collapsed');
+  document.getElementById('adminMain').classList.add('sidebar-collapsed');
+}
+
+renderProds();
+</script>
+</body>
+</html>

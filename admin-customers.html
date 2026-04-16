@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>العملاء — StyleLoop Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="admin-dashboard.html" class="sb-brand">
+    <div class="sb-brand-icon">SL</div>
+    <div class="sb-brand-text">
+      <div class="sb-brand-name">Style<span style="color:var(--pink)">Loop</span></div>
+      <div class="sb-brand-sub">لوحة الإدارة</div>
+    </div>
+    <button class="sb-toggle" onclick="toggleSidebar()">&#9001;</button>
+  </a>
+  <nav class="sb-nav">
+    <div class="sb-section-label">القائمة الرئيسية</div>
+    <div class="sb-item"><a href="admin-dashboard.html" class="sb-link" data-tooltip="لوحة التحكم"><span class="sb-icon">🏠</span><span class="sb-label">لوحة التحكم</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="التشغيل"><span class="sb-icon">⚙️</span><span class="sb-label">التشغيل</span></a></div>
+    <div class="sb-item"><a href="admin-pos.html" class="sb-link" data-tooltip="نقطة البيع"><span class="sb-icon">🛒</span><span class="sb-label">نقطة البيع</span></a></div>
+    <div class="sb-item"><a href="admin-orders.html" class="sb-link" data-tooltip="الطلبات"><span class="sb-icon">📦</span><span class="sb-label">الطلبات</span><span class="sb-badge">12</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="قوائم نقطة البيع"><span class="sb-icon">📋</span><span class="sb-label">قوائم نقطة البيع</span></a></div>
+    <div class="sb-item"><a href="admin-customers.html" class="sb-link active" data-tooltip="العملاء"><span class="sb-icon">👥</span><span class="sb-label">العملاء</span></a></div>
+    <div class="sb-section-label">البيانات الأساسية</div>
+    <div class="sb-item" id="item-basic">
+      <button class="sb-link" onclick="toggleMenu('basic')" data-tooltip="البيانات الأساسية"><span class="sb-icon">🗃️</span><span class="sb-label">البيانات الأساسية</span><span class="sb-arrow">&#9002;</span></button>
+      <div class="sb-submenu" id="submenu-basic">
+        <div class="sb-item"><a href="admin-branches.html" class="sb-link" data-tooltip="الفروع"><span class="sb-icon">🏢</span><span class="sb-label">الفروع</span></a></div>
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الفئات"><span class="sb-icon">🏷️</span><span class="sb-label">الفئات</span></a></div>
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الموردون والمشترون"><span class="sb-icon">🤝</span><span class="sb-label">الموردون والمشترون</span></a></div>
+        <div class="sb-item"><a href="admin-products.html" class="sb-link" data-tooltip="المنتجات والأسعار"><span class="sb-icon">👗</span><span class="sb-label">المنتجات والأسعار</span></a></div>
+      </div>
+    </div>
+    <div class="sb-section-label">العمليات</div>
+    <div class="sb-item" id="item-ops">
+      <button class="sb-link" onclick="toggleMenu('ops')" data-tooltip="العمليات"><span class="sb-icon">📊</span><span class="sb-label">العمليات</span><span class="sb-arrow">&#9002;</span></button>
+      <div class="sb-submenu" id="submenu-ops">
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="قوائم الشراء"><span class="sb-icon">🛍️</span><span class="sb-label">قوائم الشراء</span></a></div>
+      </div>
+    </div>
+    <div class="sb-section-label">الإدارة</div>
+    <div class="sb-item"><a href="admin-reports.html" class="sb-link" data-tooltip="التقارير"><span class="sb-icon">📈</span><span class="sb-label">التقارير</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الملك"><span class="sb-icon">👑</span><span class="sb-label">الملك</span></a></div>
+  </nav>
+  <div class="sb-footer">
+    <div class="sb-user-card">
+      <div class="sb-avatar">م</div>
+      <div class="sb-user-info"><div class="sb-user-name">المدير العام</div><div class="sb-user-role">Admin · StyleLoop</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- HEADER -->
+<header class="admin-header" id="adminHeader">
+  <div class="hdr-start">
+    <button class="hdr-menu-btn" onclick="toggleSidebar()">☰</button>
+    <div class="hdr-breadcrumb"><span>StyleLoop</span><span class="sep">›</span><span>العملاء</span></div>
+  </div>
+  <div class="hdr-end">
+    <div class="hdr-search"><span>🔍</span><input type="text" placeholder="بحث عن عميل…" oninput="filterCustomers(this.value)"></div>
+    <button class="hdr-icon-btn">🔔<span class="hdr-notif-dot"></span></button>
+    <div class="hdr-avatar">م</div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="admin-main" id="adminMain">
+
+  <div class="page-title">
+    <h1><span class="pg-icon">👥</span> إدارة العملاء</h1>
+    <p>عرض وإدارة بيانات عملاء StyleLoop</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card pink"><div class="stat-icon">👥</div><div class="stat-body"><div class="stat-label">إجمالي العملاء</div><div class="stat-value">2,841</div><div class="stat-change up">↑ 3.1%</div></div></div>
+    <div class="stat-card gold"><div class="stat-icon">⭐</div><div class="stat-body"><div class="stat-label">عملاء VIP</div><div class="stat-value">148</div><div class="stat-change up">↑ 5 هذا الشهر</div></div></div>
+    <div class="stat-card sage"><div class="stat-icon">🆕</div><div class="stat-body"><div class="stat-label">جدد هذا الشهر</div><div class="stat-value">87</div><div class="stat-change up">↑ 12%</div></div></div>
+    <div class="stat-card coral"><div class="stat-icon">💰</div><div class="stat-body"><div class="stat-label">متوسط الإنفاق</div><div class="stat-value">640</div><div class="stat-change neutral">ر.س / طلب</div></div></div>
+  </div>
+
+  <!-- Customer Table -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="ct-icon">👥</span> قائمة العملاء</div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button class="btn btn-secondary btn-sm cust-filter active" data-t="all" onclick="setCustFilter(this,'all')">الكل</button>
+        <button class="btn btn-secondary btn-sm cust-filter" data-t="vip" onclick="setCustFilter(this,'vip')">⭐ VIP</button>
+        <button class="btn btn-secondary btn-sm cust-filter" data-t="active" onclick="setCustFilter(this,'active')">✅ نشط</button>
+        <button class="btn btn-secondary btn-sm cust-filter" data-t="new" onclick="setCustFilter(this,'new')">🆕 جديد</button>
+        <button class="btn btn-primary btn-sm" onclick="openAddCustomer()">+ عميل جديد</button>
+      </div>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>العميل</th>
+              <th>رقم الجوال</th>
+              <th>المدينة</th>
+              <th>إجمالي الطلبات</th>
+              <th>إجمالي الإنفاق</th>
+              <th>الفئة</th>
+              <th>تاريخ التسجيل</th>
+              <th>إجراء</th>
+            </tr>
+          </thead>
+          <tbody id="customersBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="custPagination"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Add/View Customer Modal -->
+<div class="modal-overlay" id="custModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="custModalTitle">👤 عميل جديد</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="custModalBody">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">الاسم الأول <span>*</span></label>
+          <input class="form-control" type="text" placeholder="مثال: سارة">
+        </div>
+        <div class="form-group">
+          <label class="form-label">اسم العائلة <span>*</span></label>
+          <input class="form-control" type="text" placeholder="مثال: المنصور">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">رقم الجوال <span>*</span></label>
+          <input class="form-control" type="tel" placeholder="+966 5X XXX XXXX">
+        </div>
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني</label>
+          <input class="form-control" type="email" placeholder="example@email.com">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">المدينة</label>
+          <select class="form-control">
+            <option>اختر المدينة</option>
+            <option>الرياض</option>
+            <option>جدة</option>
+            <option>الدمام</option>
+            <option>مكة المكرمة</option>
+            <option>المدينة المنورة</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">الفئة</label>
+          <select class="form-control">
+            <option>عادي</option>
+            <option>VIP</option>
+            <option>بلاتينيوم</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ملاحظات</label>
+        <textarea class="form-control" placeholder="أي ملاحظات عن العميل…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveCustomer()">💾 حفظ العميل</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const customers = [
+  {name:'سارة المنصور',   phone:'+966 50 123 4567', city:'الرياض',  orders:14, spent:8960,  type:'vip',    joined:'مارس 2025',  avatar:'س'},
+  {name:'نورة الحربي',    phone:'+966 55 234 5678', city:'جدة',     orders:9,  spent:5420,  type:'active', joined:'يناير 2026',  avatar:'ن'},
+  {name:'منى العتيبي',    phone:'+966 56 345 6789', city:'الدمام',  orders:22, spent:14300, type:'vip',    joined:'أكتوبر 2024', avatar:'م'},
+  {name:'ريم السبيعي',    phone:'+966 54 456 7890', city:'الرياض',  orders:3,  spent:870,   type:'new',    joined:'أبريل 2026',  avatar:'ر'},
+  {name:'لمى الشمري',     phone:'+966 53 567 8901', city:'مكة',     orders:18, spent:21600, type:'vip',    joined:'يوليو 2024',  avatar:'ل'},
+  {name:'هنا العمري',     phone:'+966 50 678 9012', city:'جدة',     orders:7,  spent:1330,  type:'active', joined:'فبراير 2026', avatar:'هـ'},
+  {name:'دانة القحطاني',  phone:'+966 55 789 0123', city:'الرياض',  orders:5,  spent:750,   type:'active', joined:'مارس 2026',   avatar:'د'},
+  {name:'نجود الغامدي',   phone:'+966 56 890 1234', city:'الطائف',  orders:11, spent:4950,  type:'active', joined:'نوفمبر 2025', avatar:'ن'},
+  {name:'أريج الزهراني',  phone:'+966 54 901 2345', city:'المدينة', orders:2,  spent:460,   type:'new',    joined:'أبريل 2026',  avatar:'أ'},
+  {name:'سمية المالكي',   phone:'+966 53 012 3456', city:'الرياض',  orders:16, spent:10880, type:'vip',    joined:'أغسطس 2024',  avatar:'س'},
+];
+
+const typeLabels = {
+  vip:    '<span class="badge badge-gold">⭐ VIP</span>',
+  active: '<span class="badge badge-sage">✅ نشط</span>',
+  new:    '<span class="badge badge-blue">🆕 جديد</span>',
+};
+
+let custFilter = 'all', custSearch = '', custPage = 1;
+const CPAGE = 8;
+
+function getFiltered() {
+  return customers.filter(c =>
+    (custFilter === 'all' || c.type === custFilter) &&
+    (c.name.includes(custSearch) || c.phone.includes(custSearch) || c.city.includes(custSearch))
+  );
+}
+
+function renderCustomers() {
+  const data = getFiltered();
+  const page = data.slice((custPage-1)*CPAGE, custPage*CPAGE);
+  document.getElementById('customersBody').innerHTML = page.map(c => `
+    <tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:.6rem;">
+          <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--pink3),var(--gold3));display:grid;place-items:center;font-size:.78rem;font-weight:700;color:var(--pink);">${c.avatar}</div>
+          <strong>${c.name}</strong>
+        </div>
+      </td>
+      <td>${c.phone}</td>
+      <td>${c.city}</td>
+      <td><strong>${c.orders}</strong> طلب</td>
+      <td><strong style="color:var(--pink)">${c.spent.toLocaleString('ar-SA')} ر.س</strong></td>
+      <td>${typeLabels[c.type]}</td>
+      <td>${c.joined}</td>
+      <td>
+        <div style="display:flex;gap:.3rem;">
+          <button class="btn btn-secondary btn-sm">عرض</button>
+          <button class="btn btn-secondary btn-sm">✏️</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  const pages = Math.ceil(data.length/CPAGE);
+  document.getElementById('custPagination').innerHTML =
+    Array.from({length:pages},(_,i)=>`<button class="page-btn ${i+1===custPage?'active':''}" onclick="goPage(${i+1})">${i+1}</button>`).join('');
+}
+
+function filterCustomers(v) { custSearch = v; custPage=1; renderCustomers(); }
+function setCustFilter(btn, t) {
+  custFilter = t; custPage=1;
+  document.querySelectorAll('.cust-filter').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCustomers();
+}
+function goPage(n) { custPage=n; renderCustomers(); }
+function openAddCustomer() { document.getElementById('custModal').classList.add('open'); }
+function closeModal() { document.getElementById('custModal').classList.remove('open'); }
+function saveCustomer() { alert('تم حفظ العميل بنجاح!'); closeModal(); }
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+  document.getElementById('adminHeader').classList.toggle('sidebar-collapsed');
+  document.getElementById('adminMain').classList.toggle('sidebar-collapsed');
+}
+function toggleMenu(k) { document.getElementById('item-'+k).classList.toggle('open'); }
+
+if (window.innerWidth <= 900) {
+  document.getElementById('sidebar').classList.add('collapsed');
+  document.getElementById('adminHeader').classList.add('sidebar-collapsed');
+  document.getElementById('adminMain').classList.add('sidebar-collapsed');
+}
+
+renderCustomers();
+</script>
+</body>
+</html>

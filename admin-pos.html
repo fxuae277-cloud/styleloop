@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نقطة البيع — StyleLoop Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <a href="admin-dashboard.html" class="sb-brand">
+    <div class="sb-brand-icon">SL</div>
+    <div class="sb-brand-text">
+      <div class="sb-brand-name">Style<span style="color:var(--pink)">Loop</span></div>
+      <div class="sb-brand-sub">لوحة الإدارة</div>
+    </div>
+    <button class="sb-toggle" onclick="toggleSidebar()" title="طي القائمة">&#9001;</button>
+  </a>
+  <nav class="sb-nav">
+    <div class="sb-section-label">القائمة الرئيسية</div>
+    <div class="sb-item"><a href="admin-dashboard.html" class="sb-link" data-tooltip="لوحة التحكم"><span class="sb-icon">🏠</span><span class="sb-label">لوحة التحكم</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="التشغيل"><span class="sb-icon">⚙️</span><span class="sb-label">التشغيل</span></a></div>
+    <div class="sb-item"><a href="admin-pos.html" class="sb-link active" data-tooltip="نقطة البيع"><span class="sb-icon">🛒</span><span class="sb-label">نقطة البيع</span></a></div>
+    <div class="sb-item"><a href="admin-orders.html" class="sb-link" data-tooltip="الطلبات"><span class="sb-icon">📦</span><span class="sb-label">الطلبات</span><span class="sb-badge">12</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="قوائم نقطة البيع"><span class="sb-icon">📋</span><span class="sb-label">قوائم نقطة البيع</span></a></div>
+    <div class="sb-item"><a href="admin-customers.html" class="sb-link" data-tooltip="العملاء"><span class="sb-icon">👥</span><span class="sb-label">العملاء</span></a></div>
+    <div class="sb-section-label">البيانات الأساسية</div>
+    <div class="sb-item" id="item-basic">
+      <button class="sb-link" onclick="toggleMenu('basic')" data-tooltip="البيانات الأساسية"><span class="sb-icon">🗃️</span><span class="sb-label">البيانات الأساسية</span><span class="sb-arrow">&#9002;</span></button>
+      <div class="sb-submenu" id="submenu-basic">
+        <div class="sb-item"><a href="admin-branches.html" class="sb-link" data-tooltip="الفروع"><span class="sb-icon">🏢</span><span class="sb-label">الفروع</span></a></div>
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الفئات"><span class="sb-icon">🏷️</span><span class="sb-label">الفئات</span></a></div>
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الموردون والمشترون"><span class="sb-icon">🤝</span><span class="sb-label">الموردون والمشترون</span></a></div>
+        <div class="sb-item"><a href="admin-products.html" class="sb-link" data-tooltip="المنتجات والأسعار"><span class="sb-icon">👗</span><span class="sb-label">المنتجات والأسعار</span></a></div>
+      </div>
+    </div>
+    <div class="sb-section-label">العمليات</div>
+    <div class="sb-item" id="item-ops">
+      <button class="sb-link" onclick="toggleMenu('ops')" data-tooltip="العمليات"><span class="sb-icon">📊</span><span class="sb-label">العمليات</span><span class="sb-arrow">&#9002;</span></button>
+      <div class="sb-submenu" id="submenu-ops">
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="قوائم الشراء"><span class="sb-icon">🛍️</span><span class="sb-label">قوائم الشراء</span></a></div>
+      </div>
+    </div>
+    <div class="sb-section-label">الإدارة</div>
+    <div class="sb-item"><a href="admin-reports.html" class="sb-link" data-tooltip="التقارير"><span class="sb-icon">📈</span><span class="sb-label">التقارير</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الملك / المدير"><span class="sb-icon">👑</span><span class="sb-label">الملك</span></a></div>
+  </nav>
+  <div class="sb-footer">
+    <div class="sb-user-card">
+      <div class="sb-avatar">م</div>
+      <div class="sb-user-info">
+        <div class="sb-user-name">المدير العام</div>
+        <div class="sb-user-role">Admin · StyleLoop</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== HEADER ===== -->
+<header class="admin-header" id="adminHeader">
+  <div class="hdr-start">
+    <button class="hdr-menu-btn" onclick="toggleSidebar()">☰</button>
+    <div class="hdr-breadcrumb">
+      <span>StyleLoop</span><span class="sep">›</span><span>نقطة البيع</span>
+    </div>
+  </div>
+  <div class="hdr-end">
+    <div class="hdr-search">
+      <span>🔍</span>
+      <input type="text" placeholder="بحث عن منتج…" id="posSearch" oninput="filterProducts()">
+    </div>
+    <button class="hdr-icon-btn">🔔<span class="hdr-notif-dot"></span></button>
+    <div class="hdr-avatar">م</div>
+  </div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main class="admin-main" id="adminMain" style="padding:1rem 1.25rem;">
+
+  <div class="page-title" style="margin-bottom:1rem;">
+    <h1><span class="pg-icon">🛒</span> نقطة البيع (POS)</h1>
+    <p>إنشاء فاتورة بيع جديدة</p>
+  </div>
+
+  <div class="pos-layout" id="posLayout">
+
+    <!-- Products Panel -->
+    <div style="display:flex;flex-direction:column;gap:.85rem;overflow:hidden;">
+
+      <!-- Category Filter -->
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button class="btn btn-primary btn-sm cat-btn active" data-cat="all" onclick="setCat(this,'all')">الكل</button>
+        <button class="btn btn-secondary btn-sm cat-btn" data-cat="فساتين" onclick="setCat(this,'فساتين')">👗 فساتين</button>
+        <button class="btn btn-secondary btn-sm cat-btn" data-cat="عبايات" onclick="setCat(this,'عبايات')">👘 عبايات</button>
+        <button class="btn btn-secondary btn-sm cat-btn" data-cat="إكسسوارات" onclick="setCat(this,'إكسسوارات')">👒 إكسسوارات</button>
+        <button class="btn btn-secondary btn-sm cat-btn" data-cat="جاكيتات" onclick="setCat(this,'جاكيتات')">🧥 جاكيتات</button>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="pos-product-grid" id="productsGrid"></div>
+    </div>
+
+    <!-- Cart Panel -->
+    <div class="card pos-cart">
+      <div class="pos-cart-header">
+        <div class="pos-cart-title">🛒 سلة المشتريات <span id="cartCount" style="background:var(--pink);color:#fff;border-radius:20px;padding:.1rem .5rem;font-size:.7rem;margin-right:.3rem;">0</span></div>
+        <div style="margin-top:.5rem;font-size:.78rem;color:var(--t3);">الكاشير: <strong style="color:var(--t1)">أمل خالد</strong> &nbsp;|&nbsp; فرع: <strong style="color:var(--t1)">الرياض المركزي</strong></div>
+      </div>
+
+      <!-- Customer -->
+      <div style="padding:.75rem 1rem;border-bottom:1px solid var(--line);">
+        <select class="form-control" style="font-size:.78rem;">
+          <option>👤 اختر عميل (اختياري)</option>
+          <option>سارة المنصور</option>
+          <option>نورة الحربي</option>
+          <option>منى العتيبي</option>
+        </select>
+      </div>
+
+      <!-- Cart Items -->
+      <div class="pos-cart-items" id="cartItems">
+        <div class="empty-state" style="padding:2rem 1rem;" id="emptyCart">
+          <div class="es-icon">🛒</div>
+          <p>لم تضف أي منتج بعد</p>
+        </div>
+      </div>
+
+      <!-- Totals -->
+      <div class="pos-cart-total">
+        <div class="total-row"><span class="total-label">المجموع الفرعي</span><span class="total-val" id="subtotal">0.00 ر.س</span></div>
+        <div class="total-row"><span class="total-label">الضريبة (15%)</span><span class="total-val" id="taxVal">0.00 ر.س</span></div>
+        <div class="total-row"><span class="total-label">خصم</span>
+          <input type="number" id="discountInput" placeholder="0" min="0" max="100"
+            style="width:60px;padding:.2rem .4rem;border:1px solid var(--line2);border-radius:6px;font-family:var(--fc);font-size:.78rem;text-align:center;background:var(--bg2);"
+            oninput="updateTotals()"> %
+        </div>
+        <div class="total-row grand"><span>الإجمالي</span><span id="grandTotal" style="color:var(--pink)">0.00 ر.س</span></div>
+      </div>
+
+      <!-- Payment -->
+      <div style="padding:.85rem 1rem;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:.5rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem;">
+          <button class="btn btn-secondary btn-sm pay-btn active" data-pay="cash" onclick="setPay(this)">💵 نقداً</button>
+          <button class="btn btn-secondary btn-sm pay-btn" data-pay="card" onclick="setPay(this)">💳 بطاقة</button>
+          <button class="btn btn-secondary btn-sm pay-btn" data-pay="transfer" onclick="setPay(this)">📲 تحويل</button>
+        </div>
+        <button class="btn btn-primary w-full" onclick="completeSale()" style="justify-content:center;font-size:.88rem;">
+          ✅ إتمام البيع
+        </button>
+        <button class="btn btn-secondary btn-sm w-full" onclick="clearCart()" style="justify-content:center;">
+          🗑️ مسح السلة
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- Sale Success Modal -->
+<div class="modal-overlay" id="saleModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">✅ تمت عملية البيع</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" style="text-align:center;padding:2rem;">
+      <div style="font-size:3.5rem;margin-bottom:1rem;">🎉</div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--t1);margin-bottom:.5rem;">تمت الفاتورة بنجاح!</div>
+      <div style="font-size:.85rem;color:var(--t3);margin-bottom:1.5rem;">رقم الفاتورة: <strong id="invoiceNum" style="color:var(--pink)">#INV-0000</strong></div>
+      <div style="font-size:1.4rem;font-weight:800;color:var(--pink);margin-bottom:1.5rem;" id="modalTotal">0.00 ر.س</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">🖨️ طباعة الفاتورة</button>
+      <button class="btn btn-primary" onclick="closeModal()">فاتورة جديدة</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- Data ----
+const products = [
+  {id:1, name:'فستان صيفي وردي',   price:320, cat:'فساتين',     icon:'👗'},
+  {id:2, name:'فستان سهرة أسود',   price:1200,cat:'فساتين',     icon:'🩱'},
+  {id:3, name:'فستان كاجوال أزرق', price:195, cat:'فساتين',     icon:'👗'},
+  {id:4, name:'عباية ذهبية فاخرة', price:850, cat:'عبايات',     icon:'👘'},
+  {id:5, name:'عباية سوداء كلاسيك',price:680, cat:'عبايات',     icon:'👘'},
+  {id:6, name:'شال كاشمير بيج',    price:180, cat:'إكسسوارات',  icon:'🧣'},
+  {id:7, name:'حقيبة يد ذهبية',    price:450, cat:'إكسسوارات',  icon:'👜'},
+  {id:8, name:'جاكيت جينز',        price:290, cat:'جاكيتات',    icon:'🧥'},
+  {id:9, name:'بلوزة حرير وردية',  price:150, cat:'فساتين',     icon:'👚'},
+  {id:10,name:'إيشارب حريري',       price:95,  cat:'إكسسوارات',  icon:'🎀'},
+  {id:11,name:'جاكيت كلاسيك بيج',  price:380, cat:'جاكيتات',    icon:'🧥'},
+  {id:12,name:'تنورة مطرزة',        price:230, cat:'فساتين',     icon:'👗'},
+];
+
+let cart = [];
+let currentCat = 'all';
+let invoiceCounter = 1042;
+
+// ---- Render Products ----
+function renderProducts() {
+  const search = (document.getElementById('posSearch') || {value:''}).value.toLowerCase();
+  const grid = document.getElementById('productsGrid');
+  const filtered = products.filter(p =>
+    (currentCat === 'all' || p.cat === currentCat) &&
+    (p.name.toLowerCase().includes(search))
+  );
+  grid.innerHTML = filtered.map(p => `
+    <div class="pos-product-card ${cart.find(c=>c.id===p.id)?'selected':''}" onclick="addToCart(${p.id})">
+      <div class="pos-product-img">${p.icon}</div>
+      <div class="pos-product-name">${p.name}</div>
+      <div class="pos-product-price">${p.price.toLocaleString('ar-SA')} ر.س</div>
+    </div>
+  `).join('');
+}
+
+function filterProducts() { renderProducts(); }
+function setCat(btn, cat) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active','btn-primary'));
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.add('btn-secondary'));
+  btn.classList.add('active','btn-primary');
+  btn.classList.remove('btn-secondary');
+  renderProducts();
+}
+
+// ---- Cart ----
+function addToCart(id) {
+  const p = products.find(x => x.id === id);
+  const existing = cart.find(x => x.id === id);
+  if (existing) { existing.qty++; }
+  else { cart.push({...p, qty:1}); }
+  renderCart();
+  renderProducts();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(x => x.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
+  renderCart();
+  renderProducts();
+}
+
+function renderCart() {
+  const wrap = document.getElementById('cartItems');
+  const emptyEl = document.getElementById('emptyCart');
+  document.getElementById('cartCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
+  if (cart.length === 0) {
+    wrap.innerHTML = `<div class="empty-state" style="padding:2rem 1rem;"><div class="es-icon">🛒</div><p>لم تضف أي منتج بعد</p></div>`;
+    updateTotals();
+    return;
+  }
+  wrap.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-img">${item.icon}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">${item.price.toLocaleString('ar-SA')} ر.س / قطعة</div>
+      </div>
+      <div class="cart-item-qty">
+        <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+        <span class="qty-val">${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+      </div>
+    </div>
+  `).join('');
+  updateTotals();
+}
+
+function updateTotals() {
+  const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const discount = parseFloat(document.getElementById('discountInput').value) || 0;
+  const discounted = subtotal * (1 - discount/100);
+  const tax = discounted * 0.15;
+  const grand = discounted + tax;
+  document.getElementById('subtotal').textContent  = subtotal.toFixed(2) + ' ر.س';
+  document.getElementById('taxVal').textContent    = tax.toFixed(2) + ' ر.س';
+  document.getElementById('grandTotal').textContent = grand.toFixed(2) + ' ر.س';
+}
+
+function clearCart() {
+  cart = [];
+  renderCart();
+  renderProducts();
+}
+
+// ---- Payment ----
+function setPay(btn) {
+  document.querySelectorAll('.pay-btn').forEach(b => { b.classList.remove('btn-primary'); b.classList.add('btn-secondary'); });
+  btn.classList.add('btn-primary');
+  btn.classList.remove('btn-secondary');
+}
+
+// ---- Complete Sale ----
+function completeSale() {
+  if (cart.length === 0) { alert('أضف منتجاً للسلة أولاً'); return; }
+  invoiceCounter++;
+  const grand = document.getElementById('grandTotal').textContent;
+  document.getElementById('invoiceNum').textContent = '#INV-' + invoiceCounter;
+  document.getElementById('modalTotal').textContent = grand;
+  document.getElementById('saleModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('saleModal').classList.remove('open');
+  clearCart();
+}
+
+// ---- Sidebar ----
+function toggleSidebar() {
+  ['sidebar','adminHeader','adminMain'].forEach(id => document.getElementById(id).classList.toggle('collapsed'));
+  document.getElementById('adminHeader').classList.toggle('sidebar-collapsed');
+  document.getElementById('adminMain').classList.toggle('sidebar-collapsed');
+}
+function toggleMenu(key) { document.getElementById('item-'+key).classList.toggle('open'); }
+
+if (window.innerWidth <= 900) {
+  document.getElementById('sidebar').classList.add('collapsed');
+  document.getElementById('adminHeader').classList.add('sidebar-collapsed');
+  document.getElementById('adminMain').classList.add('sidebar-collapsed');
+}
+
+// Init
+renderProducts();
+</script>
+
+</body>
+</html>
