@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الطلبات — StyleLoop Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="admin-dashboard.html" class="sb-brand">
+    <div class="sb-brand-icon">SL</div>
+    <div class="sb-brand-text">
+      <div class="sb-brand-name">Style<span style="color:var(--pink)">Loop</span></div>
+      <div class="sb-brand-sub">لوحة الإدارة</div>
+    </div>
+    <button class="sb-toggle" onclick="toggleSidebar()">&#9001;</button>
+  </a>
+  <nav class="sb-nav">
+    <div class="sb-section-label">القائمة الرئيسية</div>
+    <div class="sb-item"><a href="admin-dashboard.html" class="sb-link" data-tooltip="لوحة التحكم"><span class="sb-icon">🏠</span><span class="sb-label">لوحة التحكم</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="التشغيل"><span class="sb-icon">⚙️</span><span class="sb-label">التشغيل</span></a></div>
+    <div class="sb-item"><a href="admin-pos.html" class="sb-link" data-tooltip="نقطة البيع"><span class="sb-icon">🛒</span><span class="sb-label">نقطة البيع</span></a></div>
+    <div class="sb-item"><a href="admin-orders.html" class="sb-link active" data-tooltip="الطلبات"><span class="sb-icon">📦</span><span class="sb-label">الطلبات</span><span class="sb-badge">12</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="قوائم نقطة البيع"><span class="sb-icon">📋</span><span class="sb-label">قوائم نقطة البيع</span></a></div>
+    <div class="sb-item"><a href="admin-customers.html" class="sb-link" data-tooltip="العملاء"><span class="sb-icon">👥</span><span class="sb-label">العملاء</span></a></div>
+    <div class="sb-section-label">البيانات الأساسية</div>
+    <div class="sb-item" id="item-basic">
+      <button class="sb-link" onclick="toggleMenu('basic')" data-tooltip="البيانات الأساسية"><span class="sb-icon">🗃️</span><span class="sb-label">البيانات الأساسية</span><span class="sb-arrow">&#9002;</span></button>
+      <div class="sb-submenu" id="submenu-basic">
+        <div class="sb-item"><a href="admin-branches.html" class="sb-link" data-tooltip="الفروع"><span class="sb-icon">🏢</span><span class="sb-label">الفروع</span></a></div>
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الفئات"><span class="sb-icon">🏷️</span><span class="sb-label">الفئات</span></a></div>
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الموردون والمشترون"><span class="sb-icon">🤝</span><span class="sb-label">الموردون والمشترون</span></a></div>
+        <div class="sb-item"><a href="admin-products.html" class="sb-link" data-tooltip="المنتجات والأسعار"><span class="sb-icon">👗</span><span class="sb-label">المنتجات والأسعار</span></a></div>
+      </div>
+    </div>
+    <div class="sb-section-label">العمليات</div>
+    <div class="sb-item" id="item-ops">
+      <button class="sb-link" onclick="toggleMenu('ops')" data-tooltip="العمليات"><span class="sb-icon">📊</span><span class="sb-label">العمليات</span><span class="sb-arrow">&#9002;</span></button>
+      <div class="sb-submenu" id="submenu-ops">
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="قوائم الشراء"><span class="sb-icon">🛍️</span><span class="sb-label">قوائم الشراء</span></a></div>
+      </div>
+    </div>
+    <div class="sb-section-label">الإدارة</div>
+    <div class="sb-item"><a href="admin-reports.html" class="sb-link" data-tooltip="التقارير"><span class="sb-icon">📈</span><span class="sb-label">التقارير</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الملك"><span class="sb-icon">👑</span><span class="sb-label">الملك</span></a></div>
+  </nav>
+  <div class="sb-footer">
+    <div class="sb-user-card">
+      <div class="sb-avatar">م</div>
+      <div class="sb-user-info">
+        <div class="sb-user-name">المدير العام</div>
+        <div class="sb-user-role">Admin · StyleLoop</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- HEADER -->
+<header class="admin-header" id="adminHeader">
+  <div class="hdr-start">
+    <button class="hdr-menu-btn" onclick="toggleSidebar()">☰</button>
+    <div class="hdr-breadcrumb"><span>StyleLoop</span><span class="sep">›</span><span>الطلبات</span></div>
+  </div>
+  <div class="hdr-end">
+    <div class="hdr-search"><span>🔍</span><input type="text" placeholder="بحث عن طلب…" oninput="filterOrders(this.value)"></div>
+    <button class="hdr-icon-btn">🔔<span class="hdr-notif-dot"></span></button>
+    <div class="hdr-avatar">م</div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="admin-main" id="adminMain">
+
+  <div class="page-title">
+    <h1><span class="pg-icon">📦</span> إدارة الطلبات</h1>
+    <p>متابعة وإدارة جميع طلبات المتجر</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card pink">
+      <div class="stat-icon">📦</div>
+      <div class="stat-body">
+        <div class="stat-label">إجمالي الطلبات</div>
+        <div class="stat-value">1,042</div>
+        <div class="stat-change up">↑ 8% هذا الشهر</div>
+      </div>
+    </div>
+    <div class="stat-card gold">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-body">
+        <div class="stat-label">قيد التجهيز</div>
+        <div class="stat-value">38</div>
+        <div class="stat-change neutral">لا تغيير</div>
+      </div>
+    </div>
+    <div class="stat-card sage">
+      <div class="stat-icon">🚚</div>
+      <div class="stat-body">
+        <div class="stat-label">تم الشحن</div>
+        <div class="stat-value">124</div>
+        <div class="stat-change up">↑ 15% أسبوعياً</div>
+      </div>
+    </div>
+    <div class="stat-card coral">
+      <div class="stat-icon">↩️</div>
+      <div class="stat-body">
+        <div class="stat-label">المرتجعات</div>
+        <div class="stat-value">23</div>
+        <div class="stat-change down">↓ 3% من الشهر الماضي</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters + Table -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="ct-icon">📦</span> قائمة الطلبات</div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button class="btn btn-secondary btn-sm filter-btn active" data-status="all" onclick="setFilter(this,'all')">الكل (1,042)</button>
+        <button class="btn btn-secondary btn-sm filter-btn" data-status="pending" onclick="setFilter(this,'pending')">⏳ قيد التجهيز</button>
+        <button class="btn btn-secondary btn-sm filter-btn" data-status="shipped" onclick="setFilter(this,'shipped')">🚚 مشحون</button>
+        <button class="btn btn-secondary btn-sm filter-btn" data-status="done" onclick="setFilter(this,'done')">✅ مكتمل</button>
+        <button class="btn btn-secondary btn-sm filter-btn" data-status="returned" onclick="setFilter(this,'returned')">↩️ مرتجع</button>
+        <button class="btn btn-primary btn-sm" onclick="openAddOrder()">+ طلب جديد</button>
+      </div>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>رقم الطلب</th>
+              <th>العميل</th>
+              <th>المنتجات</th>
+              <th>المبلغ</th>
+              <th>طريقة الدفع</th>
+              <th>الحالة</th>
+              <th>التاريخ</th>
+              <th>إجراء</th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Order Detail Modal -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal" style="width:min(95vw,580px)">
+    <div class="modal-header">
+      <div class="modal-title">📦 تفاصيل الطلب <span id="modalOrderNum" style="color:var(--pink)"></span></div>
+      <button class="modal-close" onclick="closeModal('orderModal')">✕</button>
+    </div>
+    <div class="modal-body" id="orderModalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('orderModal')">إغلاق</button>
+      <button class="btn btn-gold">🖨️ طباعة</button>
+      <button class="btn btn-primary">✅ تحديث الحالة</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const orders = [
+  {id:'#1042',customer:'سارة المنصور',  items:'فستان صيفي × 2',    amount:640,  payment:'بطاقة',  status:'pending',  date:'16 أبريل 2026', icon:'👗'},
+  {id:'#1041',customer:'نورة الحربي',   items:'عباية ذهبية × 1',   amount:850,  payment:'تحويل', status:'done',     date:'15 أبريل 2026', icon:'👘'},
+  {id:'#1040',customer:'منى العتيبي',   items:'شال كاشمير × 3',    amount:540,  payment:'نقداً', status:'shipped',  date:'15 أبريل 2026', icon:'🧣'},
+  {id:'#1039',customer:'ريم السبيعي',   items:'جاكيت جينز × 1',    amount:290,  payment:'بطاقة',  status:'returned', date:'14 أبريل 2026', icon:'🧥'},
+  {id:'#1038',customer:'لمى الشمري',    items:'فستان سهرة × 1',    amount:1200, payment:'نقداً', status:'done',     date:'13 أبريل 2026', icon:'🩱'},
+  {id:'#1037',customer:'هنا العمري',    items:'إيشارب حريري × 2',  amount:190,  payment:'تحويل', status:'done',     date:'13 أبريل 2026', icon:'🎀'},
+  {id:'#1036',customer:'دانة القحطاني', items:'بلوزة حرير × 1',    amount:150,  payment:'بطاقة',  status:'pending',  date:'12 أبريل 2026', icon:'👚'},
+  {id:'#1035',customer:'نجود الغامدي',  items:'حقيبة يد × 1',      amount:450,  payment:'نقداً', status:'shipped',  date:'12 أبريل 2026', icon:'👜'},
+  {id:'#1034',customer:'أريج الزهراني', items:'تنورة مطرزة × 2',   amount:460,  payment:'بطاقة',  status:'done',     date:'11 أبريل 2026', icon:'👗'},
+  {id:'#1033',customer:'سمية المالكي',  items:'عباية سوداء × 1',   amount:680,  payment:'تحويل', status:'shipped',  date:'11 أبريل 2026', icon:'👘'},
+  {id:'#1032',customer:'نوف الدوسري',   items:'فستان صيفي × 1',    amount:320,  payment:'بطاقة',  status:'done',     date:'10 أبريل 2026', icon:'👗'},
+  {id:'#1031',customer:'بيان الرشيدي',  items:'جاكيت بيج × 1',     amount:380,  payment:'نقداً', status:'returned', date:'10 أبريل 2026', icon:'🧥'},
+];
+
+const statusMap = {
+  pending:  '<span class="badge badge-gold">⏳ قيد التجهيز</span>',
+  shipped:  '<span class="badge badge-blue">🚚 تم الشحن</span>',
+  done:     '<span class="badge badge-green">✅ مكتمل</span>',
+  returned: '<span class="badge badge-red">↩️ مرتجع</span>',
+};
+
+let currentFilter = 'all';
+let currentSearch = '';
+const PAGE_SIZE = 8;
+let currentPage = 1;
+
+function getFiltered() {
+  return orders.filter(o =>
+    (currentFilter === 'all' || o.status === currentFilter) &&
+    (o.id.includes(currentSearch) || o.customer.includes(currentSearch) || o.items.includes(currentSearch))
+  );
+}
+
+function renderOrders() {
+  const filtered = getFiltered();
+  const start = (currentPage-1)*PAGE_SIZE;
+  const page = filtered.slice(start, start+PAGE_SIZE);
+  const tbody = document.getElementById('ordersBody');
+  tbody.innerHTML = page.map(o => `
+    <tr>
+      <td><strong>${o.id}</strong></td>
+      <td>${o.customer}</td>
+      <td>${o.icon} ${o.items}</td>
+      <td><strong>${o.amount.toLocaleString('ar-SA')} ر.س</strong></td>
+      <td>${o.payment}</td>
+      <td>${statusMap[o.status]}</td>
+      <td>${o.date}</td>
+      <td><button class="btn btn-secondary btn-sm" onclick="viewOrder('${o.id}')">عرض</button></td>
+    </tr>
+  `).join('');
+  renderPagination(filtered.length);
+}
+
+function renderPagination(total) {
+  const pages = Math.ceil(total / PAGE_SIZE);
+  const pg = document.getElementById('pagination');
+  let html = '';
+  for (let i=1; i<=pages; i++) {
+    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  pg.innerHTML = html;
+}
+
+function goPage(n) { currentPage = n; renderOrders(); }
+function filterOrders(val) { currentSearch = val; currentPage = 1; renderOrders(); }
+function setFilter(btn, status) {
+  currentFilter = status; currentPage = 1;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderOrders();
+}
+
+function viewOrder(id) {
+  const o = orders.find(x => x.id === id);
+  document.getElementById('modalOrderNum').textContent = o.id;
+  document.getElementById('orderModalBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+      <div><div class="text-muted mb-1">العميل</div><strong>${o.customer}</strong></div>
+      <div><div class="text-muted mb-1">التاريخ</div><strong>${o.date}</strong></div>
+      <div><div class="text-muted mb-1">طريقة الدفع</div><strong>${o.payment}</strong></div>
+      <div><div class="text-muted mb-1">الحالة</div>${statusMap[o.status]}</div>
+    </div>
+    <hr class="divider">
+    <div style="margin-bottom:.75rem;font-weight:600;color:var(--t1);">المنتجات</div>
+    <div style="background:var(--bg2);border-radius:8px;padding:.85rem;">
+      <div style="font-size:.85rem;">${o.icon} ${o.items}</div>
+    </div>
+    <hr class="divider">
+    <div class="flex-between" style="margin-top:.5rem;">
+      <span class="text-muted">الإجمالي</span>
+      <strong style="font-size:1.1rem;color:var(--pink)">${o.amount.toLocaleString('ar-SA')} ر.س</strong>
+    </div>
+  `;
+  document.getElementById('orderModal').classList.add('open');
+}
+
+function openAddOrder() { alert('سيتم فتح نافذة إضافة طلب جديد'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+  document.getElementById('adminHeader').classList.toggle('sidebar-collapsed');
+  document.getElementById('adminMain').classList.toggle('sidebar-collapsed');
+}
+function toggleMenu(k) { document.getElementById('item-'+k).classList.toggle('open'); }
+
+if (window.innerWidth <= 900) {
+  document.getElementById('sidebar').classList.add('collapsed');
+  document.getElementById('adminHeader').classList.add('sidebar-collapsed');
+  document.getElementById('adminMain').classList.add('sidebar-collapsed');
+}
+
+renderOrders();
+</script>
+</body>
+</html>

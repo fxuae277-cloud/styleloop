@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفروع — StyleLoop Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="admin-dashboard.html" class="sb-brand">
+    <div class="sb-brand-icon">SL</div>
+    <div class="sb-brand-text">
+      <div class="sb-brand-name">Style<span style="color:var(--pink)">Loop</span></div>
+      <div class="sb-brand-sub">لوحة الإدارة</div>
+    </div>
+    <button class="sb-toggle" onclick="toggleSidebar()">&#9001;</button>
+  </a>
+  <nav class="sb-nav">
+    <div class="sb-section-label">القائمة الرئيسية</div>
+    <div class="sb-item"><a href="admin-dashboard.html" class="sb-link" data-tooltip="لوحة التحكم"><span class="sb-icon">🏠</span><span class="sb-label">لوحة التحكم</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="التشغيل"><span class="sb-icon">⚙️</span><span class="sb-label">التشغيل</span></a></div>
+    <div class="sb-item"><a href="admin-pos.html" class="sb-link" data-tooltip="نقطة البيع"><span class="sb-icon">🛒</span><span class="sb-label">نقطة البيع</span></a></div>
+    <div class="sb-item"><a href="admin-orders.html" class="sb-link" data-tooltip="الطلبات"><span class="sb-icon">📦</span><span class="sb-label">الطلبات</span><span class="sb-badge">12</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="قوائم نقطة البيع"><span class="sb-icon">📋</span><span class="sb-label">قوائم نقطة البيع</span></a></div>
+    <div class="sb-item"><a href="admin-customers.html" class="sb-link" data-tooltip="العملاء"><span class="sb-icon">👥</span><span class="sb-label">العملاء</span></a></div>
+    <div class="sb-section-label">البيانات الأساسية</div>
+    <div class="sb-item open" id="item-basic">
+      <button class="sb-link" onclick="toggleMenu('basic')" data-tooltip="البيانات الأساسية"><span class="sb-icon">🗃️</span><span class="sb-label">البيانات الأساسية</span><span class="sb-arrow">&#9002;</span></button>
+      <div class="sb-submenu" id="submenu-basic">
+        <div class="sb-item"><a href="admin-branches.html" class="sb-link active" data-tooltip="الفروع"><span class="sb-icon">🏢</span><span class="sb-label">الفروع</span></a></div>
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الفئات"><span class="sb-icon">🏷️</span><span class="sb-label">الفئات</span></a></div>
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الموردون والمشترون"><span class="sb-icon">🤝</span><span class="sb-label">الموردون والمشترون</span></a></div>
+        <div class="sb-item"><a href="admin-products.html" class="sb-link" data-tooltip="المنتجات والأسعار"><span class="sb-icon">👗</span><span class="sb-label">المنتجات والأسعار</span></a></div>
+      </div>
+    </div>
+    <div class="sb-section-label">العمليات</div>
+    <div class="sb-item" id="item-ops">
+      <button class="sb-link" onclick="toggleMenu('ops')" data-tooltip="العمليات"><span class="sb-icon">📊</span><span class="sb-label">العمليات</span><span class="sb-arrow">&#9002;</span></button>
+      <div class="sb-submenu" id="submenu-ops">
+        <div class="sb-item"><a href="#" class="sb-link" data-tooltip="قوائم الشراء"><span class="sb-icon">🛍️</span><span class="sb-label">قوائم الشراء</span></a></div>
+      </div>
+    </div>
+    <div class="sb-section-label">الإدارة</div>
+    <div class="sb-item"><a href="admin-reports.html" class="sb-link" data-tooltip="التقارير"><span class="sb-icon">📈</span><span class="sb-label">التقارير</span></a></div>
+    <div class="sb-item"><a href="#" class="sb-link" data-tooltip="الملك"><span class="sb-icon">👑</span><span class="sb-label">الملك</span></a></div>
+  </nav>
+  <div class="sb-footer">
+    <div class="sb-user-card">
+      <div class="sb-avatar">م</div>
+      <div class="sb-user-info"><div class="sb-user-name">المدير العام</div><div class="sb-user-role">Admin · StyleLoop</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- HEADER -->
+<header class="admin-header" id="adminHeader">
+  <div class="hdr-start">
+    <button class="hdr-menu-btn" onclick="toggleSidebar()">☰</button>
+    <div class="hdr-breadcrumb"><span>StyleLoop</span><span class="sep">›</span><span>البيانات الأساسية</span><span class="sep">›</span><span>الفروع</span></div>
+  </div>
+  <div class="hdr-end">
+    <div class="hdr-search"><span>🔍</span><input type="text" placeholder="بحث عن فرع…"></div>
+    <button class="hdr-icon-btn">🔔<span class="hdr-notif-dot"></span></button>
+    <div class="hdr-avatar">م</div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="admin-main" id="adminMain">
+
+  <div class="page-title">
+    <h1><span class="pg-icon">🏢</span> إدارة الفروع</h1>
+    <p>عرض وإدارة فروع StyleLoop في المملكة</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card pink"><div class="stat-icon">🏢</div><div class="stat-body"><div class="stat-label">إجمالي الفروع</div><div class="stat-value">7</div><div class="stat-change up">↑ فرع جديد</div></div></div>
+    <div class="stat-card gold"><div class="stat-icon">✅</div><div class="stat-body"><div class="stat-label">فروع نشطة</div><div class="stat-value">6</div><div class="stat-change neutral">عاملة الآن</div></div></div>
+    <div class="stat-card sage"><div class="stat-icon">👤</div><div class="stat-body"><div class="stat-label">إجمالي الموظفين</div><div class="stat-value">84</div><div class="stat-change up">↑ 3 موظفين جدد</div></div></div>
+    <div class="stat-card coral"><div class="stat-icon">💰</div><div class="stat-body"><div class="stat-label">مبيعات الشهر</div><div class="stat-value">125K</div><div class="stat-change up">↑ 9% ر.س</div></div></div>
+  </div>
+
+  <!-- Branch Cards -->
+  <div class="card-header" style="background:var(--card);border-radius:var(--radius);padding:1rem 1.25rem;border:1px solid var(--line);box-shadow:var(--shadow4);margin-bottom:1.25rem;">
+    <div class="card-title"><span class="ct-icon">🏢</span> الفروع</div>
+    <button class="btn btn-primary btn-sm" onclick="openAddBranch()">+ فرع جديد</button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;" id="branchesGrid"></div>
+
+</main>
+
+<!-- Add Branch Modal -->
+<div class="modal-overlay" id="branchModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="branchModalTitle">🏢 فرع جديد</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">اسم الفرع <span>*</span></label>
+        <input class="form-control" type="text" placeholder="مثال: فرع الرياض المركزي">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">المدينة <span>*</span></label>
+          <select class="form-control">
+            <option>الرياض</option><option>جدة</option><option>الدمام</option><option>مكة المكرمة</option><option>المدينة المنورة</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">رقم التواصل</label>
+          <input class="form-control" type="tel" placeholder="+966 1X XXX XXXX">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">العنوان التفصيلي</label>
+        <textarea class="form-control" placeholder="مثال: حي العليا، شارع التحلية، مول X، الدور 2"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">مدير الفرع</label>
+          <input class="form-control" type="text" placeholder="اسم المدير">
+        </div>
+        <div class="form-group">
+          <label class="form-label">عدد الموظفين</label>
+          <input class="form-control" type="number" placeholder="0">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveBranch()">💾 حفظ الفرع</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const branches = [
+  {name:'الرياض المركزي', city:'الرياض',  address:'حي العليا، مول الرياض بارك', manager:'أمل خالد',   staff:18, sales:38500, status:'active', icon:'🏙️', color:'pink'},
+  {name:'جدة البحري',     city:'جدة',     address:'كورنيش جدة، مول البحر',      manager:'هند السيد',  staff:14, sales:29800, status:'active', icon:'🌊', color:'sage'},
+  {name:'الدمام الخليج',  city:'الدمام',  address:'حي الشاطئ، مول الخليج',      manager:'رانيا موسى', staff:11, sales:22400, status:'active', icon:'🌅', color:'gold'},
+  {name:'مكة المكرمة',    city:'مكة',     address:'حي العزيزية، أجياد مول',     manager:'مي الغامدي', staff:16, sales:31200, status:'active', icon:'🕌', color:'lavender'},
+  {name:'المدينة المنورة',city:'المدينة', address:'حي العوالي، القيبلة مول',     manager:'لولوه أحمد', staff:10, sales:18600, status:'active', icon:'🌙', color:'sage'},
+  {name:'الطائف الهضبة',  city:'الطائف', address:'حي الضيافة، برج هضبة الطائف',manager:'دانة صالح',  staff:8,  sales:12300, status:'active', icon:'🌿', color:'gold'},
+  {name:'جازان الجنوبي',  city:'جازان',  address:'حي المطار، مجمع التجاري',    manager:'—',          staff:7,  sales:0,     status:'coming', icon:'🏗️', color:'pink'},
+];
+
+const statusLabels = {
+  active: '<span class="badge badge-green">✅ نشط</span>',
+  coming: '<span class="badge badge-orange">🔜 قريباً</span>',
+};
+
+function renderBranches() {
+  const grid = document.getElementById('branchesGrid');
+  grid.innerHTML = branches.map(b => `
+    <div class="card" style="transition:transform .3s var(--ease);cursor:pointer;" onmouseenter="this.style.transform='translateY(-4px)'" onmouseleave="this.style.transform=''">
+      <div style="background:linear-gradient(135deg,var(--${b.color}4),var(--${b.color}3));padding:1.25rem;display:flex;align-items:center;gap:.85rem;border-bottom:1px solid var(--line);">
+        <div style="width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.7);display:grid;place-items:center;font-size:1.6rem;">${b.icon}</div>
+        <div style="flex:1;">
+          <div style="font-size:.95rem;font-weight:700;color:var(--t1);">${b.name}</div>
+          <div style="font-size:.75rem;color:var(--t2);margin-top:.15rem;">${b.city} &mdash; ${b.address}</div>
+        </div>
+        ${statusLabels[b.status]}
+      </div>
+      <div style="padding:1rem 1.25rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.85rem;">
+          <div style="text-align:center;background:var(--bg2);border-radius:10px;padding:.6rem;">
+            <div style="font-size:1.1rem;font-weight:800;color:var(--pink)">${b.staff}</div>
+            <div style="font-size:.68rem;color:var(--t3);">موظف</div>
+          </div>
+          <div style="text-align:center;background:var(--bg2);border-radius:10px;padding:.6rem;">
+            <div style="font-size:1.1rem;font-weight:800;color:var(--gold)">${b.sales>0?b.sales.toLocaleString('ar-SA')+'<span style=font-size:.65rem> ر.س</span>':'—'}</div>
+            <div style="font-size:.68rem;color:var(--t3);">مبيعات الشهر</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:.75rem;color:var(--t3);">المدير: <strong style="color:var(--t2)">${b.manager}</strong></div>
+          <div style="display:flex;gap:.4rem;">
+            <button class="btn btn-secondary btn-sm" onclick="editBranch('${b.name}')">✏️ تعديل</button>
+            <button class="btn btn-primary btn-sm">📊</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAddBranch(){document.getElementById('branchModal').classList.add('open');}
+function editBranch(name){document.getElementById('branchModalTitle').textContent='✏️ تعديل: '+name;document.getElementById('branchModal').classList.add('open');}
+function closeModal(){document.getElementById('branchModal').classList.remove('open');}
+function saveBranch(){alert('تم حفظ الفرع بنجاح!');closeModal();}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('collapsed');
+  document.getElementById('adminHeader').classList.toggle('sidebar-collapsed');
+  document.getElementById('adminMain').classList.toggle('sidebar-collapsed');
+}
+function toggleMenu(k){document.getElementById('item-'+k).classList.toggle('open');}
+
+if(window.innerWidth<=900){
+  document.getElementById('sidebar').classList.add('collapsed');
+  document.getElementById('adminHeader').classList.add('sidebar-collapsed');
+  document.getElementById('adminMain').classList.add('sidebar-collapsed');
+}
+
+renderBranches();
+</script>
+</body>
+</html>

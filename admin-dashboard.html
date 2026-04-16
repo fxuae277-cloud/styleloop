@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم — StyleLoop Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+
+  <!-- Brand -->
+  <a href="admin-dashboard.html" class="sb-brand">
+    <div class="sb-brand-icon">SL</div>
+    <div class="sb-brand-text">
+      <div class="sb-brand-name">Style<span style="color:var(--pink)">Loop</span></div>
+      <div class="sb-brand-sub">لوحة الإدارة</div>
+    </div>
+    <button class="sb-toggle" onclick="toggleSidebar()" title="طي القائمة">&#9001;</button>
+  </a>
+
+  <!-- Nav -->
+  <nav class="sb-nav">
+    <div class="sb-section-label">القائمة الرئيسية</div>
+
+    <!-- Dashboard -->
+    <div class="sb-item">
+      <a href="admin-dashboard.html" class="sb-link active" data-tooltip="لوحة التحكم">
+        <span class="sb-icon">🏠</span>
+        <span class="sb-label">لوحة التحكم</span>
+      </a>
+    </div>
+
+    <!-- Operations -->
+    <div class="sb-item">
+      <a href="#" class="sb-link" data-tooltip="التشغيل">
+        <span class="sb-icon">⚙️</span>
+        <span class="sb-label">التشغيل</span>
+      </a>
+    </div>
+
+    <!-- POS -->
+    <div class="sb-item">
+      <a href="admin-pos.html" class="sb-link" data-tooltip="نقطة البيع">
+        <span class="sb-icon">🛒</span>
+        <span class="sb-label">نقطة البيع</span>
+      </a>
+    </div>
+
+    <!-- Orders -->
+    <div class="sb-item">
+      <a href="admin-orders.html" class="sb-link" data-tooltip="الطلبات">
+        <span class="sb-icon">📦</span>
+        <span class="sb-label">الطلبات</span>
+        <span class="sb-badge">12</span>
+      </a>
+    </div>
+
+    <!-- POS Menus -->
+    <div class="sb-item">
+      <a href="#" class="sb-link" data-tooltip="قوائم نقطة البيع">
+        <span class="sb-icon">📋</span>
+        <span class="sb-label">قوائم نقطة البيع</span>
+      </a>
+    </div>
+
+    <!-- Customers -->
+    <div class="sb-item">
+      <a href="admin-customers.html" class="sb-link" data-tooltip="العملاء">
+        <span class="sb-icon">👥</span>
+        <span class="sb-label">العملاء</span>
+      </a>
+    </div>
+
+    <div class="sb-section-label">البيانات الأساسية</div>
+
+    <!-- Basic Data (collapsible) -->
+    <div class="sb-item" id="item-basic">
+      <button class="sb-link" onclick="toggleMenu('basic')" data-tooltip="البيانات الأساسية">
+        <span class="sb-icon">🗃️</span>
+        <span class="sb-label">البيانات الأساسية</span>
+        <span class="sb-arrow">&#9002;</span>
+      </button>
+      <div class="sb-submenu" id="submenu-basic">
+        <div class="sb-item">
+          <a href="admin-branches.html" class="sb-link" data-tooltip="الفروع">
+            <span class="sb-icon">🏢</span>
+            <span class="sb-label">الفروع</span>
+          </a>
+        </div>
+        <div class="sb-item">
+          <a href="#" class="sb-link" data-tooltip="الفئات">
+            <span class="sb-icon">🏷️</span>
+            <span class="sb-label">الفئات</span>
+          </a>
+        </div>
+        <div class="sb-item">
+          <a href="#" class="sb-link" data-tooltip="الموردون والمشترون">
+            <span class="sb-icon">🤝</span>
+            <span class="sb-label">الموردون والمشترون</span>
+          </a>
+        </div>
+        <div class="sb-item">
+          <a href="admin-products.html" class="sb-link" data-tooltip="المنتجات والأسعار">
+            <span class="sb-icon">👗</span>
+            <span class="sb-label">المنتجات والأسعار</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="sb-section-label">العمليات</div>
+
+    <!-- Operations (collapsible) -->
+    <div class="sb-item" id="item-ops">
+      <button class="sb-link" onclick="toggleMenu('ops')" data-tooltip="العمليات">
+        <span class="sb-icon">📊</span>
+        <span class="sb-label">العمليات</span>
+        <span class="sb-arrow">&#9002;</span>
+      </button>
+      <div class="sb-submenu" id="submenu-ops">
+        <div class="sb-item">
+          <a href="#" class="sb-link" data-tooltip="قوائم الشراء">
+            <span class="sb-icon">🛍️</span>
+            <span class="sb-label">قوائم الشراء</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="sb-section-label">الإدارة</div>
+
+    <!-- Owner -->
+    <div class="sb-item">
+      <a href="admin-reports.html" class="sb-link" data-tooltip="التقارير">
+        <span class="sb-icon">📈</span>
+        <span class="sb-label">التقارير</span>
+      </a>
+    </div>
+    <div class="sb-item">
+      <a href="#" class="sb-link" data-tooltip="الملك / المدير">
+        <span class="sb-icon">👑</span>
+        <span class="sb-label">الملك</span>
+      </a>
+    </div>
+
+  </nav>
+
+  <!-- Footer -->
+  <div class="sb-footer">
+    <div class="sb-user-card">
+      <div class="sb-avatar">م</div>
+      <div class="sb-user-info">
+        <div class="sb-user-name">المدير العام</div>
+        <div class="sb-user-role">Admin · StyleLoop</div>
+      </div>
+    </div>
+  </div>
+
+</aside>
+<!-- ===== END SIDEBAR ===== -->
+
+<!-- ===== HEADER ===== -->
+<header class="admin-header" id="adminHeader">
+  <div class="hdr-start">
+    <button class="hdr-menu-btn" onclick="toggleSidebar()" title="القائمة">☰</button>
+    <div class="hdr-breadcrumb">
+      <span>StyleLoop</span>
+      <span class="sep">›</span>
+      <span>لوحة التحكم</span>
+    </div>
+  </div>
+  <div class="hdr-end">
+    <div class="hdr-search">
+      <span>🔍</span>
+      <input type="text" placeholder="بحث سريع…">
+    </div>
+    <button class="hdr-icon-btn" title="إشعارات">
+      🔔
+      <span class="hdr-notif-dot"></span>
+    </button>
+    <button class="hdr-icon-btn" title="رسائل">💬</button>
+    <div class="hdr-avatar" title="الملف الشخصي">م</div>
+  </div>
+</header>
+<!-- ===== END HEADER ===== -->
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="admin-main" id="adminMain">
+
+  <!-- Page Title -->
+  <div class="page-title">
+    <h1><span class="pg-icon">🏠</span> لوحة التحكم</h1>
+    <p>مرحباً بك في لوحة إدارة StyleLoop — الأربعاء، 16 أبريل 2026</p>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card pink">
+      <div class="stat-icon">💰</div>
+      <div class="stat-body">
+        <div class="stat-label">إجمالي المبيعات</div>
+        <div class="stat-value">48,250</div>
+        <div class="stat-change up">↑ 12.5% من الشهر الماضي</div>
+      </div>
+    </div>
+    <div class="stat-card gold">
+      <div class="stat-icon">📦</div>
+      <div class="stat-body">
+        <div class="stat-label">الطلبات اليوم</div>
+        <div class="stat-value">134</div>
+        <div class="stat-change up">↑ 8.2% من أمس</div>
+      </div>
+    </div>
+    <div class="stat-card sage">
+      <div class="stat-icon">👥</div>
+      <div class="stat-body">
+        <div class="stat-label">العملاء النشطون</div>
+        <div class="stat-value">2,841</div>
+        <div class="stat-change up">↑ 3.1% هذا الأسبوع</div>
+      </div>
+    </div>
+    <div class="stat-card coral">
+      <div class="stat-icon">👗</div>
+      <div class="stat-body">
+        <div class="stat-label">المنتجات المتاحة</div>
+        <div class="stat-value">596</div>
+        <div class="stat-change neutral">لا تغيير</div>
+      </div>
+    </div>
+    <div class="stat-card lavender">
+      <div class="stat-icon">🏢</div>
+      <div class="stat-body">
+        <div class="stat-label">الفروع النشطة</div>
+        <div class="stat-value">7</div>
+        <div class="stat-change up">↑ فرع جديد</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Grid: Chart + Activity -->
+  <div class="content-grid two-col">
+
+    <!-- Sales Chart -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct-icon">📈</span> مبيعات الأسبوع الجاري</div>
+        <div class="card-actions">
+          <button class="btn btn-secondary btn-sm">أسبوع</button>
+          <button class="btn btn-secondary btn-sm">شهر</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="chart-area">
+          <div class="chart-bars" id="salesChart"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:.75rem;">
+          <div style="font-size:.75rem;color:var(--t3);">إجمالي هذا الأسبوع: <strong style="color:var(--pink)">12,480 ر.س</strong></div>
+          <div style="font-size:.75rem;color:var(--t3);">نسبة التحقق: <strong style="color:var(--sage)">94%</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct-icon">🕐</span> آخر الأنشطة</div>
+        <a href="#" class="btn btn-secondary btn-sm">عرض الكل</a>
+      </div>
+      <div class="card-body" style="padding-top:.5rem;">
+        <ul class="activity-list">
+          <li class="activity-item">
+            <span class="activity-dot pink"></span>
+            <div class="activity-text"><strong>طلب جديد #1042</strong> — فستان صيفي أزرق × 2</div>
+            <span class="activity-time">منذ 3 د</span>
+          </li>
+          <li class="activity-item">
+            <span class="activity-dot gold"></span>
+            <div class="activity-text"><strong>عميل جديد</strong> — سارة المنصور سجّلت</div>
+            <span class="activity-time">منذ 11 د</span>
+          </li>
+          <li class="activity-item">
+            <span class="activity-dot sage"></span>
+            <div class="activity-text"><strong>مدفوعة #1041</strong> — تم تأكيد الدفع</div>
+            <span class="activity-time">منذ 25 د</span>
+          </li>
+          <li class="activity-item">
+            <span class="activity-dot coral"></span>
+            <div class="activity-text"><strong>إرجاع #1039</strong> — تفصيل جاكيت أسود</div>
+            <span class="activity-time">منذ 1 س</span>
+          </li>
+          <li class="activity-item">
+            <span class="activity-dot pink"></span>
+            <div class="activity-text"><strong>مخزون منخفض</strong> — فستان وردي (5 قطع)</div>
+            <span class="activity-time">منذ 2 س</span>
+          </li>
+          <li class="activity-item">
+            <span class="activity-dot gold"></span>
+            <div class="activity-text"><strong>طلب #1040</strong> — تم الشحن إلى الرياض</div>
+            <span class="activity-time">منذ 3 س</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Quick Actions + Latest Orders -->
+  <div class="content-grid two-col">
+
+    <!-- Quick Actions -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct-icon">⚡</span> إجراءات سريعة</div>
+      </div>
+      <div class="card-body">
+        <div class="quick-actions">
+          <a href="admin-pos.html" class="qa-btn">
+            <span class="qa-icon">🛒</span>
+            <span class="qa-label">نقطة البيع</span>
+          </a>
+          <a href="admin-orders.html" class="qa-btn">
+            <span class="qa-icon">📦</span>
+            <span class="qa-label">الطلبات</span>
+          </a>
+          <a href="admin-products.html" class="qa-btn">
+            <span class="qa-icon">👗</span>
+            <span class="qa-label">منتج جديد</span>
+          </a>
+          <a href="admin-customers.html" class="qa-btn">
+            <span class="qa-icon">👤</span>
+            <span class="qa-label">عميل جديد</span>
+          </a>
+          <a href="admin-branches.html" class="qa-btn">
+            <span class="qa-icon">🏢</span>
+            <span class="qa-label">الفروع</span>
+          </a>
+          <a href="admin-reports.html" class="qa-btn">
+            <span class="qa-icon">📊</span>
+            <span class="qa-label">التقارير</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Products -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct-icon">🔥</span> المنتجات الأكثر مبيعاً</div>
+        <a href="admin-products.html" class="btn btn-secondary btn-sm">عرض الكل</a>
+      </div>
+      <div class="card-body" style="padding:.75rem 1.25rem;">
+        <div style="display:flex;flex-direction:column;gap:.85rem;">
+          <div class="flex-between">
+            <div style="display:flex;align-items:center;gap:.75rem;">
+              <div class="item-img-wrap">👗</div>
+              <div>
+                <div style="font-size:.82rem;font-weight:600;color:var(--t1)">فستان صيفي وردي</div>
+                <div style="font-size:.72rem;color:var(--t3)">142 مبيعة</div>
+              </div>
+            </div>
+            <div style="font-size:.85rem;font-weight:700;color:var(--pink)">320 ر.س</div>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar pink" style="width:85%"></div></div>
+
+          <div class="flex-between">
+            <div style="display:flex;align-items:center;gap:.75rem;">
+              <div class="item-img-wrap">👘</div>
+              <div>
+                <div style="font-size:.82rem;font-weight:600;color:var(--t1)">عباية ذهبية فاخرة</div>
+                <div style="font-size:.72rem;color:var(--t3)">98 مبيعة</div>
+              </div>
+            </div>
+            <div style="font-size:.85rem;font-weight:700;color:var(--gold)">850 ر.س</div>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar gold" style="width:60%"></div></div>
+
+          <div class="flex-between">
+            <div style="display:flex;align-items:center;gap:.75rem;">
+              <div class="item-img-wrap">👒</div>
+              <div>
+                <div style="font-size:.82rem;font-weight:600;color:var(--t1)">شالات كاشمير</div>
+                <div style="font-size:.72rem;color:var(--t3)">76 مبيعة</div>
+              </div>
+            </div>
+            <div style="font-size:.85rem;font-weight:700;color:var(--sage)">180 ر.س</div>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar sage" style="width:45%"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Latest Orders Table -->
+  <div class="card mt-3">
+    <div class="card-header">
+      <div class="card-title"><span class="ct-icon">📦</span> أحدث الطلبات</div>
+      <a href="admin-orders.html" class="btn btn-primary btn-sm">عرض الكل</a>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>رقم الطلب</th>
+              <th>العميل</th>
+              <th>المنتجات</th>
+              <th>المبلغ</th>
+              <th>الحالة</th>
+              <th>التاريخ</th>
+              <th>إجراء</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>#1042</strong></td>
+              <td>سارة المنصور</td>
+              <td>فستان صيفي × 2</td>
+              <td><strong>640 ر.س</strong></td>
+              <td><span class="badge badge-gold">⏳ قيد التجهيز</span></td>
+              <td>16 أبريل 2026</td>
+              <td><a href="admin-orders.html" class="btn btn-secondary btn-sm">عرض</a></td>
+            </tr>
+            <tr>
+              <td><strong>#1041</strong></td>
+              <td>نورة الحربي</td>
+              <td>عباية ذهبية × 1</td>
+              <td><strong>850 ر.س</strong></td>
+              <td><span class="badge badge-green">✅ مكتمل</span></td>
+              <td>15 أبريل 2026</td>
+              <td><a href="admin-orders.html" class="btn btn-secondary btn-sm">عرض</a></td>
+            </tr>
+            <tr>
+              <td><strong>#1040</strong></td>
+              <td>منى العتيبي</td>
+              <td>شال كاشمير × 3</td>
+              <td><strong>540 ر.س</strong></td>
+              <td><span class="badge badge-blue">🚚 تم الشحن</span></td>
+              <td>15 أبريل 2026</td>
+              <td><a href="admin-orders.html" class="btn btn-secondary btn-sm">عرض</a></td>
+            </tr>
+            <tr>
+              <td><strong>#1039</strong></td>
+              <td>ريم السبيعي</td>
+              <td>جاكيت جينز × 1</td>
+              <td><strong>290 ر.س</strong></td>
+              <td><span class="badge badge-red">↩️ مرتجع</span></td>
+              <td>14 أبريل 2026</td>
+              <td><a href="admin-orders.html" class="btn btn-secondary btn-sm">عرض</a></td>
+            </tr>
+            <tr>
+              <td><strong>#1038</strong></td>
+              <td>لمى الشمري</td>
+              <td>فستان سهرة × 1</td>
+              <td><strong>1,200 ر.س</strong></td>
+              <td><span class="badge badge-green">✅ مكتمل</span></td>
+              <td>13 أبريل 2026</td>
+              <td><a href="admin-orders.html" class="btn btn-secondary btn-sm">عرض</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+<!-- ===== END MAIN ===== -->
+
+<script>
+// Sidebar toggle
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const hdr = document.getElementById('adminHeader');
+  const main = document.getElementById('adminMain');
+  sb.classList.toggle('collapsed');
+  hdr.classList.toggle('sidebar-collapsed');
+  main.classList.toggle('sidebar-collapsed');
+}
+
+// Collapsible submenu
+function toggleMenu(key) {
+  const item = document.getElementById('item-' + key);
+  item.classList.toggle('open');
+}
+
+// Build simple bar chart
+(function() {
+  const data = [
+    {day:'الأحد',  val:65},
+    {day:'الاثنين',val:82},
+    {day:'الثلاثاء',val:54},
+    {day:'الأربعاء',val:91},
+    {day:'الخميس',val:73},
+    {day:'الجمعة', val:48},
+    {day:'السبت',  val:60}
+  ];
+  const wrap = document.getElementById('salesChart');
+  if (!wrap) return;
+  const max = Math.max(...data.map(d => d.val));
+  data.forEach(d => {
+    const bar = document.createElement('div');
+    bar.className = 'chart-bar';
+    bar.style.height = (d.val / max * 100) + '%';
+    bar.title = d.day + ': ' + d.val + ' ر.س (×100)';
+    bar.innerHTML = '<span>' + d.day + '</span>';
+    wrap.appendChild(bar);
+  });
+})();
+
+// Auto-collapse sidebar on small screens
+if (window.innerWidth <= 900) {
+  document.getElementById('sidebar').classList.add('collapsed');
+  document.getElementById('adminHeader').classList.add('sidebar-collapsed');
+  document.getElementById('adminMain').classList.add('sidebar-collapsed');
+}
+</script>
+
+</body>
+</html>
