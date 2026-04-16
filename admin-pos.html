@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>نقطة البيع - StyleLoop Admin</title>
+</head>
+<body>
+<div class="admin-layout">
+<aside class="admin-sidebar" id="adminSidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <div class="logo-icon">S</div>
+      <span class="logo-text">StyleLoop <span>Admin</span></span>
+    </div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar">👤</div>
+    <div class="user-info">
+      <div class="user-name">مدير النظام</div>
+      <div class="user-role">Admin</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="admin-dashboard.html" class="nav-item "><span class="nav-icon">📊</span><span class="nav-text">لوحة التحكم</span></a>
+    <a href="admin-pos.html" class="nav-item featured active"><span class="nav-icon">🛒</span><span class="nav-text">نقطة البيع</span><span class="nav-badge">POS</span></a>
+    <a href="admin-orders.html" class="nav-item "><span class="nav-icon">📋</span><span class="nav-text">الطلبات</span></a>
+    <a href="admin-customers.html" class="nav-item "><span class="nav-icon">👥</span><span class="nav-text">العملاء</span></a>
+    <div class="nav-group ">
+      <button class="nav-group-toggle" onclick="toggleNavGroup(this)"><span class="nav-icon">📁</span><span class="nav-text">البيانات الأساسية</span><span class="nav-arrow">▾</span></button>
+      <div class="nav-group-items">
+        <a href="admin-branches.html" class="nav-subitem "><span>🏢</span> الفروع</a>
+        <a href="#" class="nav-subitem"><span>📂</span> الفئات</a>
+        <a href="#" class="nav-subitem"><span>🚚</span> الموردون والمشترون</a>
+        <a href="admin-products.html" class="nav-subitem "><span>💰</span> المنتجات والأسعار</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-toggle" onclick="toggleNavGroup(this)"><span class="nav-icon">⚙️</span><span class="nav-text">العمليات</span><span class="nav-arrow">▾</span></button>
+      <div class="nav-group-items">
+        <a href="#" class="nav-subitem"><span>📑</span> قوائم الشراء</a>
+      </div>
+    </div>
+    <a href="admin-reports.html" class="nav-item "><span class="nav-icon">📈</span><span class="nav-text">التقارير</span></a>
+    <a href="#" class="nav-item"><span class="nav-icon">👑</span><span class="nav-text">الملك</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="admin-login.html" class="nav-item logout"><span class="nav-icon">🚪</span><span class="nav-text">تسجيل الخروج</span></a>
+  </div>
+</aside>
+  <div class="admin-main" id="adminMain">
+<header class="admin-header" id="adminHeader">
+  <button class="header-menu-toggle" onclick="toggleSidebar()">☰</button>
+  <div class="header-search"><input type="text" placeholder="بحث..."><span>🔍</span></div>
+  <div class="header-actions">
+    <button class="header-btn" onclick="toggleTheme()" title="تغيير السمة">🌙</button>
+    <button class="header-btn notifications-btn" onclick="toggleNotifications()">🔔 <span class="notif-badge">3</span></button>
+    <div class="header-user" onclick="toggleUserMenu()"><div class="header-avatar">م</div><span>مدير النظام</span><span>▾</span></div>
+  </div>
+</header>
+<div class="notifications-panel" id="notificationsPanel">
+  <div class="notif-panel-header"><h3>الإشعارات</h3><a href="#">تحديد الكل كمقروء</a></div>
+  <div class="notif-item unread"><div class="notif-dot"></div><div class="notif-content"><p>طلب جديد #SL-45821 من أحمد محمد</p><span>منذ 5 دقائق</span></div></div>
+  <div class="notif-item unread"><div class="notif-dot"></div><div class="notif-content"><p>مخزون منخفض: فستان سهرة</p><span>منذ 20 دقيقة</span></div></div>
+  <div class="notif-item unread"><div class="notif-dot"></div><div class="notif-content"><p>عميلة جديدة: نورة الأحمد</p><span>منذ ساعة</span></div></div>
+</div>
+<div class="user-dropdown" id="userDropdown">
+  <div class="user-dropdown-header"><div class="name">مدير النظام</div><div class="email">admin@styleloop.sa</div></div>
+  <a href="#">👤 الملف الشخصي</a><a href="#">⚙️ الإعدادات</a>
+  <a href="admin-login.html" class="logout-link">🚪 تسجيل الخروج</a>
+</div>
+    <div class="admin-content">
+
+<div class="page-header">
+  <div><h1 class="page-title">🛒 نقطة البيع</h1><p class="page-subtitle">إنشاء وإدارة المبيعات المباشرة</p></div>
+  <div class="page-actions">
+    <select class="form-control" style="width:auto" id="branchSelect">
+      <option>فرع الرياض - العليا</option>
+      <option>فرع جدة - التحلية</option>
+      <option>فرع الدمام</option>
+    </select>
+  </div>
+</div>
+
+<div class="pos-layout">
+  <!-- Products Side -->
+  <div class="pos-products">
+    <div class="card-header" style="padding:14px 16px">
+      <span class="card-title">المنتجات</span>
+      <div style="display:flex;gap:8px;flex:1;max-width:400px;margin-right:12px">
+        <input type="text" class="form-control" id="posSearch" placeholder="🔍 ابحث عن منتج..." oninput="filterPosProducts(this.value)" style="height:36px">
+        <select class="form-control" id="posCategoryFilter" onchange="filterPosProducts()" style="height:36px;min-width:120px">
+          <option value="">كل الفئات</option>
+          <option>فساتين</option><option>عبايات</option><option>بلوزات</option>
+          <option>اكسسوارات</option><option>أحذية</option><option>حقائب</option>
+        </select>
+      </div>
+    </div>
+    <div class="pos-product-grid" id="posProductGrid">
+      <!-- Products injected by JS -->
+    </div>
+  </div>
+
+  <!-- Cart Side -->
+  <div class="pos-cart">
+    <div class="card-header" style="padding:14px 16px;justify-content:space-between">
+      <span class="card-title">🧾 الفاتورة</span>
+      <button class="btn btn-sm btn-danger" onclick="clearCart()">مسح الكل</button>
+    </div>
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border-color)">
+      <label class="form-label" style="font-size:12px;margin-bottom:4px">العميل</label>
+      <select class="form-control" id="posCustomer" style="height:36px">
+        <option value="">عميل نقدي / زائر</option>
+        <option>أحمد محمد - 0512345678</option>
+        <option>فاطمة علي - 0523456789</option>
+        <option>نورة الأحمد - 0534567890</option>
+        <option>خالد العتيبي - 0545678901</option>
+        <option>ريم السعيد - 0556789012</option>
+      </select>
+    </div>
+    <div class="pos-cart-items" id="posCartItems">
+      <div class="empty-state" id="cartEmpty" style="padding:30px 20px">
+        <div style="font-size:40px;margin-bottom:8px">🛒</div>
+        <p style="font-size:13px;color:var(--text-muted)">السلة فارغة<br>أضف منتجات من القائمة</p>
+      </div>
+    </div>
+    <div class="pos-total-section">
+      <div class="pos-total-row"><span>المجموع الفرعي</span><span id="posSubtotal">٠ ر.س</span></div>
+      <div class="pos-total-row"><span>الضريبة (15%)</span><span id="posTax">٠ ر.س</span></div>
+      <div class="pos-total-row"><span>الخصم</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <input type="number" id="posDiscount" class="form-control" value="0" min="0" style="width:70px;height:30px;font-size:12px;padding:0 8px" oninput="updateTotals()">
+          <span style="font-size:12px">ر.س</span>
+        </div>
+      </div>
+      <div class="pos-total-row grand"><span>الإجمالي</span><span id="posGrandTotal">٠ ر.س</span></div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px">طريقة الدفع</div>
+        <div class="payment-methods">
+          <div class="payment-method active" onclick="selectPayment(this,'cash')">
+            <span class="method-icon">💵</span><span>نقدي</span>
+          </div>
+          <div class="payment-method" onclick="selectPayment(this,'card')">
+            <span class="method-icon">💳</span><span>بطاقة</span>
+          </div>
+          <div class="payment-method" onclick="selectPayment(this,'wallet')">
+            <span class="method-icon">📱</span><span>محفظة</span>
+          </div>
+        </div>
+        <input type="hidden" id="posPaymentMethod" value="cash">
+      </div>
+      <button class="btn btn-primary w-100 btn-lg" onclick="completeSale()" style="margin-top:8px">
+        ✅ إتمام البيع
+      </button>
+      <button class="btn btn-outline w-100" onclick="showReceiptPreview()" style="margin-top:6px">
+        🖨️ معاينة الفاتورة
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Transaction History -->
+<div class="card mt-4">
+  <div class="card-header">
+    <span class="card-title">سجل معاملات اليوم</span>
+    <button class="btn btn-sm btn-outline-gold" onclick="exportTableToCSV('transTable','transactions.csv')">📥 تصدير</button>
+  </div>
+  <div class="table-wrapper">
+    <table class="data-table" id="transTable">
+      <thead><tr>
+        <th>رقم الفاتورة</th><th>العميل</th><th>الوقت</th><th>المنتجات</th><th>المجموع</th><th>طريقة الدفع</th><th>الإجراءات</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><strong>SL-45821</strong></td><td>أحمد محمد</td><td>02:45 م</td><td>2 منتج</td><td>٨٥٠ ر.س</td><td><span class="badge card">بطاقة</span></td><td><div class="table-actions"><button class="action-btn view" title="عرض">👁️</button><button class="action-btn print" title="طباعة">🖨️</button></div></td></tr>
+        <tr><td><strong>SL-45820</strong></td><td>فاطمة علي</td><td>01:20 م</td><td>1 منتج</td><td>١,٢٠٠ ر.س</td><td><span class="badge cash">نقدي</span></td><td><div class="table-actions"><button class="action-btn view" title="عرض">👁️</button><button class="action-btn print" title="طباعة">🖨️</button></div></td></tr>
+        <tr><td><strong>SL-45819</strong></td><td>زائر</td><td>11:05 ص</td><td>3 منتجات</td><td>٦٥٠ ر.س</td><td><span class="badge cash">نقدي</span></td><td><div class="table-actions"><button class="action-btn view" title="عرض">👁️</button><button class="action-btn print" title="طباعة">🖨️</button></div></td></tr>
+        <tr><td><strong>SL-45818</strong></td><td>نورة الأحمد</td><td>10:30 ص</td><td>4 منتجات</td><td>٢,١٠٠ ر.س</td><td><span class="badge wallet">محفظة</span></td><td><div class="table-actions"><button class="action-btn view" title="عرض">👁️</button><button class="action-btn print" title="طباعة">🖨️</button></div></td></tr>
+        <tr><td><strong>SL-45817</strong></td><td>خالد العتيبي</td><td>09:15 ص</td><td>2 منتج</td><td>٤٨٠ ر.س</td><td><span class="badge card">بطاقة</span></td><td><div class="table-actions"><button class="action-btn view" title="عرض">👁️</button><button class="action-btn print" title="طباعة">🖨️</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer">
+    <span class="text-muted fs-13">إجمالي مبيعات اليوم: <strong class="text-pink">٥,٢٨٠ ر.س</strong></span>
+  </div>
+</div>
+
+<!-- Receipt Modal -->
+<div class="modal-overlay" id="receiptModal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span class="modal-title">🧾 معاينة الفاتورة</span>
+      <button class="modal-close" onclick="Modal.close('receiptModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="receipt" id="receiptPreview">
+        <div class="receipt-header">
+          <div class="receipt-logo">StyleLoop</div>
+          <div class="receipt-title">فاتورة مبيعات</div>
+          <div style="font-size:11px;color:#999;margin-top:4px" id="receiptNum">رقم: SL-00001</div>
+          <div style="font-size:11px;color:#999" id="receiptDate"></div>
+        </div>
+        <div class="receipt-items" id="receiptItems"></div>
+        <div class="receipt-total-section" id="receiptTotals"></div>
+        <div class="receipt-footer">
+          <p>شكراً لتسوقكم معنا</p>
+          <p>styleloop.sa | 920XXXXXX</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="window.print()">🖨️ طباعة</button>
+      <button class="btn btn-secondary" onclick="Modal.close('receiptModal')">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>
+  <script src="admin-nav.js"></script>
+  <script src="admin-common.js"></script>
+<script>
+const posProducts = [
+  {id:1,name:'فستان سهرة أسود',cat:'فساتين',price:850,emoji:'👗',stock:15},
+  {id:2,name:'عباءة مطرزة ذهبية',cat:'عبايات',price:1200,emoji:'👘',stock:8},
+  {id:3,name:'بلوزة شيفون وردية',cat:'بلوزات',price:320,emoji:'👚',stock:22},
+  {id:4,name:'تنورة ميدي بيضاء',cat:'تنانير',price:480,emoji:'👗',stock:12},
+  {id:5,name:'حقيبة جلد بني',cat:'حقائب',price:950,emoji:'👜',stock:6},
+  {id:6,name:'حذاء كعب عالي',cat:'أحذية',price:650,emoji:'👠',stock:10},
+  {id:7,name:'شال حرير ملون',cat:'اكسسوارات',price:280,emoji:'🧣',stock:30},
+  {id:8,name:'عقد لؤلؤ أبيض',cat:'اكسسوارات',price:420,emoji:'📿',stock:18},
+  {id:9,name:'جاكيت جلد أسود',cat:'جاكيتات',price:1100,emoji:'🧥',stock:7},
+  {id:10,name:'فستان كاجوال زهري',cat:'فساتين',price:560,emoji:'👗',stock:14},
+  {id:11,name:'حذاء رياضي أبيض',cat:'أحذية',price:380,emoji:'👟',stock:20},
+  {id:12,name:'حقيبة يد صغيرة',cat:'حقائب',price:720,emoji:'👛',stock:9},
+];
+
+let cart = [];
+
+function renderProducts(products) {
+  const grid = document.getElementById('posProductGrid');
+  grid.innerHTML = products.map(p => `
+    <div class="pos-product-item" onclick="addToCart(${p.id})">
+      <div class="product-emoji">${p.emoji}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-price">${p.price.toLocaleString('ar-SA')} ر.س</div>
+    </div>
+  `).join('');
+}
+
+function filterPosProducts(q) {
+  const search = (q || document.getElementById('posSearch').value).toLowerCase();
+  const cat = document.getElementById('posCategoryFilter').value;
+  renderProducts(posProducts.filter(p =>
+    (!search || p.name.toLowerCase().includes(search)) &&
+    (!cat || p.cat === cat)
+  ));
+}
+
+function addToCart(id) {
+  const prod = posProducts.find(p => p.id === id);
+  if (!prod) return;
+  const existing = cart.find(c => c.id === id);
+  if (existing) { existing.qty++; }
+  else { cart.push({...prod, qty: 1}); }
+  renderCart();
+  updateTotals();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  renderCart();
+  updateTotals();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  renderCart();
+  updateTotals();
+}
+
+function renderCart() {
+  const container = document.getElementById('posCartItems');
+  const empty = document.getElementById('cartEmpty');
+  if (cart.length === 0) {
+    container.innerHTML = '';
+    container.appendChild(empty || document.createElement('div'));
+    const e = document.getElementById('cartEmpty');
+    if(e) e.style.display='';
+    return;
+  }
+  const e = document.getElementById('cartEmpty');
+  if(e) e.style.display='none';
+  container.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <span style="font-size:24px">${item.emoji}</span>
+      <div style="flex:1;min-width:0">
+        <div class="cart-item-name">${item.name}</div>
+        <div style="font-size:12px;color:var(--text-muted)">${item.price.toLocaleString('ar-SA')} ر.س / قطعة</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+        <span class="qty-num">${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+      </div>
+      <div class="cart-item-price">${(item.price*item.qty).toLocaleString('ar-SA')}</div>
+      <button onclick="removeFromCart(${item.id})" style="font-size:16px;color:var(--danger);background:none;border:none;cursor:pointer">×</button>
+    </div>
+  `).join('');
+}
+
+function updateTotals() {
+  const subtotal = cart.reduce((s,c) => s + c.price*c.qty, 0);
+  const discount = parseFloat(document.getElementById('posDiscount').value) || 0;
+  const tax = (subtotal - discount) * 0.15;
+  const grand = subtotal - discount + tax;
+  document.getElementById('posSubtotal').textContent = subtotal.toLocaleString('ar-SA') + ' ر.س';
+  document.getElementById('posTax').textContent = tax.toFixed(0).toLocaleString('ar-SA') + ' ر.س';
+  document.getElementById('posGrandTotal').textContent = grand.toFixed(0).toLocaleString('ar-SA') + ' ر.س';
+}
+
+function selectPayment(el, method) {
+  document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('posPaymentMethod').value = method;
+}
+
+function clearCart() {
+  if (cart.length === 0) return;
+  showConfirm('هل تريد مسح جميع المنتجات من السلة؟', () => {
+    cart = [];
+    renderCart();
+    updateTotals();
+    document.getElementById('posDiscount').value = 0;
+  });
+}
+
+function completeSale() {
+  if (cart.length === 0) { Toast.warning('السلة فارغة! أضف منتجات أولاً'); return; }
+  const grand = document.getElementById('posGrandTotal').textContent;
+  showConfirm('إتمام البيع بمبلغ ' + grand + '؟', () => {
+    Loader.show('جاري معالجة الدفع...');
+    setTimeout(() => {
+      Loader.hide();
+      Toast.success('تم إتمام البيع بنجاح! رقم الفاتورة: SL-45822');
+      cart = [];
+      renderCart();
+      updateTotals();
+    }, 1500);
+  });
+}
+
+function showReceiptPreview() {
+  const now = new Date();
+  document.getElementById('receiptDate').textContent = now.toLocaleString('ar-SA');
+  document.getElementById('receiptNum').textContent = 'رقم: SL-' + (45820 + Math.floor(Math.random()*10));
+  const subtotal = cart.reduce((s,c) => s + c.price*c.qty, 0);
+  const discount = parseFloat(document.getElementById('posDiscount').value) || 0;
+  const tax = (subtotal - discount) * 0.15;
+  const grand = subtotal - discount + tax;
+  document.getElementById('receiptItems').innerHTML = cart.map(c =>
+    `<div class="receipt-item"><span>${c.name} × ${c.qty}</span><span>${(c.price*c.qty).toLocaleString('ar-SA')} ر.س</span></div>`
+  ).join('') || '<div class="receipt-item"><span>لا توجد منتجات</span><span>-</span></div>';
+  document.getElementById('receiptTotals').innerHTML = `
+    <div class="receipt-total-row"><span>المجموع</span><span>${subtotal.toLocaleString('ar-SA')} ر.س</span></div>
+    <div class="receipt-total-row"><span>خصم</span><span>${discount.toLocaleString('ar-SA')} ر.س</span></div>
+    <div class="receipt-total-row"><span>ضريبة 15%</span><span>${tax.toFixed(0)} ر.س</span></div>
+    <div class="receipt-total-row receipt-grand-total"><span>الإجمالي</span><span>${grand.toFixed(0).toLocaleString('ar-SA')} ر.س</span></div>
+  `;
+  Modal.open('receiptModal');
+}
+
+document.addEventListener('DOMContentLoaded', () => renderProducts(posProducts));
+</script>
+</body>
+</html>

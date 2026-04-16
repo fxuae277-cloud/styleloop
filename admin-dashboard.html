@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>لوحة التحكم - StyleLoop Admin</title>
+</head>
+<body>
+<div class="admin-layout">
+<aside class="admin-sidebar" id="adminSidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <div class="logo-icon">S</div>
+      <span class="logo-text">StyleLoop <span>Admin</span></span>
+    </div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar">👤</div>
+    <div class="user-info">
+      <div class="user-name">مدير النظام</div>
+      <div class="user-role">Admin</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="admin-dashboard.html" class="nav-item active">
+      <span class="nav-icon">📊</span><span class="nav-text">لوحة التحكم</span>
+    </a>
+    <a href="admin-pos.html" class="nav-item featured ">
+      <span class="nav-icon">🛒</span><span class="nav-text">نقطة البيع</span>
+      <span class="nav-badge">POS</span>
+    </a>
+    <a href="admin-orders.html" class="nav-item ">
+      <span class="nav-icon">📋</span><span class="nav-text">الطلبات</span>
+    </a>
+    <a href="admin-customers.html" class="nav-item ">
+      <span class="nav-icon">👥</span><span class="nav-text">العملاء</span>
+    </a>
+    <div class="nav-group ">
+      <button class="nav-group-toggle" onclick="toggleNavGroup(this)">
+        <span class="nav-icon">📁</span>
+        <span class="nav-text">البيانات الأساسية</span>
+        <span class="nav-arrow">▾</span>
+      </button>
+      <div class="nav-group-items">
+        <a href="admin-branches.html" class="nav-subitem "><span>🏢</span> الفروع</a>
+        <a href="#" class="nav-subitem"><span>📂</span> الفئات</a>
+        <a href="#" class="nav-subitem"><span>🚚</span> الموردون والمشترون</a>
+        <a href="admin-products.html" class="nav-subitem "><span>💰</span> المنتجات والأسعار</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-toggle" onclick="toggleNavGroup(this)">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-text">العمليات</span>
+        <span class="nav-arrow">▾</span>
+      </button>
+      <div class="nav-group-items">
+        <a href="#" class="nav-subitem"><span>📑</span> قوائم الشراء</a>
+      </div>
+    </div>
+    <a href="admin-reports.html" class="nav-item ">
+      <span class="nav-icon">📈</span><span class="nav-text">التقارير</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">👑</span><span class="nav-text">الملك</span>
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="admin-login.html" class="nav-item logout">
+      <span class="nav-icon">🚪</span><span class="nav-text">تسجيل الخروج</span>
+    </a>
+  </div>
+</aside>
+  <div class="admin-main" id="adminMain">
+<header class="admin-header" id="adminHeader">
+  <button class="header-menu-toggle" onclick="toggleSidebar()">☰</button>
+  <div class="header-search"><input type="text" placeholder="بحث..."><span>🔍</span></div>
+  <div class="header-actions">
+    <button class="header-btn" onclick="toggleTheme()" title="تغيير السمة">🌙</button>
+    <button class="header-btn notifications-btn" onclick="toggleNotifications()">🔔 <span class="notif-badge">3</span></button>
+    <div class="header-user" onclick="toggleUserMenu()">
+      <div class="header-avatar">م</div>
+      <span>مدير النظام</span><span>▾</span>
+    </div>
+  </div>
+</header>
+<div class="notifications-panel" id="notificationsPanel">
+  <div class="notif-panel-header"><h3>الإشعارات</h3><a href="#">تحديد الكل كمقروء</a></div>
+  <div class="notif-item unread"><div class="notif-dot"></div><div class="notif-content"><p>طلب جديد #SL-45821 من أحمد محمد</p><span>منذ 5 دقائق</span></div></div>
+  <div class="notif-item unread"><div class="notif-dot"></div><div class="notif-content"><p>مخزون منخفض: فستان سهرة (3 قطع متبقية)</p><span>منذ 20 دقيقة</span></div></div>
+  <div class="notif-item unread"><div class="notif-dot"></div><div class="notif-content"><p>عميلة جديدة: نورة الأحمد سجلت</p><span>منذ ساعة</span></div></div>
+  <div class="notif-item"><div class="notif-dot" style="background:var(--sage)"></div><div class="notif-content"><p>تم اكتمال الطلب #SL-45819</p><span>منذ 3 ساعات</span></div></div>
+</div>
+<div class="user-dropdown" id="userDropdown">
+  <div class="user-dropdown-header"><div class="name">مدير النظام</div><div class="email">admin@styleloop.sa</div></div>
+  <a href="#">👤 الملف الشخصي</a>
+  <a href="#">⚙️ الإعدادات</a>
+  <a href="#">🔑 تغيير كلمة المرور</a>
+  <a href="admin-login.html" class="logout-link">🚪 تسجيل الخروج</a>
+</div>
+    <div class="admin-content">
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">لوحة التحكم</h1>
+    <p class="page-subtitle">مرحباً، مدير النظام 👋 إليك ملخص اليوم</p>
+  </div>
+  <div class="page-actions">
+    <button class="btn btn-secondary" onclick="printPage()">🖨️ طباعة</button>
+    <button class="btn btn-primary">📊 تقرير اليوم</button>
+  </div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card pink">
+    <div class="stat-icon">💰</div>
+    <div class="stat-info">
+      <div class="stat-value" id="revStat">٢٤٥,٨٠٠</div>
+      <div class="stat-label">الإيرادات (ريال)</div>
+      <div class="stat-change up">↑ 12.5% مقارنة بالشهر الماضي</div>
+    </div>
+  </div>
+  <div class="stat-card gold">
+    <div class="stat-icon">📋</div>
+    <div class="stat-info">
+      <div class="stat-value">١٢٤</div>
+      <div class="stat-label">الطلبات هذا الشهر</div>
+      <div class="stat-change up">↑ 8.3% مقارنة بالشهر الماضي</div>
+    </div>
+  </div>
+  <div class="stat-card sage">
+    <div class="stat-icon">👥</div>
+    <div class="stat-info">
+      <div class="stat-value">٨٧٣</div>
+      <div class="stat-label">إجمالي العملاء</div>
+      <div class="stat-change up">↑ 5.2% عميل جديد</div>
+    </div>
+  </div>
+  <div class="stat-card info">
+    <div class="stat-icon">📦</div>
+    <div class="stat-info">
+      <div class="stat-value">٢٤٦</div>
+      <div class="stat-label">المنتجات النشطة</div>
+      <div class="stat-change down">↓ 3 منتجات نفد مخزونها</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2 mb-4">
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">مبيعات الأشهر الاثني عشر</span>
+      <select class="form-control" style="width:auto;height:34px;font-size:12px">
+        <option>2025</option><option>2024</option>
+      </select>
+    </div>
+    <div class="card-body">
+      <div class="chart-wrapper"><canvas id="salesChart"></canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">المبيعات حسب الفئة</span>
+    </div>
+    <div class="card-body">
+      <div class="chart-wrapper"><canvas id="categoryChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2 mb-4">
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">آخر الطلبات</span>
+      <a href="admin-orders.html" class="btn btn-sm btn-outline">عرض الكل</a>
+    </div>
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead><tr>
+          <th>رقم الطلب</th><th>العميل</th><th>المبلغ</th><th>الحالة</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><strong>SL-45821</strong></td><td>أحمد محمد</td><td>٨٥٠ ر.س</td><td><span class="badge processing">قيد التنفيذ</span></td></tr>
+          <tr><td><strong>SL-45820</strong></td><td>فاطمة علي</td><td>١,٢٠٠ ر.س</td><td><span class="badge completed">مكتمل</span></td></tr>
+          <tr><td><strong>SL-45819</strong></td><td>نورة الأحمد</td><td>٦٥٠ ر.س</td><td><span class="badge pending">معلق</span></td></tr>
+          <tr><td><strong>SL-45818</strong></td><td>خالد العتيبي</td><td>٢,١٠٠ ر.س</td><td><span class="badge completed">مكتمل</span></td></tr>
+          <tr><td><strong>SL-45817</strong></td><td>ريم السعيد</td><td>٤٨٠ ر.س</td><td><span class="badge cancelled">ملغي</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">سجل الأنشطة</span>
+    </div>
+    <div class="card-body">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">طلب جديد #SL-45821</div>
+            <div class="timeline-desc">أحمد محمد • فستان سهرة × 1</div>
+            <div class="timeline-time">منذ 5 دقائق</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot gold"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">دفعة مستلمة</div>
+            <div class="timeline-desc">١,٢٠٠ ر.س من فاطمة علي</div>
+            <div class="timeline-time">منذ 25 دقيقة</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot sage"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">عميلة جديدة</div>
+            <div class="timeline-desc">نورة الأحمد • الرياض</div>
+            <div class="timeline-time">منذ ساعة</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot info"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">تحديث المخزون</div>
+            <div class="timeline-desc">عباءة فاخرة: أضيفت 20 قطعة</div>
+            <div class="timeline-time">منذ 2 ساعة</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">إتمام طلب #SL-45816</div>
+            <div class="timeline-desc">خالد العتيبي • تم الشحن</div>
+            <div class="timeline-time">منذ 3 ساعات</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <span class="card-title">إجراءات سريعة</span>
+  </div>
+  <div class="card-body">
+    <div class="quick-actions-grid">
+      <a href="admin-pos.html" class="quick-action">
+        <div class="quick-action-icon">🛒</div>
+        <span class="quick-action-label">نقطة البيع</span>
+      </a>
+      <a href="admin-orders.html" class="quick-action">
+        <div class="quick-action-icon">📋</div>
+        <span class="quick-action-label">الطلبات</span>
+      </a>
+      <a href="admin-customers.html" class="quick-action">
+        <div class="quick-action-icon">👥</div>
+        <span class="quick-action-label">العملاء</span>
+      </a>
+      <a href="admin-products.html" class="quick-action">
+        <div class="quick-action-icon">📦</div>
+        <span class="quick-action-label">المنتجات</span>
+      </a>
+      <a href="admin-branches.html" class="quick-action">
+        <div class="quick-action-icon">🏢</div>
+        <span class="quick-action-label">الفروع</span>
+      </a>
+      <a href="admin-reports.html" class="quick-action">
+        <div class="quick-action-icon">📈</div>
+        <span class="quick-action-label">التقارير</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>
+  <script src="admin-nav.js"></script>
+  <script src="admin-common.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  const sales = [18500,22000,19800,25600,28900,24100,31500,29800,33200,28400,35800,24500];
+  const sales2 = [14000,17500,16200,20800,23400,19700,25900,23100,27600,22900,29300,20100];
+  ChartHelper.createLineChart('salesChart', months, [
+    {label:'2025', data:sales, color:'#E91E63'},
+    {label:'2024', data:sales2, color:'#C9A96E'}
+  ]);
+  ChartHelper.createPieChart('categoryChart',
+    ['فساتين','عبايات','اكسسوارات','أحذية','حقائب','أخرى'],
+    [35,25,18,12,7,3],
+    {doughnut:true}
+  );
+});
+</script>
+</body>
+</html>

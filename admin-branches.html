@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>الفروع - StyleLoop Admin</title>
+</head>
+<body>
+<div class="admin-layout">
+<aside class="admin-sidebar" id="adminSidebar">
+  <div class="sidebar-header"><div class="sidebar-logo"><div class="logo-icon">S</div><span class="logo-text">StyleLoop <span>Admin</span></span></div><button class="sidebar-toggle" onclick="toggleSidebar()">☰</button></div>
+  <div class="sidebar-user"><div class="user-avatar">👤</div><div class="user-info"><div class="user-name">مدير النظام</div><div class="user-role">Admin</div></div></div>
+  <nav class="sidebar-nav">
+    <a href="admin-dashboard.html" class="nav-item "><span class="nav-icon">📊</span><span class="nav-text">لوحة التحكم</span></a>
+    <a href="admin-pos.html" class="nav-item featured "><span class="nav-icon">🛒</span><span class="nav-text">نقطة البيع</span><span class="nav-badge">POS</span></a>
+    <a href="admin-orders.html" class="nav-item "><span class="nav-icon">📋</span><span class="nav-text">الطلبات</span></a>
+    <a href="admin-customers.html" class="nav-item "><span class="nav-icon">👥</span><span class="nav-text">العملاء</span></a>
+    <div class="nav-group open"><button class="nav-group-toggle" onclick="toggleNavGroup(this)"><span class="nav-icon">📁</span><span class="nav-text">البيانات الأساسية</span><span class="nav-arrow">▾</span></button>
+      <div class="nav-group-items">
+        <a href="admin-branches.html" class="nav-subitem active"><span>🏢</span> الفروع</a>
+        <a href="#" class="nav-subitem"><span>📂</span> الفئات</a>
+        <a href="#" class="nav-subitem"><span>��</span> الموردون</a>
+        <a href="admin-products.html" class="nav-subitem "><span>💰</span> المنتجات والأسعار</a>
+      </div>
+    </div>
+    <div class="nav-group"><button class="nav-group-toggle" onclick="toggleNavGroup(this)"><span class="nav-icon">⚙️</span><span class="nav-text">العمليات</span><span class="nav-arrow">▾</span></button>
+      <div class="nav-group-items"><a href="#" class="nav-subitem"><span>📑</span> قوائم الشراء</a></div>
+    </div>
+    <a href="admin-reports.html" class="nav-item "><span class="nav-icon">📈</span><span class="nav-text">التقارير</span></a>
+    <a href="#" class="nav-item"><span class="nav-icon">👑</span><span class="nav-text">الملك</span></a>
+  </nav>
+  <div class="sidebar-footer"><a href="admin-login.html" class="nav-item logout"><span class="nav-icon">🚪</span><span class="nav-text">تسجيل الخروج</span></a></div>
+</aside>
+  <div class="admin-main" id="adminMain">
+<header class="admin-header" id="adminHeader">
+  <button class="header-menu-toggle" onclick="toggleSidebar()">☰</button>
+  <div class="header-search"><input type="text" placeholder="بحث..."><span>🔍</span></div>
+  <div class="header-actions">
+    <button class="header-btn" onclick="toggleTheme()">🌙</button>
+    <button class="header-btn notifications-btn" onclick="toggleNotifications()">🔔 <span class="notif-badge">3</span></button>
+    <div class="header-user" onclick="toggleUserMenu()"><div class="header-avatar">م</div><span>مدير النظام</span><span>▾</span></div>
+  </div>
+</header>
+<div class="notifications-panel" id="notificationsPanel">
+  <div class="notif-panel-header"><h3>الإشعارات</h3><a href="#">تحديد الكل كمقروء</a></div>
+  <div class="notif-item unread"><div class="notif-dot"></div><div class="notif-content"><p>طلب جديد #SL-45821</p><span>منذ 5 دقائق</span></div></div>
+</div>
+<div class="user-dropdown" id="userDropdown">
+  <div class="user-dropdown-header"><div class="name">مدير النظام</div><div class="email">admin@styleloop.sa</div></div>
+  <a href="#">👤 الملف الشخصي</a>
+  <a href="admin-login.html" class="logout-link">🚪 تسجيل الخروج</a>
+</div>
+    <div class="admin-content">
+
+<div class="page-header">
+  <div><h1 class="page-title">🏢 الفروع</h1><p class="page-subtitle">إدارة فروع StyleLoop ومعلوماتها</p></div>
+  <div class="page-actions">
+    <button class="btn btn-primary" onclick="Modal.open('addBranchModal')">➕ إضافة فرع</button>
+  </div>
+</div>
+
+<div class="stats-grid mb-4">
+  <div class="stat-card pink"><div class="stat-icon">🏢</div><div class="stat-info"><div class="stat-value">5</div><div class="stat-label">إجمالي الفروع</div></div></div>
+  <div class="stat-card sage"><div class="stat-icon">✅</div><div class="stat-info"><div class="stat-value">4</div><div class="stat-label">الفروع النشطة</div></div></div>
+  <div class="stat-card gold"><div class="stat-icon">👥</div><div class="stat-info"><div class="stat-value">٣٢</div><div class="stat-label">إجمالي الموظفين</div></div></div>
+  <div class="stat-card info"><div class="stat-icon">💰</div><div class="stat-info"><div class="stat-value">٨٧,٤٠٠</div><div class="stat-label">مبيعات الشهر (ر.س)</div></div></div>
+</div>
+
+<div class="grid-3 mb-4" id="branchesGrid">
+  <!-- Branch cards will be rendered here -->
+</div>
+
+<!-- Branch Details Modal -->
+<div class="modal-overlay" id="branchDetailsModal">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <span class="modal-title" id="branchModalTitle">🏢 تفاصيل الفرع</span>
+      <button class="modal-close" onclick="Modal.close('branchDetailsModal')">×</button>
+    </div>
+    <div class="modal-body" id="branchModalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-gold" onclick="Modal.close('branchDetailsModal');Modal.open('addBranchModal')">✏️ تعديل الفرع</button>
+      <button class="btn btn-secondary" onclick="Modal.close('branchDetailsModal')">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Branch Modal -->
+<div class="modal-overlay" id="addBranchModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title" id="branchFormTitle">➕ إضافة فرع جديد</span>
+      <button class="modal-close" onclick="Modal.close('addBranchModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label required">اسم الفرع</label><input type="text" class="form-control" id="branchName" placeholder="مثال: فرع الرياض - العليا"></div>
+        <div class="form-group"><label class="form-label required">المدينة</label><select class="form-control" id="branchCity"><option>الرياض</option><option>جدة</option><option>الدمام</option><option>مكة المكرمة</option><option>المدينة المنورة</option><option>الطائف</option><option>أبها</option><option>تبوك</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label required">العنوان التفصيلي</label><input type="text" class="form-control" id="branchAddress" placeholder="اسم الشارع، الحي"></div>
+        <div class="form-group"><label class="form-label required">المدير المسؤول</label><input type="text" class="form-control" id="branchManager" placeholder="اسم المدير"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label required">رقم التواصل</label><input type="text" class="form-control" id="branchPhone" placeholder="05xxxxxxxx"></div>
+        <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input type="email" class="form-control" id="branchEmail" placeholder="branch@styleloop.sa"></div>
+      </div>
+      <div class="form-group"><label class="form-label">ساعات العمل</label>
+        <table class="data-table" style="font-size:13px">
+          <thead><tr><th>اليوم</th><th>يفتح</th><th>يغلق</th><th>مغلق</th></tr></thead>
+          <tbody>
+            <tr><td>الأحد - الخميس</td><td><input type="time" class="form-control" value="10:00" style="height:34px"></td><td><input type="time" class="form-control" value="22:00" style="height:34px"></td><td><input type="checkbox"></td></tr>
+            <tr><td>الجمعة</td><td><input type="time" class="form-control" value="14:00" style="height:34px"></td><td><input type="time" class="form-control" value="23:00" style="height:34px"></td><td><input type="checkbox"></td></tr>
+            <tr><td>السبت</td><td><input type="time" class="form-control" value="10:00" style="height:34px"></td><td><input type="time" class="form-control" value="22:00" style="height:34px"></td><td><input type="checkbox"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="form-group"><label class="form-label">الحالة</label><select class="form-control" id="branchStatus"><option value="active">نشط</option><option value="inactive">غير نشط</option></select></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveBranch()">💾 حفظ الفرع</button>
+      <button class="btn btn-secondary" onclick="Modal.close('addBranchModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>
+  <script src="admin-nav.js"></script>
+  <script src="admin-common.js"></script>
+<script>
+const branchesData = [
+  {name:'فرع الرياض - العليا',city:'الرياض',address:'شارع العليا، حي العليا، الرياض',manager:'محمد الأحمد',phone:'0112345678',email:'riyadh@styleloop.sa',status:'active',staff:8,revenue:32500,orders:145,hours:'10ص - 10م',icon:'🏢',color:'pink'},
+  {name:'فرع جدة - التحلية',city:'جدة',address:'شارع التحلية، حي الزهراء، جدة',manager:'سارة الزهراني',phone:'0123456789',email:'jeddah@styleloop.sa',status:'active',staff:6,revenue:28900,orders:118,hours:'10ص - 11م',icon:'🏬',color:'gold'},
+  {name:'فرع الدمام - طريق الملك',city:'الدمام',address:'طريق الملك عبدالعزيز، الدمام',manager:'خالد المطيري',phone:'0134567890',email:'dammam@styleloop.sa',status:'active',staff:5,revenue:18600,orders:87,hours:'10ص - 10م',icon:'🏪',color:'sage'},
+  {name:'فرع مكة - أجياد',city:'مكة المكرمة',address:'حي أجياد، مكة المكرمة',manager:'عبدالله الغامدي',phone:'0125678901',email:'mecca@styleloop.sa',status:'active',staff:7,revenue:22400,orders:102,hours:'10ص - 11م',icon:'🏢',color:'info'},
+  {name:'فرع المدينة - قباء',city:'المدينة المنورة',address:'شارع قباء، المدينة المنورة',manager:'---',phone:'---',email:'---',status:'inactive',staff:0,revenue:0,orders:0,hours:'---',icon:'🏗️',color:'gold'},
+];
+
+function renderBranches() {
+  const statusMap = {active:'نشط',inactive:'غير نشط'};
+  document.getElementById('branchesGrid').innerHTML = branchesData.map((b,i) => `
+    <div class="branch-card">
+      <div class="branch-card-header">
+        <div class="branch-icon">${b.icon}</div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:15px">${b.name}</div>
+          <div style="font-size:12px;color:var(--text-muted)">📍 ${b.city}</div>
+        </div>
+        <span class="badge ${b.status}">${statusMap[b.status]}</span>
+      </div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">
+        <div style="margin-bottom:4px">👤 ${b.manager}</div>
+        <div style="margin-bottom:4px">📞 ${b.phone}</div>
+        <div>⏰ ${b.hours}</div>
+      </div>
+      <div class="grid-3" style="gap:8px;margin-bottom:14px">
+        <div style="text-align:center;padding:8px;background:var(--bg-primary);border-radius:var(--radius-md)">
+          <div style="font-size:16px;font-weight:800;color:var(--pink)">${b.staff}</div>
+          <div style="font-size:11px;color:var(--text-muted)">موظفون</div>
+        </div>
+        <div style="text-align:center;padding:8px;background:var(--bg-primary);border-radius:var(--radius-md)">
+          <div style="font-size:16px;font-weight:800;color:var(--gold-dark)">${b.orders}</div>
+          <div style="font-size:11px;color:var(--text-muted)">طلب</div>
+        </div>
+        <div style="text-align:center;padding:8px;background:var(--bg-primary);border-radius:var(--radius-md)">
+          <div style="font-size:13px;font-weight:800;color:var(--sage-dark)">${b.revenue.toLocaleString('ar-SA')}</div>
+          <div style="font-size:11px;color:var(--text-muted)">ر.س</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline w-100 btn-sm" onclick="viewBranch(${i})">👁️ عرض التفاصيل</button>
+        <button class="btn btn-gold btn-sm" onclick="editBranch(${i})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteBranch(${i})">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function viewBranch(i) {
+  const b = branchesData[i];
+  document.getElementById('branchModalTitle').textContent = '🏢 ' + b.name;
+  document.getElementById('branchModalBody').innerHTML = `
+    <div class="grid-2 mb-4">
+      <div>
+        <div style="background:linear-gradient(135deg,var(--pink-bg),var(--gold-bg));border-radius:var(--radius-lg);padding:20px;text-align:center;margin-bottom:16px">
+          <div style="font-size:48px;margin-bottom:8px">${b.icon}</div>
+          <h3 style="font-size:17px;font-weight:800">${b.name}</h3>
+          <span class="badge ${b.status}">${b.status==='active'?'نشط':'غير نشط'}</span>
+        </div>
+        <table style="width:100%;font-size:13px">
+          <tr><td style="padding:5px 0;color:var(--text-muted);width:120px">المدينة</td><td><strong>${b.city}</strong></td></tr>
+          <tr><td style="padding:5px 0;color:var(--text-muted)">العنوان</td><td>${b.address}</td></tr>
+          <tr><td style="padding:5px 0;color:var(--text-muted)">المدير</td><td>${b.manager}</td></tr>
+          <tr><td style="padding:5px 0;color:var(--text-muted)">الهاتف</td><td>${b.phone}</td></tr>
+          <tr><td style="padding:5px 0;color:var(--text-muted)">البريد</td><td>${b.email}</td></tr>
+          <tr><td style="padding:5px 0;color:var(--text-muted)">ساعات العمل</td><td>${b.hours}</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div class="stat-card pink" style="padding:14px"><div class="stat-icon" style="width:40px;height:40px;font-size:18px">💰</div><div class="stat-info"><div class="stat-value" style="font-size:20px">${b.revenue.toLocaleString('ar-SA')}</div><div class="stat-label">الإيرادات</div></div></div>
+          <div class="stat-card gold" style="padding:14px"><div class="stat-icon" style="width:40px;height:40px;font-size:18px">📋</div><div class="stat-info"><div class="stat-value" style="font-size:20px">${b.orders}</div><div class="stat-label">الطلبات</div></div></div>
+          <div class="stat-card sage" style="padding:14px"><div class="stat-icon" style="width:40px;height:40px;font-size:18px">👥</div><div class="stat-info"><div class="stat-value" style="font-size:20px">${b.staff}</div><div class="stat-label">الموظفون</div></div></div>
+          <div class="stat-card info" style="padding:14px"><div class="stat-icon" style="width:40px;height:40px;font-size:18px">⭐</div><div class="stat-info"><div class="stat-value" style="font-size:20px">4.8</div><div class="stat-label">التقييم</div></div></div>
+        </div>
+        <div class="card-title mb-2" style="font-size:13px;font-weight:700">قائمة الموظفين</div>
+        ${['أحمد محمد - كاشير','فاطمة علي - مبيعات','نورة الأحمد - مبيعات','خالد - مستودع'].slice(0,Math.min(b.staff,4)).map(e=>`<div style="padding:8px 12px;border-radius:var(--radius-md);background:var(--bg-primary);margin-bottom:6px;font-size:13px;border:1px solid var(--border-color)">👤 ${e}</div>`).join('')}
+      </div>
+    </div>
+  `;
+  Modal.open('branchDetailsModal');
+}
+
+function editBranch(i) { Modal.open('addBranchModal'); }
+function deleteBranch(i) {
+  showConfirm('هل تريد حذف هذا الفرع؟ لا يمكن التراجع عن هذا الإجراء.', () => Toast.success('تم حذف الفرع'));
+}
+
+function saveBranch() {
+  const name = document.getElementById('branchName').value.trim();
+  const phone = document.getElementById('branchPhone').value.trim();
+  if (!name) { Toast.error('اسم الفرع مطلوب'); return; }
+  if (!phone) { Toast.error('رقم التواصل مطلوب'); return; }
+  Toast.success('تم حفظ بيانات الفرع بنجاح');
+  Modal.close('addBranchModal');
+}
+
+document.addEventListener('DOMContentLoaded', renderBranches);
+</script>
+</body>
+</html>
