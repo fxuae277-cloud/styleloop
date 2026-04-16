@@ -454,13 +454,14 @@
     }
 
     function bulkUpdateStatus(newStatus) {
+      const count = selectedIds.size;
       selectedIds.forEach(id => {
         const order = ORDERS_DATA.find(o => o.id === id);
         if (order) order.status = newStatus;
       });
       clearSelection();
       applyFilters();
-      alert(`تم تحديث ${selectedIds.size} طلب إلى "${newStatus}"`);
+      alert(`تم تحديث ${count} طلب إلى "${newStatus}"`);
     }
 
     function quickStatus(orderId) {
