@@ -591,10 +591,21 @@ const AdminApp = (() => {
         }
       }
 
-      // pattern
+      // pattern — wrapped in try/catch to guard against malformed patterns
+      // Note: field.pattern is a developer-supplied HTML attribute, not end-user
+      // input, but we still handle errors defensively to avoid runtime exceptions.
       if (field.pattern) {
-        const re = new RegExp(`^(?:${field.pattern})$`);
-        if (!re.test(value)) {
+        let patternMatches = false;
+        try {
+          const re = new RegExp(`^(?:${field.pattern})$`);
+          patternMatches = re.test(value);
+        } catch (err) {
+          // Invalid regex in the pattern attribute — skip pattern validation and
+          // log a warning so developers can fix the template.
+          console.warn(`AdminApp.validateForm: invalid pattern on field "${field.name || field.id}":`, err.message);
+          patternMatches = true;
+        }
+        if (!patternMatches) {
           showFieldError(field, field.dataset.errorPattern || 'Invalid format.');
           isValid = false;
           return;
@@ -691,6 +702,9 @@ const AdminApp = (() => {
       ...data.map((row) => headers.map((h) => escape(row[h])).join(',')),
     ];
 
+    // The UTF-8 BOM (\uFEFF) ensures Microsoft Excel auto-detects the encoding.
+    // Other parsers (Python csv, Google Sheets) handle it gracefully, but pass
+    // `false` as a fourth argument if you need a BOM-free file for strict parsers.
     const blob = new Blob(['\uFEFF' + rows.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
     const url  = URL.createObjectURL(blob);
     const link = Object.assign(document.createElement('a'), {
@@ -1165,9 +1179,13 @@ const AdminApp = (() => {
 })();
 
 // Auto-initialise when the DOM is ready so pages don't need boilerplate.
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', AdminApp.initAdminPage);
-} else {
-  // DOM already parsed (script loaded with `defer` or at end of body).
-  AdminApp.initAdminPage();
+// A guard flag prevents double-initialisation if the script is included twice.
+if (!window.__adminAppInitialised) {
+  window.__adminAppInitialised = true;
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', AdminApp.initAdminPage);
+  } else {
+    // DOM already parsed (script loaded with `defer` or at end of body).
+    AdminApp.initAdminPage();
+  }
 }
