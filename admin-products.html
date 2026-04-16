@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>المنتجات - StyleLoop Admin</title>
+</head>
+<body>
+<div class="admin-layout">
+<aside class="admin-sidebar" id="adminSidebar">
+  <div class="sidebar-header"><div class="sidebar-logo"><div class="logo-icon">S</div><span class="logo-text">StyleLoop <span>Admin</span></span></div><button class="sidebar-toggle" onclick="toggleSidebar()">☰</button></div>
+  <div class="sidebar-user"><div class="user-avatar">👤</div><div class="user-info"><div class="user-name">مدير النظام</div><div class="user-role">Admin</div></div></div>
+  <nav class="sidebar-nav">
+    <a href="admin-dashboard.html" class="nav-item "><span class="nav-icon">📊</span><span class="nav-text">لوحة التحكم</span></a>
+    <a href="admin-pos.html" class="nav-item featured "><span class="nav-icon">🛒</span><span class="nav-text">نقطة البيع</span><span class="nav-badge">POS</span></a>
+    <a href="admin-orders.html" class="nav-item "><span class="nav-icon">📋</span><span class="nav-text">الطلبات</span></a>
+    <a href="admin-customers.html" class="nav-item "><span class="nav-icon">👥</span><span class="nav-text">العملاء</span></a>
+    <div class="nav-group open"><button class="nav-group-toggle" onclick="toggleNavGroup(this)"><span class="nav-icon">📁</span><span class="nav-text">البيانات الأساسية</span><span class="nav-arrow">▾</span></button>
+      <div class="nav-group-items">
+        <a href="admin-branches.html" class="nav-subitem "><span>🏢</span> الفروع</a>
+        <a href="#" class="nav-subitem"><span>📂</span> الفئات</a>
+        <a href="#" class="nav-subitem"><span>��</span> الموردون</a>
+        <a href="admin-products.html" class="nav-subitem active"><span>💰</span> المنتجات والأسعار</a>
+      </div>
+    </div>
+    <div class="nav-group"><button class="nav-group-toggle" onclick="toggleNavGroup(this)"><span class="nav-icon">⚙️</span><span class="nav-text">العمليات</span><span class="nav-arrow">▾</span></button>
+      <div class="nav-group-items"><a href="#" class="nav-subitem"><span>📑</span> قوائم الشراء</a></div>
+    </div>
+    <a href="admin-reports.html" class="nav-item "><span class="nav-icon">📈</span><span class="nav-text">التقارير</span></a>
+    <a href="#" class="nav-item"><span class="nav-icon">👑</span><span class="nav-text">الملك</span></a>
+  </nav>
+  <div class="sidebar-footer"><a href="admin-login.html" class="nav-item logout"><span class="nav-icon">🚪</span><span class="nav-text">تسجيل الخروج</span></a></div>
+</aside>
+  <div class="admin-main" id="adminMain">
+<header class="admin-header" id="adminHeader">
+  <button class="header-menu-toggle" onclick="toggleSidebar()">☰</button>
+  <div class="header-search"><input type="text" placeholder="بحث..."><span>🔍</span></div>
+  <div class="header-actions">
+    <button class="header-btn" onclick="toggleTheme()">🌙</button>
+    <button class="header-btn notifications-btn" onclick="toggleNotifications()">🔔 <span class="notif-badge">3</span></button>
+    <div class="header-user" onclick="toggleUserMenu()"><div class="header-avatar">م</div><span>مدير النظام</span><span>▾</span></div>
+  </div>
+</header>
+<div class="notifications-panel" id="notificationsPanel">
+  <div class="notif-panel-header"><h3>الإشعارات</h3><a href="#">تحديد الكل كمقروء</a></div>
+  <div class="notif-item unread"><div class="notif-dot"></div><div class="notif-content"><p>طلب جديد #SL-45821</p><span>منذ 5 دقائق</span></div></div>
+</div>
+<div class="user-dropdown" id="userDropdown">
+  <div class="user-dropdown-header"><div class="name">مدير النظام</div><div class="email">admin@styleloop.sa</div></div>
+  <a href="#">👤 الملف الشخصي</a>
+  <a href="admin-login.html" class="logout-link">🚪 تسجيل الخروج</a>
+</div>
+    <div class="admin-content">
+
+<div class="page-header">
+  <div><h1 class="page-title">📦 المنتجات</h1><p class="page-subtitle">إدارة كتالوج المنتجات والمخزون</p></div>
+  <div class="page-actions">
+    <button class="btn btn-secondary" onclick="toggleProductView()">⊞ تبديل العرض</button>
+    <button class="btn btn-secondary" onclick="exportTableToCSV('productsTable','products.csv')">📥 تصدير</button>
+    <button class="btn btn-primary" onclick="openAddProduct()">➕ إضافة منتج</button>
+  </div>
+</div>
+<div class="filters-bar">
+  <input type="text" class="form-control search-input" id="prodSearch" placeholder="🔍 ابحث عن منتج...">
+  <select class="form-control" id="prodCatFilter">
+    <option value="">كل الفئات</option>
+    <option>فساتين</option><option>عبايات</option><option>بلوزات</option>
+    <option>تنانير</option><option>جاكيتات</option><option>اكسسوارات</option><option>أحذية</option><option>حقائب</option>
+  </select>
+  <select class="form-control" id="prodStockFilter">
+    <option value="">حالة المخزون</option>
+    <option value="in-stock">متوفر</option>
+    <option value="low-stock">مخزون منخفض</option>
+    <option value="out-of-stock">نفد المخزون</option>
+  </select>
+  <button class="btn btn-secondary" onclick="applyProductFilters()">🔍 تصفية</button>
+</div>
+
+<!-- Grid View (default hidden, toggle with button) -->
+<div id="productGridView" style="display:none" class="mb-4">
+  <div class="products-grid" id="productsGrid"></div>
+</div>
+
+<!-- Table View -->
+<div id="productTableView">
+  <div class="bulk-bar" id="prodBulkBar">
+    <span class="bulk-count">تم تحديد 0 عنصر</span>
+    <button class="btn btn-sm btn-secondary">📥 تصدير</button>
+    <button class="btn btn-sm btn-danger">🗑️ حذف</button>
+  </div>
+  <div class="card">
+    <div class="table-wrapper">
+      <table class="data-table" id="productsTable">
+        <thead><tr>
+          <th><input type="checkbox" id="selectAllProd"></th>
+          <th>المنتج</th><th>الفئة</th><th>السعر</th><th>المخزون</th><th>المبيعات</th><th>الحالة</th><th>الإجراءات</th>
+        </tr></thead>
+        <tbody>
+          <tr data-stock="in-stock" data-cat="فساتين">
+            <td><input type="checkbox" class="row-cb"></td>
+            <td><div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--pink-bg),var(--gold-bg));display:flex;align-items:center;justify-content:center;font-size:22px">👗</div><div><div style="font-weight:600">فستان سهرة أسود</div><div style="font-size:11px;color:var(--text-muted)">SKU: DR-001</div></div></div></td>
+            <td><span class="badge pink">فساتين</span></td><td><strong class="text-pink">٨٥٠ ر.س</strong></td>
+            <td><strong>15</strong> قطعة</td><td>42</td>
+            <td><span class="badge in-stock">متوفر</span></td>
+            <td><div class="table-actions"><button class="action-btn view" onclick="viewProduct(0)">👁️</button><button class="action-btn edit" onclick="editProduct(0)">✏️</button><button class="action-btn delete" onclick="deleteProduct(0)">🗑️</button></div></td>
+          </tr>
+          <tr data-stock="in-stock" data-cat="عبايات">
+            <td><input type="checkbox" class="row-cb"></td>
+            <td><div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--gold-bg),var(--pink-bg));display:flex;align-items:center;justify-content:center;font-size:22px">👘</div><div><div style="font-weight:600">عباءة مطرزة ذهبية</div><div style="font-size:11px;color:var(--text-muted)">SKU: AB-002</div></div></div></td>
+            <td><span class="badge gold">عبايات</span></td><td><strong class="text-pink">١,٢٠٠ ر.س</strong></td>
+            <td><strong>8</strong> قطعة</td><td>28</td>
+            <td><span class="badge in-stock">متوفر</span></td>
+            <td><div class="table-actions"><button class="action-btn view">👁️</button><button class="action-btn edit">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+          </tr>
+          <tr data-stock="low-stock" data-cat="بلوزات">
+            <td><input type="checkbox" class="row-cb"></td>
+            <td><div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--sage-bg),var(--pink-bg));display:flex;align-items:center;justify-content:center;font-size:22px">👚</div><div><div style="font-weight:600">بلوزة شيفون وردية</div><div style="font-size:11px;color:var(--text-muted)">SKU: BL-003</div></div></div></td>
+            <td><span class="badge sage">بلوزات</span></td><td><strong class="text-pink">٣٢٠ ر.س</strong></td>
+            <td><strong style="color:var(--warning)">3</strong> قطع</td><td>67</td>
+            <td><span class="badge low-stock">مخزون منخفض</span></td>
+            <td><div class="table-actions"><button class="action-btn view">👁️</button><button class="action-btn edit">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+          </tr>
+          <tr data-stock="in-stock" data-cat="حقائب">
+            <td><input type="checkbox" class="row-cb"></td>
+            <td><div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--gold-bg),var(--sage-bg));display:flex;align-items:center;justify-content:center;font-size:22px">👜</div><div><div style="font-weight:600">حقيبة جلد بني</div><div style="font-size:11px;color:var(--text-muted)">SKU: HB-004</div></div></div></td>
+            <td><span class="badge gold">حقائب</span></td><td><strong class="text-pink">٩٥٠ ر.س</strong></td>
+            <td><strong>6</strong> قطع</td><td>15</td>
+            <td><span class="badge in-stock">متوفر</span></td>
+            <td><div class="table-actions"><button class="action-btn view">👁️</button><button class="action-btn edit">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+          </tr>
+          <tr data-stock="in-stock" data-cat="أحذية">
+            <td><input type="checkbox" class="row-cb"></td>
+            <td><div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--pink-bg),var(--sage-bg));display:flex;align-items:center;justify-content:center;font-size:22px">👠</div><div><div style="font-weight:600">حذاء كعب عالٍ</div><div style="font-size:11px;color:var(--text-muted)">SKU: SH-005</div></div></div></td>
+            <td><span class="badge pink">أحذية</span></td><td><strong class="text-pink">٦٥٠ ر.س</strong></td>
+            <td><strong>10</strong> قطع</td><td>33</td>
+            <td><span class="badge in-stock">متوفر</span></td>
+            <td><div class="table-actions"><button class="action-btn view">👁️</button><button class="action-btn edit">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+          </tr>
+          <tr data-stock="out-of-stock" data-cat="اكسسوارات">
+            <td><input type="checkbox" class="row-cb"></td>
+            <td><div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--gold-bg),var(--pink-bg));display:flex;align-items:center;justify-content:center;font-size:22px">📿</div><div><div style="font-weight:600">عقد لؤلؤ أبيض</div><div style="font-size:11px;color:var(--text-muted)">SKU: AC-006</div></div></div></td>
+            <td><span class="badge gold">اكسسوارات</span></td><td><strong class="text-pink">٤٢٠ ر.س</strong></td>
+            <td><strong style="color:var(--danger)">0</strong> قطع</td><td>51</td>
+            <td><span class="badge out-of-stock">نفد المخزون</span></td>
+            <td><div class="table-actions"><button class="action-btn view">👁️</button><button class="action-btn edit">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+          </tr>
+          <tr data-stock="in-stock" data-cat="جاكيتات">
+            <td><input type="checkbox" class="row-cb"></td>
+            <td><div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--info-bg),var(--sage-bg));display:flex;align-items:center;justify-content:center;font-size:22px">🧥</div><div><div style="font-weight:600">جاكيت جلد أسود</div><div style="font-size:11px;color:var(--text-muted)">SKU: JK-007</div></div></div></td>
+            <td><span class="badge sage">جاكيتات</span></td><td><strong class="text-pink">١,١٠٠ ر.س</strong></td>
+            <td><strong>7</strong> قطع</td><td>19</td>
+            <td><span class="badge in-stock">متوفر</span></td>
+            <td><div class="table-actions"><button class="action-btn view">👁️</button><button class="action-btn edit">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+          </tr>
+          <tr data-stock="low-stock" data-cat="تنانير">
+            <td><input type="checkbox" class="row-cb"></td>
+            <td><div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--pink-bg),var(--gold-bg));display:flex;align-items:center;justify-content:center;font-size:22px">👗</div><div><div style="font-weight:600">تنورة ميدي بيضاء</div><div style="font-size:11px;color:var(--text-muted)">SKU: SK-008</div></div></div></td>
+            <td><span class="badge pink">تنانير</span></td><td><strong class="text-pink">٤٨٠ ر.س</strong></td>
+            <td><strong style="color:var(--warning)">4</strong> قطع</td><td>38</td>
+            <td><span class="badge low-stock">مخزون منخفض</span></td>
+            <td><div class="table-actions"><button class="action-btn view">👁️</button><button class="action-btn edit">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <span class="pagination-info">عرض 1–8 من 246 منتج</span>
+      <div class="pagination-btns"><button class="page-btn">‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">›</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Product Modal -->
+<div class="modal-overlay" id="addProductModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title" id="prodFormTitle">➕ إضافة منتج جديد</span>
+      <button class="modal-close" onclick="Modal.close('addProductModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label required">اسم المنتج</label><input type="text" class="form-control" id="prodName" placeholder="اسم المنتج بالعربي"></div>
+        <div class="form-group"><label class="form-label required">الفئة</label><select class="form-control" id="prodCategory"><option>فساتين</option><option>عبايات</option><option>بلوزات</option><option>تنانير</option><option>جاكيتات</option><option>اكسسوارات</option><option>أحذية</option><option>حقائب</option></select></div>
+      </div>
+      <div class="form-row three">
+        <div class="form-group"><label class="form-label required">السعر (ر.س)</label><input type="number" class="form-control" id="prodPrice" placeholder="0.00" min="0"></div>
+        <div class="form-group"><label class="form-label required">الكمية في المخزون</label><input type="number" class="form-control" id="prodStock" placeholder="0" min="0"></div>
+        <div class="form-group"><label class="form-label">رمز SKU</label><input type="text" class="form-control" id="prodSKU" placeholder="DR-001"></div>
+      </div>
+      <div class="form-group"><label class="form-label">الوصف</label><textarea class="form-control" id="prodDesc" rows="3" placeholder="وصف تفصيلي للمنتج..."></textarea></div>
+      <div class="form-group">
+        <label class="form-label">صور المنتج</label>
+        <div class="image-upload-area" onclick="document.getElementById('prodImages').click()">
+          <div class="image-upload-icon">📷</div>
+          <div class="image-upload-text"><strong>اضغط لرفع صورة</strong> أو اسحب وأفلت</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">PNG, JPG حتى 5MB</div>
+        </div>
+        <input type="file" id="prodImages" multiple accept="image/*" style="display:none">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">الألوان المتاحة</label>
+          <input type="text" class="form-control" id="prodColors" placeholder="أسود، أبيض، وردي">
+        </div>
+        <div class="form-group">
+          <label class="form-label">المقاسات المتاحة</label>
+          <input type="text" class="form-control" id="prodSizes" placeholder="S, M, L, XL">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveProduct()">💾 حفظ المنتج</button>
+      <button class="btn btn-secondary" onclick="Modal.close('addProductModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>
+  <script src="admin-nav.js"></script>
+  <script src="admin-common.js"></script>
+<script>
+let productView = 'table';
+
+const productsData = [
+  {name:'فستان سهرة أسود',cat:'فساتين',price:850,stock:15,emoji:'👗',sku:'DR-001'},
+  {name:'عباءة مطرزة ذهبية',cat:'عبايات',price:1200,stock:8,emoji:'👘',sku:'AB-002'},
+  {name:'بلوزة شيفون وردية',cat:'بلوزات',price:320,stock:3,emoji:'👚',sku:'BL-003'},
+  {name:'حقيبة جلد بني',cat:'حقائب',price:950,stock:6,emoji:'👜',sku:'HB-004'},
+  {name:'حذاء كعب عالٍ',cat:'أحذية',price:650,stock:10,emoji:'👠',sku:'SH-005'},
+  {name:'عقد لؤلؤ أبيض',cat:'اكسسوارات',price:420,stock:0,emoji:'📿',sku:'AC-006'},
+  {name:'جاكيت جلد أسود',cat:'جاكيتات',price:1100,stock:7,emoji:'🧥',sku:'JK-007'},
+  {name:'تنورة ميدي بيضاء',cat:'تنانير',price:480,stock:4,emoji:'👗',sku:'SK-008'},
+];
+
+function toggleProductView() {
+  const grid = document.getElementById('productGridView');
+  const table = document.getElementById('productTableView');
+  if (productView === 'table') {
+    productView = 'grid';
+    grid.style.display = 'block';
+    table.style.display = 'none';
+    renderProductGrid();
+  } else {
+    productView = 'table';
+    grid.style.display = 'none';
+    table.style.display = 'block';
+  }
+}
+
+function renderProductGrid() {
+  const stockLabel = (s) => s===0?'نفد المخزون':s<5?'مخزون منخفض':'متوفر';
+  const stockClass = (s) => s===0?'out-of-stock':s<5?'low-stock':'in-stock';
+  document.getElementById('productsGrid').innerHTML = productsData.map((p,i) => `
+    <div class="product-card">
+      <div class="product-card-img">${p.emoji}</div>
+      <div class="product-card-body">
+        <div class="product-card-name">${p.name}</div>
+        <div class="product-card-category">${p.cat}</div>
+        <div class="product-card-price">${p.price.toLocaleString('ar-SA')} ر.س</div>
+      </div>
+      <div class="product-card-footer">
+        <span class="badge ${stockClass(p.stock)}">${stockLabel(p.stock)}</span>
+        <div style="display:flex;gap:4px">
+          <button class="action-btn edit" onclick="editProduct(${i})">✏️</button>
+          <button class="action-btn delete">🗑️</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function applyProductFilters() {
+  const search = document.getElementById('prodSearch').value.toLowerCase();
+  const cat = document.getElementById('prodCatFilter').value;
+  const stock = document.getElementById('prodStockFilter').value;
+  document.querySelectorAll('#productsTable tbody tr').forEach(row => {
+    const text = row.textContent.toLowerCase();
+    const rowCat = row.getAttribute('data-cat') || '';
+    const rowStock = row.getAttribute('data-stock') || '';
+    const ok = (!search || text.includes(search)) && (!cat || rowCat === cat) && (!stock || rowStock === stock);
+    row.style.display = ok ? '' : 'none';
+  });
+}
+
+function openAddProduct() { document.getElementById('prodFormTitle').textContent='➕ إضافة منتج جديد'; Modal.open('addProductModal'); }
+function editProduct(i) { document.getElementById('prodFormTitle').textContent='✏️ تعديل المنتج'; Modal.open('addProductModal'); }
+function deleteProduct(i) { showConfirm('هل تريد حذف هذا المنتج؟', () => Toast.success('تم حذف المنتج')); }
+function viewProduct(i) { Toast.info('عرض تفاصيل المنتج'); }
+
+function saveProduct() {
+  const name = document.getElementById('prodName').value.trim();
+  const price = document.getElementById('prodPrice').value;
+  if (!name) { Toast.error('اسم المنتج مطلوب'); return; }
+  if (!price || parseFloat(price) <= 0) { Toast.error('السعر يجب أن يكون رقماً موجباً'); return; }
+  Toast.success('تم حفظ المنتج بنجاح');
+  Modal.close('addProductModal');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('prodSearch').addEventListener('input', applyProductFilters);
+  document.getElementById('prodCatFilter').addEventListener('change', applyProductFilters);
+  document.getElementById('prodStockFilter').addEventListener('change', applyProductFilters);
+  document.getElementById('selectAllProd').addEventListener('change', function() {
+    document.querySelectorAll('#productsTable tbody .row-cb').forEach(c => c.checked = this.checked);
+  });
+});
+</script>
+</body>
+</html>

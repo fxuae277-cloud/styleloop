@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>العملاء - StyleLoop Admin</title>
+</head>
+<body>
+<div class="admin-layout">
+<aside class="admin-sidebar" id="adminSidebar">
+  <div class="sidebar-header"><div class="sidebar-logo"><div class="logo-icon">S</div><span class="logo-text">StyleLoop <span>Admin</span></span></div><button class="sidebar-toggle" onclick="toggleSidebar()">☰</button></div>
+  <div class="sidebar-user"><div class="user-avatar">👤</div><div class="user-info"><div class="user-name">مدير النظام</div><div class="user-role">Admin</div></div></div>
+  <nav class="sidebar-nav">
+    <a href="admin-dashboard.html" class="nav-item "><span class="nav-icon">📊</span><span class="nav-text">لوحة التحكم</span></a>
+    <a href="admin-pos.html" class="nav-item featured "><span class="nav-icon">🛒</span><span class="nav-text">نقطة البيع</span><span class="nav-badge">POS</span></a>
+    <a href="admin-orders.html" class="nav-item "><span class="nav-icon">📋</span><span class="nav-text">الطلبات</span></a>
+    <a href="admin-customers.html" class="nav-item active"><span class="nav-icon">👥</span><span class="nav-text">العملاء</span></a>
+    <div class="nav-group "><button class="nav-group-toggle" onclick="toggleNavGroup(this)"><span class="nav-icon">📁</span><span class="nav-text">البيانات الأساسية</span><span class="nav-arrow">▾</span></button>
+      <div class="nav-group-items">
+        <a href="admin-branches.html" class="nav-subitem "><span>🏢</span> الفروع</a>
+        <a href="#" class="nav-subitem"><span>📂</span> الفئات</a>
+        <a href="#" class="nav-subitem"><span>��</span> الموردون</a>
+        <a href="admin-products.html" class="nav-subitem "><span>💰</span> المنتجات والأسعار</a>
+      </div>
+    </div>
+    <div class="nav-group"><button class="nav-group-toggle" onclick="toggleNavGroup(this)"><span class="nav-icon">⚙️</span><span class="nav-text">العمليات</span><span class="nav-arrow">▾</span></button>
+      <div class="nav-group-items"><a href="#" class="nav-subitem"><span>📑</span> قوائم الشراء</a></div>
+    </div>
+    <a href="admin-reports.html" class="nav-item "><span class="nav-icon">📈</span><span class="nav-text">التقارير</span></a>
+    <a href="#" class="nav-item"><span class="nav-icon">👑</span><span class="nav-text">الملك</span></a>
+  </nav>
+  <div class="sidebar-footer"><a href="admin-login.html" class="nav-item logout"><span class="nav-icon">🚪</span><span class="nav-text">تسجيل الخروج</span></a></div>
+</aside>
+  <div class="admin-main" id="adminMain">
+<header class="admin-header" id="adminHeader">
+  <button class="header-menu-toggle" onclick="toggleSidebar()">☰</button>
+  <div class="header-search"><input type="text" placeholder="بحث..."><span>🔍</span></div>
+  <div class="header-actions">
+    <button class="header-btn" onclick="toggleTheme()">🌙</button>
+    <button class="header-btn notifications-btn" onclick="toggleNotifications()">🔔 <span class="notif-badge">3</span></button>
+    <div class="header-user" onclick="toggleUserMenu()"><div class="header-avatar">م</div><span>مدير النظام</span><span>▾</span></div>
+  </div>
+</header>
+<div class="notifications-panel" id="notificationsPanel">
+  <div class="notif-panel-header"><h3>الإشعارات</h3><a href="#">تحديد الكل كمقروء</a></div>
+  <div class="notif-item unread"><div class="notif-dot"></div><div class="notif-content"><p>طلب جديد #SL-45821</p><span>منذ 5 دقائق</span></div></div>
+  <div class="notif-item unread"><div class="notif-dot"></div><div class="notif-content"><p>مخزون منخفض: فستان سهرة</p><span>منذ 20 دقيقة</span></div></div>
+</div>
+<div class="user-dropdown" id="userDropdown">
+  <div class="user-dropdown-header"><div class="name">مدير النظام</div><div class="email">admin@styleloop.sa</div></div>
+  <a href="#">👤 الملف الشخصي</a>
+  <a href="admin-login.html" class="logout-link">🚪 تسجيل الخروج</a>
+</div>
+    <div class="admin-content">
+
+<div class="page-header">
+  <div><h1 class="page-title">👥 العملاء</h1><p class="page-subtitle">إدارة قاعدة بيانات العملاء</p></div>
+  <div class="page-actions">
+    <button class="btn btn-secondary" onclick="exportTableToCSV('customersTable','customers.csv')">📥 تصدير CSV</button>
+    <button class="btn btn-primary" onclick="openAddCustomer()">➕ إضافة عميل</button>
+  </div>
+</div>
+<div class="filters-bar">
+  <input type="text" class="form-control search-input" id="custSearch" placeholder="🔍 البحث بالاسم أو الهاتف أو البريد...">
+  <select class="form-control" id="custStatusFilter">
+    <option value="">كل الحالات</option>
+    <option value="active">نشط</option>
+    <option value="inactive">غير نشط</option>
+  </select>
+  <select class="form-control" id="custCityFilter">
+    <option value="">كل المدن</option>
+    <option>الرياض</option><option>جدة</option><option>الدمام</option>
+    <option>مكة المكرمة</option><option>المدينة المنورة</option>
+  </select>
+  <button class="btn btn-secondary" onclick="applyCustomerFilters()">🔍 تصفية</button>
+  <button class="btn btn-outline" onclick="resetCustomerFilters()">↺ إعادة تعيين</button>
+</div>
+<div class="bulk-bar" id="custBulkBar">
+  <span class="bulk-count">تم تحديد 0 عنصر</span>
+  <button class="btn btn-sm btn-secondary">📥 تصدير المحدد</button>
+  <button class="btn btn-sm btn-danger" onclick="bulkDeleteCustomers()">🗑️ حذف المحدد</button>
+</div>
+<div class="card">
+  <div class="table-wrapper">
+    <table class="data-table" id="customersTable">
+      <thead><tr>
+        <th><input type="checkbox" id="selectAllCust"></th>
+        <th>الاسم</th><th>الهاتف</th><th>البريد الإلكتروني</th>
+        <th>المدينة</th><th>الطلبات</th><th>إجمالي الإنفاق</th><th>الحالة</th><th>تاريخ الانضمام</th><th>الإجراءات</th>
+      </tr></thead>
+      <tbody>
+        <tr data-status="active">
+          <td><input type="checkbox" class="row-cb"></td>
+          <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--gold));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">أ</div><div><div style="font-weight:600">أحمد محمد</div><div style="font-size:11px;color:var(--text-muted)">ahmed@gmail.com</div></div></div></td>
+          <td>0512345678</td><td>ahmed@gmail.com</td><td>الرياض</td><td><strong>12</strong></td><td class="text-pink fw-700">٨,٤٠٠ ر.س</td>
+          <td><span class="badge active">نشط</span></td><td>15/01/2025</td>
+          <td><div class="table-actions"><button class="action-btn view" onclick="viewCustomer(0)">👁️</button><button class="action-btn edit" onclick="editCustomer(0)">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+        </tr>
+        <tr data-status="active">
+          <td><input type="checkbox" class="row-cb"></td>
+          <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--gold));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">ف</div><div><div style="font-weight:600">فاطمة علي</div><div style="font-size:11px;color:var(--text-muted)">fatima@yahoo.com</div></div></div></td>
+          <td>0523456789</td><td>fatima@yahoo.com</td><td>جدة</td><td><strong>8</strong></td><td class="text-pink fw-700">١٢,٦٠٠ ر.س</td>
+          <td><span class="badge active">نشط</span></td><td>20/02/2025</td>
+          <td><div class="table-actions"><button class="action-btn view" onclick="viewCustomer(1)">👁️</button><button class="action-btn edit" onclick="editCustomer(1)">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+        </tr>
+        <tr data-status="active">
+          <td><input type="checkbox" class="row-cb"></td>
+          <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--sage),var(--sage-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">ن</div><div><div style="font-weight:600">نورة الأحمد</div></div></div></td>
+          <td>0534567890</td><td>noura@hotmail.com</td><td>الدمام</td><td><strong>5</strong></td><td class="text-pink fw-700">٣,٢٥٠ ر.س</td>
+          <td><span class="badge active">نشط</span></td><td>05/03/2025</td>
+          <td><div class="table-actions"><button class="action-btn view" onclick="viewCustomer(2)">👁️</button><button class="action-btn edit">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+        </tr>
+        <tr data-status="inactive">
+          <td><input type="checkbox" class="row-cb"></td>
+          <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">خ</div><div><div style="font-weight:600">خالد العتيبي</div></div></div></td>
+          <td>0545678901</td><td>khalid@gmail.com</td><td>الرياض</td><td><strong>3</strong></td><td class="text-pink fw-700">٢,١٠٠ ر.س</td>
+          <td><span class="badge inactive">غير نشط</span></td><td>10/04/2025</td>
+          <td><div class="table-actions"><button class="action-btn view">👁️</button><button class="action-btn edit">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+        </tr>
+        <tr data-status="active">
+          <td><input type="checkbox" class="row-cb"></td>
+          <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--pink-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">ر</div><div><div style="font-weight:600">ريم السعيد</div></div></div></td>
+          <td>0556789012</td><td>reem@gmail.com</td><td>مكة المكرمة</td><td><strong>15</strong></td><td class="text-pink fw-700">١٨,٩٠٠ ر.س</td>
+          <td><span class="badge active">نشط</span></td><td>01/01/2025</td>
+          <td><div class="table-actions"><button class="action-btn view">👁️</button><button class="action-btn edit">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+        </tr>
+        <tr data-status="active">
+          <td><input type="checkbox" class="row-cb"></td>
+          <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--info),#2563EB);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">ع</div><div><div style="font-weight:600">عبدالله الغامدي</div></div></div></td>
+          <td>0567890123</td><td>abdallah@gmail.com</td><td>جدة</td><td><strong>7</strong></td><td class="text-pink fw-700">٦,٦٥٠ ر.س</td>
+          <td><span class="badge active">نشط</span></td><td>25/02/2025</td>
+          <td><div class="table-actions"><button class="action-btn view">👁️</button><button class="action-btn edit">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+        </tr>
+        <tr data-status="active">
+          <td><input type="checkbox" class="row-cb"></td>
+          <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--sage),var(--sage-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">م</div><div><div style="font-weight:600">منى الشهري</div></div></div></td>
+          <td>0578901234</td><td>mona@hotmail.com</td><td>الطائف</td><td><strong>4</strong></td><td class="text-pink fw-700">٢,٨٨٠ ر.س</td>
+          <td><span class="badge active">نشط</span></td><td>18/03/2025</td>
+          <td><div class="table-actions"><button class="action-btn view">👁️</button><button class="action-btn edit">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+        </tr>
+        <tr data-status="inactive">
+          <td><input type="checkbox" class="row-cb"></td>
+          <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">س</div><div><div style="font-weight:600">سارة الزهراني</div></div></div></td>
+          <td>0589012345</td><td>sara@gmail.com</td><td>المدينة المنورة</td><td><strong>2</strong></td><td class="text-pink fw-700">٩٦٠ ر.س</td>
+          <td><span class="badge inactive">غير نشط</span></td><td>12/05/2025</td>
+          <td><div class="table-actions"><button class="action-btn view">👁️</button><button class="action-btn edit">✏️</button><button class="action-btn delete">🗑️</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    <span class="pagination-info">عرض 1–8 من 873 عميل</span>
+    <div class="pagination-btns">
+      <button class="page-btn">‹</button>
+      <button class="page-btn active">1</button><button class="page-btn">2</button>
+      <button class="page-btn">3</button><button class="page-btn">›</button>
+    </div>
+  </div>
+</div>
+
+<!-- View Customer Modal -->
+<div class="modal-overlay" id="viewCustomerModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title">👥 بيانات العميل</span>
+      <button class="modal-close" onclick="Modal.close('viewCustomerModal')">×</button>
+    </div>
+    <div class="modal-body" id="custModalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="Modal.close('viewCustomerModal');openAddCustomer()">✏️ تعديل</button>
+      <button class="btn btn-secondary" onclick="Modal.close('viewCustomerModal')">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Customer Modal -->
+<div class="modal-overlay" id="addCustomerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="custFormTitle">➕ إضافة عميل جديد</span>
+      <button class="modal-close" onclick="Modal.close('addCustomerModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label required">الاسم الكامل</label><input type="text" class="form-control" id="custName" placeholder="الاسم الكامل"></div>
+        <div class="form-group"><label class="form-label required">رقم الهاتف</label><input type="text" class="form-control" id="custPhone" placeholder="05xxxxxxxx"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input type="email" class="form-control" id="custEmail" placeholder="example@email.com"></div>
+        <div class="form-group"><label class="form-label">المدينة</label><select class="form-control" id="custCity"><option>الرياض</option><option>جدة</option><option>الدمام</option><option>مكة المكرمة</option><option>المدينة المنورة</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">تاريخ الميلاد</label><input type="date" class="form-control" id="custBirth"></div>
+        <div class="form-group"><label class="form-label">الحالة</label><select class="form-control" id="custStatus"><option value="active">نشط</option><option value="inactive">غير نشط</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">ملاحظات</label><textarea class="form-control" id="custNotes" rows="3" placeholder="ملاحظات إضافية..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveCustomer()">💾 حفظ العميل</button>
+      <button class="btn btn-secondary" onclick="Modal.close('addCustomerModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>
+  <script src="admin-nav.js"></script>
+  <script src="admin-common.js"></script>
+<script>
+const customersData = [
+  {name:'أحمد محمد',phone:'0512345678',email:'ahmed@gmail.com',city:'الرياض',orders:12,spent:8400,status:'active',join:'15/01/2025',orders_list:['SL-45821 - ٨٥٠ ر.س','SL-45812 - ١,٢٠٠ ر.س','SL-45800 - ٦٥٠ ر.س']},
+  {name:'فاطمة علي',phone:'0523456789',email:'fatima@yahoo.com',city:'جدة',orders:8,spent:12600,status:'active',join:'20/02/2025',orders_list:['SL-45820 - ١,٢٠٠ ر.س','SL-45810 - ٩٥٠ ر.س']},
+  {name:'نورة الأحمد',phone:'0534567890',email:'noura@hotmail.com',city:'الدمام',orders:5,spent:3250,status:'active',join:'05/03/2025',orders_list:['SL-45819 - ٦٥٠ ر.س']},
+];
+
+function viewCustomer(idx) {
+  const c = customersData[idx] || {name:'عميل',phone:'-',email:'-',city:'-',orders:0,spent:0,status:'active',join:'-',orders_list:[]};
+  document.getElementById('custModalBody').innerHTML = `
+    <div class="grid-2 mb-4">
+      <div style="text-align:center;padding:24px">
+        <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--gold));display:inline-flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:white;margin-bottom:12px">${c.name.charAt(0)}</div>
+        <h3 style="font-size:18px;font-weight:700">${c.name}</h3>
+        <span class="badge ${c.status}">${c.status==='active'?'نشط':'غير نشط'}</span>
+      </div>
+      <div>
+        <table style="width:100%;font-size:13px">
+          <tr><td style="padding:6px 0;color:var(--text-muted);width:130px">الهاتف</td><td><strong>${c.phone}</strong></td></tr>
+          <tr><td style="padding:6px 0;color:var(--text-muted)">البريد</td><td>${c.email}</td></tr>
+          <tr><td style="padding:6px 0;color:var(--text-muted)">المدينة</td><td>${c.city}</td></tr>
+          <tr><td style="padding:6px 0;color:var(--text-muted)">تاريخ الانضمام</td><td>${c.join}</td></tr>
+          <tr><td style="padding:6px 0;color:var(--text-muted)">عدد الطلبات</td><td><strong class="text-pink">${c.orders}</strong></td></tr>
+          <tr><td style="padding:6px 0;color:var(--text-muted)">إجمالي الإنفاق</td><td><strong class="text-pink">${c.spent.toLocaleString('ar-SA')} ر.س</strong></td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="card-title mb-3">سجل الطلبات</div>
+    ${c.orders_list.map(o=>`<div style="padding:8px 12px;border-radius:var(--radius-md);background:var(--bg-primary);margin-bottom:6px;font-size:13px;border:1px solid var(--border-color)">${o}</div>`).join('')}
+  `;
+  Modal.open('viewCustomerModal');
+}
+
+function openAddCustomer() { document.getElementById('custFormTitle').textContent='➕ إضافة عميل جديد'; Modal.open('addCustomerModal'); }
+function editCustomer(idx) { document.getElementById('custFormTitle').textContent='✏️ تعديل العميل'; Modal.open('addCustomerModal'); }
+
+function saveCustomer() {
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  if (!name) { Toast.error('اسم العميل مطلوب'); return; }
+  if (!phone) { Toast.error('رقم الهاتف مطلوب'); return; }
+  Toast.success('تم حفظ بيانات العميل بنجاح');
+  Modal.close('addCustomerModal');
+}
+
+function applyCustomerFilters() {
+  const search = document.getElementById('custSearch').value.toLowerCase();
+  const status = document.getElementById('custStatusFilter').value;
+  document.querySelectorAll('#customersTable tbody tr').forEach(row => {
+    const text = row.textContent.toLowerCase();
+    const rowStatus = row.getAttribute('data-status') || '';
+    row.style.display = ((!search || text.includes(search)) && (!status || rowStatus === status)) ? '' : 'none';
+  });
+}
+function resetCustomerFilters() {
+  document.getElementById('custSearch').value = '';
+  document.getElementById('custStatusFilter').value = '';
+  document.querySelectorAll('#customersTable tbody tr').forEach(r => r.style.display='');
+}
+function bulkDeleteCustomers() {
+  const checked = document.querySelectorAll('#customersTable tbody .row-cb:checked').length;
+  if (checked===0) return;
+  showConfirm('هل تريد حذف ' + checked + ' عملاء؟', () => Toast.success('تم حذف العملاء المحددين'));
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('custSearch').addEventListener('input', applyCustomerFilters);
+  document.getElementById('selectAllCust').addEventListener('change', function() {
+    document.querySelectorAll('#customersTable tbody .row-cb').forEach(c => c.checked = this.checked);
+    const count = document.querySelectorAll('#customersTable tbody .row-cb:checked').length;
+    document.getElementById('custBulkBar').querySelector('.bulk-count').textContent = 'تم تحديد ' + count + ' عنصر';
+    document.getElementById('custBulkBar').classList.toggle('visible', count > 0);
+  });
+});
+</script>
+</body>
+</html>

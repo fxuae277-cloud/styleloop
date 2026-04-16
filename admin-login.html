@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+  <title>تسجيل الدخول - StyleLoop Admin</title>
+  <style>
+    .login-page {min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#FCE4EC 0%,#FFF8EE 50%,#EBF3EA 100%);padding:20px}
+    [data-theme="dark"] .login-page {background:linear-gradient(135deg,#1A1D2E 0%,#0F1117 100%)}
+    .login-box {background:var(--bg-card);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);padding:40px;width:100%;max-width:440px;border:1px solid var(--border-color)}
+    .login-logo {text-align:center;margin-bottom:32px}
+    .login-logo-icon {width:70px;height:70px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--pink),var(--pink-dark));display:inline-flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:white;box-shadow:var(--shadow-pink);margin-bottom:12px}
+    .login-logo h1 {font-size:22px;font-weight:800;color:var(--text-primary)}
+    .login-logo p {font-size:13px;color:var(--text-muted);margin-top:4px}
+    .password-wrapper {position:relative}
+    .password-wrapper .form-control {padding-left:44px}
+    .toggle-pass {position:absolute;left:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:18px;background:none;border:none;color:var(--text-muted)}
+    .login-divider {text-align:center;color:var(--text-muted);font-size:12px;margin:16px 0;position:relative}
+    .login-divider::before,.login-divider::after {content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border-color)}
+    .login-divider::before {right:0}.login-divider::after {left:0}
+    .forgot-link {color:var(--pink);font-size:13px;text-decoration:none}
+    .forgot-link:hover {text-decoration:underline}
+    .login-footer {text-align:center;margin-top:20px;font-size:12px;color:var(--text-muted)}
+    .theme-toggle-login {position:fixed;top:20px;left:20px;width:38px;height:38px;border-radius:var(--radius-md);background:var(--bg-card);border:1px solid var(--border-color);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:var(--shadow-sm)}
+  </style>
+</head>
+<body>
+<button class="theme-toggle-login" onclick="toggleTheme()" title="تغيير السمة">🌙</button>
+<div class="login-page">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-icon">S</div>
+      <h1>StyleLoop Admin</h1>
+      <p>نظام إدارة المتجر المتكامل</p>
+    </div>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label class="form-label required">اسم المستخدم</label>
+        <input type="text" id="username" class="form-control" placeholder="أدخل اسم المستخدم" value="admin" data-validate="required" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <label class="form-label required" style="margin:0">كلمة المرور</label>
+          <a href="#" class="forgot-link" onclick="showForgotPassword()">نسيت كلمة المرور؟</a>
+        </div>
+        <div class="password-wrapper">
+          <input type="password" id="password" class="form-control" placeholder="أدخل كلمة المرور" value="admin123" data-validate="required" autocomplete="current-password">
+          <button type="button" class="toggle-pass" onclick="togglePasswordVisibility()">👁️</button>
+        </div>
+      </div>
+      <div class="form-group" style="display:flex;justify-content:space-between;align-items:center">
+        <label class="form-check">
+          <input type="checkbox" id="rememberMe" checked>
+          <span class="form-check-label">تذكرني</span>
+        </label>
+      </div>
+      <button type="submit" class="btn btn-primary w-100 btn-lg" id="loginBtn">
+        <span id="loginBtnText">تسجيل الدخول</span>
+        <span id="loginBtnSpinner" class="spinner spinner-sm" style="display:none;border-color:rgba(255,255,255,0.3);border-top-color:white"></span>
+      </button>
+    </form>
+    <div class="login-footer">
+      <p>StyleLoop Admin v2.0 &copy; 2025</p>
+      <p style="margin-top:4px">جميع الحقوق محفوظة</p>
+    </div>
+  </div>
+</div>
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    const newTheme = isDark ? 'light' : 'dark';
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('adminTheme', newTheme);
+    document.querySelector('.theme-toggle-login').textContent = isDark ? '🌙' : '☀️';
+  }
+  (function() {
+    const t = localStorage.getItem('adminTheme') || 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    document.addEventListener('DOMContentLoaded', function() {
+      const btn = document.querySelector('.theme-toggle-login');
+      if(btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
+    });
+  })();
+
+  function togglePasswordVisibility() {
+    const pw = document.getElementById('password');
+    const btn = document.querySelector('.toggle-pass');
+    if (pw.type === 'password') { pw.type = 'text'; btn.textContent = '🙈'; }
+    else { pw.type = 'password'; btn.textContent = '👁️'; }
+  }
+
+  function handleLogin(e) {
+    e.preventDefault();
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
+    const btn = document.getElementById('loginBtn');
+    const txt = document.getElementById('loginBtnText');
+    const spin = document.getElementById('loginBtnSpinner');
+    let valid = true;
+    const userInput = document.getElementById('username');
+    const passInput = document.getElementById('password');
+    [userInput, passInput].forEach(inp => { inp.classList.remove('error'); const e = inp.nextElementSibling; if(e && e.classList.contains('form-error')) e.remove(); });
+    if (!user) { userInput.classList.add('error'); valid = false; }
+    if (!pass) { passInput.classList.add('error'); valid = false; }
+    if (!valid) return;
+    btn.disabled = true; txt.textContent = 'جاري التحقق...'; spin.style.display = 'inline-block';
+    setTimeout(function() {
+      if (user === 'admin' && pass === 'admin123') {
+        localStorage.setItem('adminLoggedIn', 'true');
+        localStorage.setItem('adminUser', user);
+        txt.textContent = '✓ تم التحقق، جاري التحويل...';
+        setTimeout(() => window.location.href = 'admin-dashboard.html', 800);
+      } else {
+        btn.disabled = false; txt.textContent = 'تسجيل الدخول'; spin.style.display = 'none';
+        passInput.classList.add('error');
+        let err = passInput.nextElementSibling;
+        if (!err || !err.classList.contains('form-error')) { err = document.createElement('div'); err.className = 'form-error'; passInput.parentNode.insertBefore(err, passInput.nextSibling); }
+        err.textContent = '⚠ اسم المستخدم أو كلمة المرور غير صحيحة';
+      }
+    }, 1500);
+  }
+
+  function showForgotPassword() {
+    alert('يرجى التواصل مع مدير النظام لاستعادة كلمة المرور\nالبريد: support@styleloop.sa');
+  }
+</script>
+</body>
+</html>
