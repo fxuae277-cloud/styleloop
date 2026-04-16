@@ -441,7 +441,7 @@
     function filterCustomers(q) {
       const query = q.trim().toLowerCase();
       filteredCustomers = CUSTOMERS_DATA.filter(c =>
-        c.name.includes(q) || c.email.toLowerCase().includes(query) || c.phone.includes(q)
+        c.name.toLowerCase().includes(query) || c.email.toLowerCase().includes(query) || c.phone.includes(query)
       );
       renderTable(filteredCustomers);
     }
