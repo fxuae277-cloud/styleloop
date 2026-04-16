@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام نقطة البيع</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <script src="admin-common.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>نظام نقطة البيع</h1>
+    </header>
+    <main>
+        <section class="pos-container">
+            <div class="pos-left">
+                <h2>البحث عن المنتجات</h2>
+                <input type="text" placeholder="ابحث عن منتج..." id="productSearch">
+                <div class="product-list">
+                    <div class="product-item" onclick="addToCart('منتج 1', 50)">منتج 1 - 50 درهم</div>
+                    <div class="product-item" onclick="addToCart('منتج 2', 75)">منتج 2 - 75 درهم</div>
+                    <div class="product-item" onclick="addToCart('منتج 3', 100)">منتج 3 - 100 درهم</div>
+                    <div class="product-item" onclick="addToCart('منتج 4', 125)">منتج 4 - 125 درهم</div>
+                    <div class="product-item" onclick="addToCart('منتج 5', 60)">منتج 5 - 60 درهم</div>
+                    <div class="product-item" onclick="addToCart('منتج 6', 80)">منتج 6 - 80 درهم</div>
+                    <div class="product-item" onclick="addToCart('منتج 7', 90)">منتج 7 - 90 درهم</div>
+                    <div class="product-item" onclick="addToCart('منتج 8', 110)">منتج 8 - 110 درهم</div>
+                    <div class="product-item" onclick="addToCart('منتج 9', 95)">منتج 9 - 95 درهم</div>
+                    <div class="product-item" onclick="addToCart('منتج 10', 70)">منتج 10 - 70 درهم</div>
+                </div>
+            </div>
+            <div class="pos-right">
+                <h2>السلة</h2>
+                <table id="cartTable">
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>الكمية</th>
+                            <th>السعر</th>
+                            <th>الإجمالي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <div class="cart-summary">
+                    <p>المجموع الفرعي: <span id="subtotal">0</span> درهم</p>
+                    <p>الضريبة (5%): <span id="tax">0</span> درهم</p>
+                    <p><strong>الإجمالي: <span id="total">0</span> درهم</strong></p>
+                </div>
+                <div class="payment-methods">
+                    <h3>طريقة الدفع</h3>
+                    <label><input type="radio" name="payment" value="cash"> نقداً</label>
+                    <label><input type="radio" name="payment" value="card"> بطاقة</label>
+                    <label><input type="radio" name="payment" value="transfer"> تحويل بنكي</label>
+                </div>
+                <button onclick="processPayment()">إتمام الدفع</button>
+                <button onclick="clearCart()">إلغاء</button>
+            </div>
+        </section>
+    </main>
+    <script>
+        let cart = [];
+        function addToCart(product, price) {
+            cart.push({product, price, quantity: 1});
+            updateCart();
+        }
+        function updateCart() {
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.quantity;
+            });
+            let tax = subtotal * 0.05;
+            let total = subtotal + tax;
+            document.getElementById('subtotal').innerText = subtotal.toFixed(2);
+            document.getElementById('tax').innerText = tax.toFixed(2);
+            document.getElementById('total').innerText = total.toFixed(2);
+        }
+        function processPayment() {
+            alert('تم معالجة الدفع بنجاح!');
+            clearCart();
+        }
+        function clearCart() {
+            cart = [];
+            updateCart();
+        }
+    </script>
+</body>
+</html>
