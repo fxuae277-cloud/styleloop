@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<!--
+  admin-branches.html — StyleLoop Admin Panel Branches Management
+  Branch cards grid with detail modal (tabs: info, staff, inventory, performance).
+  Depends on: admin-styles.css, admin-common.js
+-->
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="إدارة الفروع — StyleLoop Admin" />
+
+  <title>الفروع — لوحة تحكم StyleLoop</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="admin-styles.css" />
+
+  <style>
+    /* ── Branches page-specific styles ──────────────────────────── */
+    .branches__toolbar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-5);
+    }
+    .branches__toolbar .form-control { flex: 1; min-width: 200px; max-width: 340px; }
+
+    .branches__stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: var(--space-5);
+    }
+    .branches__stat {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      text-align: center;
+    }
+    .branches__stat-value { font-size: var(--font-size-2xl); font-weight: 700; color: var(--color-text-primary); }
+    .branches__stat-label { font-size: var(--font-size-sm); color: var(--color-text-muted); margin-top: var(--space-1); }
+
+    /* Branch cards grid */
+    .branches__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--space-5);
+    }
+    @media (max-width: 640px) {
+      .branches__grid { grid-template-columns: 1fr; }
+    }
+
+    .branch-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+    }
+    .branch-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+
+    .branch-card__header {
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-3);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .branch-card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+    .branch-card__title { font-size: var(--font-size-base); font-weight: 700; color: var(--color-text-primary); margin: 0 0 2px; }
+    .branch-card__city  { font-size: var(--font-size-sm); color: var(--color-text-muted); }
+
+    .branch-card__body { padding: var(--space-4) var(--space-5); }
+    .branch-card__info-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-2);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+    .branch-card__info-icon { font-size: 0.9rem; flex-shrink: 0; width: 18px; text-align: center; }
+
+    .branch-card__metric {
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .branch-card__metric-label { font-size: var(--font-size-xs); color: var(--color-text-muted); }
+    .branch-card__metric-value { font-size: var(--font-size-lg); font-weight: 700; color: var(--color-primary); }
+
+    .branch-card__actions {
+      padding: var(--space-3) var(--space-5);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      gap: var(--space-2);
+    }
+
+    /* Modal tabs */
+    .modal-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--color-border);
+      margin-bottom: var(--space-4);
+      gap: 0;
+      overflow-x: auto;
+    }
+    .modal-tab {
+      padding: var(--space-2) var(--space-4);
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      white-space: nowrap;
+      transition: color var(--transition-fast), border-color var(--transition-fast);
+    }
+    .modal-tab--active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+    .modal-panel { display: none; }
+    .modal-panel--active { display: block; }
+
+    /* Performance chart (CSS bars) */
+    .perf-chart { display: flex; align-items: flex-end; gap: var(--space-2); height: 120px; margin-top: var(--space-4); }
+    .perf-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); height: 100%; justify-content: flex-end; }
+    .perf-bar { width: 100%; border-radius: 4px 4px 0 0; background: var(--color-primary); transition: height 0.4s; min-height: 4px; }
+    .perf-bar--light { background: var(--color-primary-light); }
+    .perf-label { font-size: var(--font-size-xs); color: var(--color-text-muted); }
+    .perf-val   { font-size: var(--font-size-xs); font-weight: 700; color: var(--color-text-primary); }
+
+    /* Form */
+    .form-error { display: none; color: var(--color-danger); font-size: var(--font-size-xs); margin-top: 4px; }
+    .form-group--error .form-control { border-color: var(--color-danger); }
+    .form-group--error .form-error   { display: block; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout" id="adminLayout">
+
+    <aside class="sidebar" id="sidebar" aria-label="القائمة الجانبية">
+      <a href="admin-dashboard.html" class="sidebar__logo">
+        <span class="sidebar__logo-img" style="width:36px;height:36px;background:linear-gradient(135deg,#E91E63,#ad1457);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-family:Poppins,sans-serif;font-size:1rem;flex-shrink:0;">SL</span>
+        <span class="sidebar__logo-text">StyleLoop</span>
+        <span class="sidebar__logo-badge">Admin</span>
+      </a>
+      <nav class="sidebar__nav" aria-label="التنقل الرئيسي">
+        <p class="sidebar__section-label">الرئيسية</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-dashboard.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🏠</span>
+              <span class="sidebar__link-label">لوحة التحكم</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-pos.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🛒</span>
+              <span class="sidebar__link-label">نقطة البيع</span>
+            </a>
+          </li>
+        </ul>
+        <p class="sidebar__section-label">الإدارة</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-orders.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">📋</span>
+              <span class="sidebar__link-label">الطلبات</span>
+              <span class="sidebar__link-badge">12</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-customers.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">👥</span>
+              <span class="sidebar__link-label">العملاء</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-products.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">👗</span>
+              <span class="sidebar__link-label">المنتجات</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-branches.html" class="sidebar__link sidebar__link--active" aria-current="page">
+              <span class="sidebar__link-icon" aria-hidden="true">🏪</span>
+              <span class="sidebar__link-label">الفروع</span>
+            </a>
+          </li>
+        </ul>
+        <p class="sidebar__section-label">النظام</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-login.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🚪</span>
+              <span class="sidebar__link-label">تسجيل الخروج</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <button class="sidebar__toggle-btn" id="sidebarToggleBtn" aria-label="طي الشريط الجانبي">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11 8L6 3l-1 1 4 4-4 4 1 1z"/></svg>
+      </button>
+    </aside>
+
+    <header class="header" role="banner">
+      <div class="header__brand">
+        <button class="header__hamburger" id="hamburgerBtn" aria-label="فتح القائمة" aria-expanded="false" aria-controls="sidebar">
+          <span class="header__hamburger-line"></span>
+          <span class="header__hamburger-line"></span>
+          <span class="header__hamburger-line"></span>
+        </button>
+        <span class="header__page-title">الفروع</span>
+      </div>
+      <div class="header__actions">
+        <button class="header__action-btn" id="themeToggleBtn" aria-label="تبديل الوضع المظلم" data-action="toggle-theme">
+          <svg class="header__theme-icon header__theme-icon--dark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="header__theme-icon header__theme-icon--light" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <div class="header__user-menu" id="userMenu">
+          <button class="header__user-btn" aria-haspopup="true" aria-expanded="false" aria-controls="userDropdown">
+            <span class="header__avatar" aria-hidden="true">أ</span>
+            <span class="header__user-name">المدير</span>
+          </button>
+          <ul class="header__dropdown" id="userDropdown" role="menu">
+            <li role="menuitem"><a href="admin-login.html">تسجيل الخروج</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <main class="main-content" id="mainContent">
+
+      <!-- Page header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-3);margin-bottom:var(--space-6);">
+        <div>
+          <h1 style="font-size:var(--font-size-2xl);font-weight:700;color:var(--color-text-primary);margin:0;">الفروع</h1>
+          <nav style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--font-size-sm);color:var(--color-text-muted);margin-top:var(--space-1);" aria-label="مسار التنقل">
+            <a href="admin-dashboard.html" style="color:var(--color-primary);text-decoration:none;">الرئيسية</a>
+            <span aria-hidden="true">›</span>
+            <span aria-current="page">الفروع</span>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="branches__toolbar">
+        <input type="search" class="form-control" id="branchSearch" placeholder="ابحث عن فرع..." aria-label="البحث عن فرع" oninput="filterBranches(this.value)" />
+        <button class="btn btn--primary" onclick="openAddModal()">+ إضافة فرع</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="branches__stats" role="region" aria-label="إحصائيات الفروع">
+        <div class="branches__stat"><div class="branches__stat-value">6</div><div class="branches__stat-label">إجمالي الفروع</div></div>
+        <div class="branches__stat"><div class="branches__stat-value" style="color:var(--color-success);">5</div><div class="branches__stat-label">نشط</div></div>
+        <div class="branches__stat"><div class="branches__stat-value">48</div><div class="branches__stat-label">إجمالي الموظفين</div></div>
+        <div class="branches__stat"><div class="branches__stat-value" style="color:var(--color-primary);font-size:var(--font-size-xl);">89,200</div><div class="branches__stat-label">مبيعات الشهر (ر.س)</div></div>
+      </div>
+
+      <!-- Branches grid -->
+      <div class="branches__grid" id="branchesGrid" role="list" aria-label="شبكة الفروع"></div>
+
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       BRANCH DETAILS MODAL
+  ═══════════════════════════════════════════ -->
+  <div class="modal" id="branchDetailModal" role="dialog" aria-modal="true" aria-labelledby="branchDetailTitle">
+    <div class="modal__backdrop" onclick="closeDetailModal()"></div>
+    <div class="modal__box" style="max-width:720px;width:93%;max-height:90vh;overflow-y:auto;">
+      <div class="modal__header">
+        <h3 class="modal__title" id="branchDetailTitle">تفاصيل الفرع</h3>
+        <button class="modal__close" onclick="closeDetailModal()" aria-label="إغلاق النافذة">✕</button>
+      </div>
+      <div class="modal__body" id="branchDetailBody" style="overflow-y:auto;"></div>
+      <div class="modal__footer">
+        <button class="btn btn--ghost" onclick="closeDetailModal()">إغلاق</button>
+        <button class="btn btn--secondary" id="editFromDetailBtn">تعديل الفرع</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       ADD / EDIT BRANCH MODAL
+  ═══════════════════════════════════════════ -->
+  <div class="modal" id="branchFormModal" role="dialog" aria-modal="true" aria-labelledby="branchFormTitle">
+    <div class="modal__backdrop" onclick="closeFormModal()"></div>
+    <div class="modal__box" style="max-width:580px;width:92%;">
+      <div class="modal__header">
+        <h3 class="modal__title" id="branchFormTitle">إضافة فرع جديد</h3>
+        <button class="modal__close" onclick="closeFormModal()" aria-label="إغلاق النافذة">✕</button>
+      </div>
+      <div class="modal__body">
+        <form id="branchForm" novalidate>
+          <input type="hidden" id="editBranchId" />
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group" id="fgBranchName" style="grid-column:1/-1;">
+              <label class="form-label" for="inputBranchName">اسم الفرع <span style="color:var(--color-danger);" aria-hidden="true">*</span></label>
+              <input type="text" class="form-control" id="inputBranchName" placeholder="فرع الرياض - العليا" required />
+              <span class="form-error" id="errBranchName">اسم الفرع مطلوب</span>
+            </div>
+            <div class="form-group" id="fgBranchCity">
+              <label class="form-label" for="inputBranchCity">المدينة <span style="color:var(--color-danger);" aria-hidden="true">*</span></label>
+              <select class="form-select" id="inputBranchCity" required>
+                <option value="">اختر المدينة</option>
+                <option>الرياض</option>
+                <option>جدة</option>
+                <option>الدمام</option>
+                <option>الخبر</option>
+                <option>مكة المكرمة</option>
+                <option>المدينة المنورة</option>
+                <option>تبوك</option>
+                <option>أبها</option>
+              </select>
+              <span class="form-error" id="errBranchCity">المدينة مطلوبة</span>
+            </div>
+            <div class="form-group" id="fgBranchPhone">
+              <label class="form-label" for="inputBranchPhone">رقم الهاتف <span style="color:var(--color-danger);" aria-hidden="true">*</span></label>
+              <input type="tel" class="form-control" id="inputBranchPhone" placeholder="011XXXXXXX" required />
+              <span class="form-error" id="errBranchPhone">رقم الهاتف مطلوب</span>
+            </div>
+          </div>
+          <div class="form-group" id="fgBranchAddress">
+            <label class="form-label" for="inputBranchAddress">العنوان الكامل <span style="color:var(--color-danger);" aria-hidden="true">*</span></label>
+            <input type="text" class="form-control" id="inputBranchAddress" placeholder="حي العليا، طريق الملك فهد" required />
+            <span class="form-error" id="errBranchAddress">العنوان مطلوب</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group">
+              <label class="form-label" for="inputBranchManager">مدير الفرع</label>
+              <input type="text" class="form-control" id="inputBranchManager" placeholder="أحمد الشمري" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="inputBranchHours">ساعات العمل</label>
+              <input type="text" class="form-control" id="inputBranchHours" placeholder="9ص – 11م" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="inputBranchStatus">الحالة</label>
+            <select class="form-select" id="inputBranchStatus">
+              <option value="نشط">نشط</option>
+              <option value="معطل">معطل</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--ghost" onclick="closeFormModal()">إلغاء</button>
+        <button class="btn btn--primary" onclick="saveBranch()">حفظ الفرع</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin-common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', AdminApp.initAdminPage);
+
+    // ─── Data ─────────────────────────────────────────────────────
+    const BRANCHES_DATA = [
+      {
+        id: 1, name: 'فرع الرياض - العليا', city: 'الرياض',
+        address: 'حي العليا، طريق الملك فهد، برج الرياض',
+        manager: 'أحمد الشمري', phone: '0114567890', hours: '9ص – 11م',
+        status: 'نشط', staff: 12, monthlySales: 28500, emoji: '🏢', bg: '#FCE4EC',
+        staffList: [
+          { name: 'أحمد الشمري',  role: 'مدير الفرع',  phone: '0501112233', since: '2022' },
+          { name: 'فاطمة العلي',  role: 'مسؤولة مبيعات', phone: '0552223344', since: '2023' },
+          { name: 'خالد المنصور', role: 'محاسب',        phone: '0563334455', since: '2023' },
+          { name: 'نورة الغامدي', role: 'بائعة',        phone: '0574445566', since: '2024' },
+        ],
+        inventory: [
+          { name: 'فستان سهرة ذهبي',   stock: 8,  sales: 42 },
+          { name: 'عباية مطرزة فاخرة', stock: 3,  sales: 38 },
+          { name: 'حقيبة يد جلدية',    stock: 12, sales: 30 },
+          { name: 'بلوزة حرير وردية',  stock: 15, sales: 25 },
+          { name: 'حذاء كعب عالٍ',     stock: 7,  sales: 20 },
+        ],
+        monthlyData: [18000, 22000, 19500, 25000, 21000, 28500],
+      },
+      {
+        id: 2, name: 'فرع جدة - التحلية', city: 'جدة',
+        address: 'شارع التحلية، حي الروضة، مجمع الأندلس',
+        manager: 'ليلى الزهراني', phone: '0125678901', hours: '10ص – 12م',
+        status: 'نشط', staff: 10, monthlySales: 22000, emoji: '🏬', bg: '#E3F2FD',
+        staffList: [
+          { name: 'ليلى الزهراني',  role: 'مديرة الفرع',  phone: '0505556677', since: '2021' },
+          { name: 'سلمى العمري',    role: 'مسؤولة مبيعات', phone: '0546667788', since: '2022' },
+          { name: 'يوسف القرشي',   role: 'محاسب',         phone: '0557778899', since: '2023' },
+          { name: 'هند الجهني',    role: 'بائعة',         phone: '0568889900', since: '2024' },
+        ],
+        inventory: [
+          { name: 'فستان ماكسي مورد',    stock: 6,  sales: 35 },
+          { name: 'بنطلون جينز واسع',    stock: 9,  sales: 28 },
+          { name: 'شال كشمير ناعم',      stock: 25, sales: 22 },
+          { name: 'بلوزة دانتيل بيضاء', stock: 0,  sales: 18 },
+          { name: 'فستان كاجوال أزرق',   stock: 5,  sales: 15 },
+        ],
+        monthlyData: [15000, 18000, 16500, 20000, 19000, 22000],
+      },
+      {
+        id: 3, name: 'فرع الدمام - الكورنيش', city: 'الدمام',
+        address: 'طريق الكورنيش، حي الشاطئ، مول سيتي سنتر',
+        manager: 'محمد الدوسري', phone: '0138765432', hours: '10ص – 11م',
+        status: 'نشط', staff: 8, monthlySales: 15800, emoji: '🏪', bg: '#E8F5E9',
+        staffList: [
+          { name: 'محمد الدوسري',  role: 'مدير الفرع',  phone: '0509091011', since: '2022' },
+          { name: 'رنا المطيري',   role: 'مسؤولة مبيعات', phone: '0531011121', since: '2023' },
+          { name: 'طارق العنزي',   role: 'محاسب',         phone: '0541121314', since: '2023' },
+          { name: 'دينا العسكر',   role: 'بائعة',         phone: '0551213141', since: '2024' },
+        ],
+        inventory: [
+          { name: 'بلوزة مخطط صيفية',  stock: 22, sales: 30 },
+          { name: 'بنطلون كلاسيك أسود', stock: 20, sales: 25 },
+          { name: 'حقيبة يد جلدية',    stock: 8,  sales: 20 },
+          { name: 'شال كشمير ناعم',    stock: 18, sales: 15 },
+          { name: 'حذاء كعب عالٍ',     stock: 4,  sales: 12 },
+        ],
+        monthlyData: [11000, 13000, 12500, 14000, 13800, 15800],
+      },
+      {
+        id: 4, name: 'فرع مكة - البوليفارد', city: 'مكة المكرمة',
+        address: 'حي العزيزية، بوليفارد مكة، الطابق الأول',
+        manager: 'حنان الغامدي', phone: '0254321098', hours: '9ص – 12م',
+        status: 'نشط', staff: 9, monthlySales: 14200, emoji: '🕌', bg: '#FFF8E1',
+        staffList: [
+          { name: 'حنان الغامدي',  role: 'مديرة الفرع',   phone: '0504445566', since: '2021' },
+          { name: 'عبير القرني',   role: 'مسؤولة مبيعات',  phone: '0535556677', since: '2022' },
+          { name: 'بدر الثقفي',    role: 'محاسب',          phone: '0546667788', since: '2023' },
+          { name: 'إيمان الشريف',  role: 'بائعة',          phone: '0557778899', since: '2024' },
+        ],
+        inventory: [
+          { name: 'عباية مطرزة فاخرة',  stock: 5,  sales: 40 },
+          { name: 'فستان سهرة ذهبي',    stock: 4,  sales: 32 },
+          { name: 'شال كشمير ناعم',     stock: 20, sales: 28 },
+          { name: 'حقيبة يد جلدية بيج', stock: 10, sales: 22 },
+          { name: 'بلوزة حرير وردية',   stock: 11, sales: 18 },
+        ],
+        monthlyData: [9000, 11000, 10500, 13000, 12500, 14200],
+      },
+      {
+        id: 5, name: 'فرع المدينة - قباء', city: 'المدينة المنورة',
+        address: 'حي قباء، شارع سيد الشهداء، قرب مسجد قباء',
+        manager: 'وليد العمري', phone: '0148901234', hours: '9ص – 10م',
+        status: 'نشط', staff: 6, monthlySales: 8700, emoji: '🌙', bg: '#F3E5F5',
+        staffList: [
+          { name: 'وليد العمري',  role: 'مدير الفرع',   phone: '0506667788', since: '2023' },
+          { name: 'أسماء النجار', role: 'مسؤولة مبيعات', phone: '0537778899', since: '2023' },
+          { name: 'فيصل الأنصاري', role: 'محاسب',       phone: '0548889900', since: '2024' },
+          { name: 'زينب البدر',   role: 'بائعة',         phone: '0559901011', since: '2024' },
+        ],
+        inventory: [
+          { name: 'فستان كاجوال أزرق',  stock: 3,  sales: 20 },
+          { name: 'بلوزة مخطط صيفية',   stock: 18, sales: 17 },
+          { name: 'بنطلون جينز واسع',   stock: 7,  sales: 14 },
+          { name: 'حذاء كعب عالٍ ذهبي', stock: 5,  sales: 10 },
+          { name: 'شال كشمير ناعم',     stock: 15, sales: 8  },
+        ],
+        monthlyData: [5500, 6800, 6200, 7500, 8000, 8700],
+      },
+      {
+        id: 6, name: 'فرع تبوك - المنتزه', city: 'تبوك',
+        address: 'حي المنتزه، شارع الأمير فهد، قرب البلدية',
+        manager: 'لمى الحربي', phone: '0144567891', hours: '10ص – 10م',
+        status: 'معطل', staff: 3, monthlySales: 0, emoji: '🏙', bg: '#ECEFF1',
+        staffList: [
+          { name: 'لمى الحربي',    role: 'مديرة الفرع',   phone: '0503334455', since: '2023' },
+          { name: 'ناصر البلوي',   role: 'محاسب',          phone: '0524445566', since: '2024' },
+          { name: 'سناء القحطاني', role: 'بائعة',          phone: '0535556677', since: '2024' },
+          { name: 'عمر الشراري',   role: 'أمن',            phone: '0546667788', since: '2024' },
+        ],
+        inventory: [
+          { name: 'بلوزة حرير وردية',    stock: 8, sales: 0 },
+          { name: 'بنطلون كلاسيك أسود',  stock: 12, sales: 0 },
+          { name: 'فستان كاجوال أزرق',   stock: 4, sales: 0 },
+          { name: 'شال كشمير ناعم',      stock: 10, sales: 0 },
+          { name: 'حقيبة يد جلدية بيج',  stock: 6, sales: 0 },
+        ],
+        monthlyData: [4200, 5100, 4800, 5600, 3200, 0],
+      },
+    ];
+
+    let filteredBranches = [...BRANCHES_DATA];
+    let nextBranchId = BRANCHES_DATA.length + 1;
+
+    // ─── Render grid ──────────────────────────────────────────────
+    function renderBranches(data) {
+      const grid = document.getElementById('branchesGrid');
+      if (data.length === 0) {
+        grid.innerHTML = '<p style="color:var(--color-text-muted);text-align:center;padding:var(--space-10) 0;grid-column:1/-1;">لا توجد فروع مطابقة</p>';
+        return;
+      }
+      grid.innerHTML = data.map(b => `
+        <article class="branch-card" role="listitem" aria-label="فرع ${b.name}">
+          <div class="branch-card__header">
+            <div style="display:flex;align-items:center;gap:var(--space-3);flex:1;min-width:0;">
+              <div class="branch-card__icon" style="background:${b.bg};" aria-hidden="true">${b.emoji}</div>
+              <div style="min-width:0;">
+                <h3 class="branch-card__title">${b.name}</h3>
+                <p class="branch-card__city">📍 ${b.city}</p>
+              </div>
+            </div>
+            <span class="badge ${b.status === 'نشط' ? 'badge--success' : 'badge--danger'}">${b.status}</span>
+          </div>
+          <div class="branch-card__body">
+            <div class="branch-card__info-row"><span class="branch-card__info-icon" aria-hidden="true">👤</span><span>المدير: <strong>${b.manager}</strong></span></div>
+            <div class="branch-card__info-row"><span class="branch-card__info-icon" aria-hidden="true">📞</span><span dir="ltr">${b.phone}</span></div>
+            <div class="branch-card__info-row"><span class="branch-card__info-icon" aria-hidden="true">🕐</span><span>${b.hours}</span></div>
+            <div class="branch-card__info-row"><span class="branch-card__info-icon" aria-hidden="true">👥</span><span>${b.staff} موظف</span></div>
+            <div class="branch-card__info-row" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><span class="branch-card__info-icon" aria-hidden="true">📌</span><span title="${b.address}" style="overflow:hidden;text-overflow:ellipsis;">${b.address}</span></div>
+            <div class="branch-card__metric">
+              <span class="branch-card__metric-label">مبيعات هذا الشهر</span>
+              <span class="branch-card__metric-value">${b.monthlySales > 0 ? b.monthlySales.toLocaleString('ar-SA') + ' ر.س' : '—'}</span>
+            </div>
+          </div>
+          <div class="branch-card__actions">
+            <button class="btn btn--ghost btn--sm" style="flex:1;" onclick="viewBranch(${b.id})" aria-label="عرض تفاصيل فرع ${b.name}">عرض</button>
+            <button class="btn btn--secondary btn--sm" onclick="openEditModal(${b.id})" aria-label="تعديل فرع ${b.name}">تعديل</button>
+            <button class="btn ${b.status === 'نشط' ? 'btn--danger' : 'btn--primary'} btn--sm" onclick="toggleBranchStatus(${b.id})" aria-label="${b.status === 'نشط' ? 'تعطيل' : 'تفعيل'} فرع ${b.name}">
+              ${b.status === 'نشط' ? 'تعطيل' : 'تفعيل'}
+            </button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function filterBranches(q) {
+      const query = q.trim().toLowerCase();
+      filteredBranches = BRANCHES_DATA.filter(b =>
+        !query || b.name.toLowerCase().includes(query) || b.city.toLowerCase().includes(query)
+      );
+      renderBranches(filteredBranches);
+    }
+
+    function toggleBranchStatus(id) {
+      const b = BRANCHES_DATA.find(x => x.id === id);
+      if (!b) return;
+      if (!confirm(`هل تريد ${b.status === 'نشط' ? 'تعطيل' : 'تفعيل'} فرع "${b.name}"؟`)) return;
+      b.status = b.status === 'نشط' ? 'معطل' : 'نشط';
+      filterBranches(document.getElementById('branchSearch').value);
+    }
+
+    // ─── Branch Detail Modal ──────────────────────────────────────
+    function viewBranch(id) {
+      const b = BRANCHES_DATA.find(x => x.id === id);
+      if (!b) return;
+
+      document.getElementById('branchDetailTitle').textContent = b.name;
+      document.getElementById('editFromDetailBtn').onclick = () => { closeDetailModal(); openEditModal(id); };
+
+      const maxSales = Math.max(...b.monthlyData, 1);
+      const months   = ['أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر', 'يناير'];
+
+      document.getElementById('branchDetailBody').innerHTML = `
+        <!-- Header -->
+        <div style="display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-5);">
+          <div style="width:60px;height:60px;border-radius:var(--radius-lg);background:${b.bg};display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;" aria-hidden="true">${b.emoji}</div>
+          <div>
+            <div style="font-size:var(--font-size-xl);font-weight:700;">${b.name}</div>
+            <span class="badge ${b.status === 'نشط' ? 'badge--success' : 'badge--danger'}">${b.status}</span>
+            <span style="margin-right:var(--space-2);font-size:var(--font-size-sm);color:var(--color-text-muted);">📍 ${b.city}</span>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="modal-tabs" role="tablist" aria-label="تبويبات تفاصيل الفرع">
+          <button class="modal-tab modal-tab--active" role="tab" aria-selected="true"  onclick="switchBranchTab(this,'bTabInfo')">معلومات الفرع</button>
+          <button class="modal-tab"                   role="tab" aria-selected="false" onclick="switchBranchTab(this,'bTabStaff')">الموظفون (${b.staffList.length})</button>
+          <button class="modal-tab"                   role="tab" aria-selected="false" onclick="switchBranchTab(this,'bTabInventory')">المخزون</button>
+          <button class="modal-tab"                   role="tab" aria-selected="false" onclick="switchBranchTab(this,'bTabPerf')">الأداء</button>
+        </div>
+
+        <!-- Info tab -->
+        <div class="modal-panel modal-panel--active" id="bTabInfo">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);">
+            <div><label style="font-size:var(--font-size-xs);color:var(--color-text-muted);display:block;margin-bottom:2px;">المدير</label><strong>${b.manager}</strong></div>
+            <div><label style="font-size:var(--font-size-xs);color:var(--color-text-muted);display:block;margin-bottom:2px;">الهاتف</label><strong dir="ltr">${b.phone}</strong></div>
+            <div style="grid-column:1/-1;"><label style="font-size:var(--font-size-xs);color:var(--color-text-muted);display:block;margin-bottom:2px;">العنوان</label><strong>${b.address}</strong></div>
+            <div><label style="font-size:var(--font-size-xs);color:var(--color-text-muted);display:block;margin-bottom:2px;">ساعات العمل</label><strong>${b.hours}</strong></div>
+            <div><label style="font-size:var(--font-size-xs);color:var(--color-text-muted);display:block;margin-bottom:2px;">عدد الموظفين</label><strong>${b.staff}</strong></div>
+            <div><label style="font-size:var(--font-size-xs);color:var(--color-text-muted);display:block;margin-bottom:2px;">مبيعات الشهر الحالي</label><strong style="color:var(--color-primary);">${b.monthlySales.toLocaleString('ar-SA')} ر.س</strong></div>
+          </div>
+        </div>
+
+        <!-- Staff tab -->
+        <div class="modal-panel" id="bTabStaff">
+          <table class="data-table__table" style="width:100%;" aria-label="جدول الموظفين">
+            <thead><tr><th>الاسم</th><th>الوظيفة</th><th>الهاتف</th><th>منذ</th></tr></thead>
+            <tbody>
+              ${b.staffList.map(s => `
+                <tr>
+                  <td><strong>${s.name}</strong></td>
+                  <td><span class="badge badge--info">${s.role}</span></td>
+                  <td dir="ltr">${s.phone}</td>
+                  <td>${s.since}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Inventory tab -->
+        <div class="modal-panel" id="bTabInventory">
+          <table class="data-table__table" style="width:100%;" aria-label="جدول المخزون">
+            <thead><tr><th>المنتج</th><th>المخزون</th><th>المبيعات</th></tr></thead>
+            <tbody>
+              ${b.inventory.map(i => `
+                <tr>
+                  <td><strong>${i.name}</strong></td>
+                  <td><span style="color:${i.stock === 0 ? 'var(--color-danger)' : i.stock < 5 ? 'var(--color-warning)' : 'var(--color-success)'};font-weight:600;">${i.stock === 0 ? 'نفذ' : i.stock}</span></td>
+                  <td>${i.sales}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Performance tab -->
+        <div class="modal-panel" id="bTabPerf">
+          <p style="font-size:var(--font-size-sm);color:var(--color-text-muted);margin-bottom:var(--space-2);">مبيعات آخر 6 أشهر (ر.س)</p>
+          <div class="perf-chart" role="img" aria-label="رسم بياني لمبيعات آخر 6 أشهر">
+            ${b.monthlyData.map((val, i) => `
+              <div class="perf-bar-wrap">
+                <div class="perf-val">${val > 0 ? Math.round(val/1000) + 'k' : '—'}</div>
+                <div class="perf-bar ${i === b.monthlyData.length - 1 ? '' : 'perf-bar--light'}" style="height:${Math.round((val / maxSales) * 100)}%;" aria-hidden="true"></div>
+                <div class="perf-label">${months[i]}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--space-3);margin-top:var(--space-5);">
+            <div style="text-align:center;background:var(--color-primary-alpha-10);border-radius:var(--radius-md);padding:var(--space-3);">
+              <div style="font-size:var(--font-size-xl);font-weight:700;color:var(--color-primary);">${b.monthlySales.toLocaleString('ar-SA')}</div>
+              <div style="font-size:var(--font-size-xs);color:var(--color-text-muted);">مبيعات هذا الشهر</div>
+            </div>
+            <div style="text-align:center;background:var(--color-success-light);border-radius:var(--radius-md);padding:var(--space-3);">
+              <div style="font-size:var(--font-size-xl);font-weight:700;color:var(--color-success);">${Math.round(b.monthlyData.reduce((a,v)=>a+v,0)/b.monthlyData.filter(v=>v>0).length).toLocaleString('ar-SA')}</div>
+              <div style="font-size:var(--font-size-xs);color:var(--color-text-muted);">متوسط المبيعات</div>
+            </div>
+            <div style="text-align:center;background:var(--color-info-light);border-radius:var(--radius-md);padding:var(--space-3);">
+              <div style="font-size:var(--font-size-xl);font-weight:700;color:var(--color-info);">${b.staff}</div>
+              <div style="font-size:var(--font-size-xs);color:var(--color-text-muted);">عدد الموظفين</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('branchDetailModal').classList.add('modal--open');
+    }
+
+    function switchBranchTab(btn, panelId) {
+      btn.closest('.modal__body').querySelectorAll('.modal-tab').forEach(t => {
+        t.classList.remove('modal-tab--active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      btn.closest('.modal__body').querySelectorAll('.modal-panel').forEach(p => {
+        p.classList.remove('modal-panel--active');
+      });
+      btn.classList.add('modal-tab--active');
+      btn.setAttribute('aria-selected', 'true');
+      document.getElementById(panelId).classList.add('modal-panel--active');
+    }
+
+    function closeDetailModal() { document.getElementById('branchDetailModal').classList.remove('modal--open'); }
+
+    // ─── Add/Edit Branch Modal ────────────────────────────────────
+    function openAddModal() {
+      document.getElementById('branchFormTitle').textContent = 'إضافة فرع جديد';
+      document.getElementById('editBranchId').value = '';
+      document.getElementById('branchForm').reset();
+      clearBranchErrors();
+      document.getElementById('branchFormModal').classList.add('modal--open');
+    }
+
+    function openEditModal(id) {
+      const b = BRANCHES_DATA.find(x => x.id === id);
+      if (!b) return;
+      document.getElementById('branchFormTitle').textContent  = `تعديل: ${b.name}`;
+      document.getElementById('editBranchId').value           = id;
+      document.getElementById('inputBranchName').value        = b.name;
+      document.getElementById('inputBranchCity').value        = b.city;
+      document.getElementById('inputBranchPhone').value       = b.phone;
+      document.getElementById('inputBranchAddress').value     = b.address;
+      document.getElementById('inputBranchManager').value     = b.manager;
+      document.getElementById('inputBranchHours').value       = b.hours;
+      document.getElementById('inputBranchStatus').value      = b.status;
+      clearBranchErrors();
+      document.getElementById('branchFormModal').classList.add('modal--open');
+    }
+
+    function closeFormModal() { document.getElementById('branchFormModal').classList.remove('modal--open'); }
+
+    function clearBranchErrors() {
+      ['fgBranchName','fgBranchCity','fgBranchPhone','fgBranchAddress'].forEach(id =>
+        document.getElementById(id).classList.remove('form-group--error')
+      );
+    }
+
+    function saveBranch() {
+      const name    = document.getElementById('inputBranchName').value.trim();
+      const city    = document.getElementById('inputBranchCity').value;
+      const phone   = document.getElementById('inputBranchPhone').value.trim();
+      const address = document.getElementById('inputBranchAddress').value.trim();
+      const manager = document.getElementById('inputBranchManager').value.trim();
+      const hours   = document.getElementById('inputBranchHours').value.trim();
+      const status  = document.getElementById('inputBranchStatus').value;
+
+      let valid = true;
+      clearBranchErrors();
+
+      if (!name)    { document.getElementById('fgBranchName').classList.add('form-group--error');    valid = false; }
+      if (!city)    { document.getElementById('fgBranchCity').classList.add('form-group--error');    valid = false; }
+      if (!phone)   { document.getElementById('fgBranchPhone').classList.add('form-group--error');   valid = false; }
+      if (!address) { document.getElementById('fgBranchAddress').classList.add('form-group--error'); valid = false; }
+      if (!valid) return;
+
+      const editId = parseInt(document.getElementById('editBranchId').value);
+      const CITY_EMOJIS = { 'الرياض': '🏢', 'جدة': '🏬', 'الدمام': '🏪', 'مكة المكرمة': '🕌', 'المدينة المنورة': '🌙', 'تبوك': '🏙', 'أبها': '⛰' };
+      const CITY_BGS    = { 'الرياض': '#FCE4EC', 'جدة': '#E3F2FD', 'الدمام': '#E8F5E9', 'مكة المكرمة': '#FFF8E1', 'المدينة المنورة': '#F3E5F5', 'تبوك': '#ECEFF1', 'أبها': '#EFEBE9' };
+
+      if (editId) {
+        const idx = BRANCHES_DATA.findIndex(x => x.id === editId);
+        if (idx !== -1) {
+          Object.assign(BRANCHES_DATA[idx], { name, city, phone, address, manager: manager || 'غير محدد', hours: hours || '—', status, emoji: CITY_EMOJIS[city] || '🏢', bg: CITY_BGS[city] || '#F5F5F5' });
+        }
+      } else {
+        BRANCHES_DATA.push({
+          id: nextBranchId++, name, city, phone, address,
+          manager: manager || 'غير محدد', hours: hours || '—', status,
+          staff: 0, monthlySales: 0,
+          emoji: CITY_EMOJIS[city] || '🏢', bg: CITY_BGS[city] || '#F5F5F5',
+          staffList: [], inventory: [], monthlyData: [0,0,0,0,0,0],
+        });
+      }
+      closeFormModal();
+      filterBranches(document.getElementById('branchSearch').value);
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeDetailModal(); closeFormModal(); }
+    });
+
+    renderBranches(filteredBranches);
+  </script>
+</body>
+</html>

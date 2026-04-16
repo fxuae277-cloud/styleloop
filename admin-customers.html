@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<!--
+  admin-customers.html — StyleLoop Admin Panel Customers Management
+  Customer list with add/edit modal, purchase history, and form validation.
+  Depends on: admin-styles.css, admin-common.js
+-->
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="إدارة العملاء — StyleLoop Admin" />
+
+  <title>العملاء — لوحة تحكم StyleLoop</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="admin-styles.css" />
+
+  <style>
+    /* ── Customers page-specific styles ─────────────────────────── */
+    .customers__toolbar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-5);
+    }
+    .customers__toolbar .form-control { flex: 1; min-width: 200px; max-width: 360px; }
+
+    .customers__stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: var(--space-5);
+    }
+    .customers__stat {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      text-align: center;
+    }
+    .customers__stat-value {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+    .customers__stat-label {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+      margin-top: var(--space-1);
+    }
+
+    .customer__avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: var(--font-size-sm);
+      color: #fff;
+      flex-shrink: 0;
+      vertical-align: middle;
+      margin-left: var(--space-2);
+    }
+
+    .customer__name-cell {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    /* Purchase history inside details modal */
+    .customer-detail__tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--color-border);
+      margin-bottom: var(--space-4);
+    }
+    .customer-detail__tab {
+      padding: var(--space-2) var(--space-4);
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color var(--transition-fast), border-color var(--transition-fast);
+    }
+    .customer-detail__tab--active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+    .customer-detail__tab-panel { display: none; }
+    .customer-detail__tab-panel--active { display: block; }
+
+    .customer__info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+    @media (max-width: 600px) {
+      .customer__info-grid { grid-template-columns: 1fr; }
+    }
+    .customer__info-field label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .customer__info-field span {
+      font-weight: 600;
+      color: var(--color-text-primary);
+      font-size: var(--font-size-sm);
+    }
+
+    .form-error { display: none; color: var(--color-danger); font-size: var(--font-size-xs); margin-top: 4px; }
+    .form-group--error .form-control { border-color: var(--color-danger); }
+    .form-group--error .form-error { display: block; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout" id="adminLayout">
+
+    <aside class="sidebar" id="sidebar" aria-label="القائمة الجانبية">
+      <a href="admin-dashboard.html" class="sidebar__logo">
+        <span class="sidebar__logo-img" style="width:36px;height:36px;background:linear-gradient(135deg,#E91E63,#ad1457);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-family:Poppins,sans-serif;font-size:1rem;flex-shrink:0;">SL</span>
+        <span class="sidebar__logo-text">StyleLoop</span>
+        <span class="sidebar__logo-badge">Admin</span>
+      </a>
+      <nav class="sidebar__nav" aria-label="التنقل الرئيسي">
+        <p class="sidebar__section-label">الرئيسية</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-dashboard.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🏠</span>
+              <span class="sidebar__link-label">لوحة التحكم</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-pos.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🛒</span>
+              <span class="sidebar__link-label">نقطة البيع</span>
+            </a>
+          </li>
+        </ul>
+        <p class="sidebar__section-label">الإدارة</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-orders.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">📋</span>
+              <span class="sidebar__link-label">الطلبات</span>
+              <span class="sidebar__link-badge">12</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-customers.html" class="sidebar__link sidebar__link--active" aria-current="page">
+              <span class="sidebar__link-icon" aria-hidden="true">👥</span>
+              <span class="sidebar__link-label">العملاء</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-products.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">👗</span>
+              <span class="sidebar__link-label">المنتجات</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-branches.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🏪</span>
+              <span class="sidebar__link-label">الفروع</span>
+            </a>
+          </li>
+        </ul>
+        <p class="sidebar__section-label">النظام</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-login.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🚪</span>
+              <span class="sidebar__link-label">تسجيل الخروج</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <button class="sidebar__toggle-btn" id="sidebarToggleBtn" aria-label="طي الشريط الجانبي">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11 8L6 3l-1 1 4 4-4 4 1 1z"/></svg>
+      </button>
+    </aside>
+
+    <header class="header" role="banner">
+      <div class="header__brand">
+        <button class="header__hamburger" id="hamburgerBtn" aria-label="فتح القائمة" aria-expanded="false" aria-controls="sidebar">
+          <span class="header__hamburger-line"></span>
+          <span class="header__hamburger-line"></span>
+          <span class="header__hamburger-line"></span>
+        </button>
+        <span class="header__page-title">العملاء</span>
+      </div>
+      <div class="header__actions">
+        <button class="header__action-btn" id="themeToggleBtn" aria-label="تبديل الوضع المظلم" data-action="toggle-theme">
+          <svg class="header__theme-icon header__theme-icon--dark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="header__theme-icon header__theme-icon--light" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <div class="header__user-menu" id="userMenu">
+          <button class="header__user-btn" aria-haspopup="true" aria-expanded="false" aria-controls="userDropdown">
+            <span class="header__avatar" aria-hidden="true">أ</span>
+            <span class="header__user-name">المدير</span>
+          </button>
+          <ul class="header__dropdown" id="userDropdown" role="menu">
+            <li role="menuitem"><a href="admin-login.html">تسجيل الخروج</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <main class="main-content" id="mainContent">
+
+      <!-- Page header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-3);margin-bottom:var(--space-6);">
+        <div>
+          <h1 style="font-size:var(--font-size-2xl);font-weight:700;color:var(--color-text-primary);margin:0;">العملاء</h1>
+          <nav style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--font-size-sm);color:var(--color-text-muted);margin-top:var(--space-1);" aria-label="مسار التنقل">
+            <a href="admin-dashboard.html" style="color:var(--color-primary);text-decoration:none;">الرئيسية</a>
+            <span aria-hidden="true">›</span>
+            <span aria-current="page">العملاء</span>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="customers__toolbar">
+        <input type="search" class="form-control" id="customerSearch" placeholder="ابحث بالاسم أو البريد أو الهاتف..." aria-label="البحث عن عميل" oninput="filterCustomers(this.value)" />
+        <button class="btn btn--primary" onclick="openAddModal()">+ إضافة عميل</button>
+        <button class="btn btn--secondary btn--sm" onclick="exportCustomers()">📥 تصدير</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="customers__stats" role="region" aria-label="إحصائيات العملاء">
+        <div class="customers__stat"><div class="customers__stat-value">1,240</div><div class="customers__stat-label">إجمالي العملاء</div></div>
+        <div class="customers__stat"><div class="customers__stat-value" style="color:var(--color-success);">987</div><div class="customers__stat-label">نشط</div></div>
+        <div class="customers__stat"><div class="customers__stat-value" style="color:var(--color-secondary);">45</div><div class="customers__stat-label">VIP</div></div>
+        <div class="customers__stat"><div class="customers__stat-value" style="color:var(--color-warning);">208</div><div class="customers__stat-label">معلق</div></div>
+      </div>
+
+      <!-- Customers table -->
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">قائمة العملاء</h2>
+          <span id="customersCount" style="font-size:var(--font-size-sm);color:var(--color-text-muted);"></span>
+        </div>
+        <div class="card__body" style="padding:0;">
+          <div style="overflow-x:auto;">
+            <table class="data-table__table" id="customersTable" aria-label="جدول العملاء">
+              <thead>
+                <tr>
+                  <th scope="col" style="width:40px;"><input type="checkbox" id="selectAllCustomers" aria-label="تحديد الكل" /></th>
+                  <th scope="col">الاسم</th>
+                  <th scope="col">البريد الإلكتروني</th>
+                  <th scope="col">الهاتف</th>
+                  <th scope="col">المدينة</th>
+                  <th scope="col">إجمالي المشتريات</th>
+                  <th scope="col">عدد الطلبات</th>
+                  <th scope="col">الحالة</th>
+                  <th scope="col">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="customersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       ADD / EDIT CUSTOMER MODAL
+  ═══════════════════════════════════════════ -->
+  <div class="modal" id="customerFormModal" role="dialog" aria-modal="true" aria-labelledby="customerFormTitle">
+    <div class="modal__backdrop" onclick="closeFormModal()"></div>
+    <div class="modal__box" style="max-width:560px;width:90%;">
+      <div class="modal__header">
+        <h3 class="modal__title" id="customerFormTitle">إضافة عميل جديد</h3>
+        <button class="modal__close" onclick="closeFormModal()" aria-label="إغلاق النافذة">✕</button>
+      </div>
+      <div class="modal__body">
+        <form id="customerForm" novalidate onsubmit="saveCustomer(event)">
+          <input type="hidden" id="editCustomerId" value="" />
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group" id="fgName">
+              <label class="form-label" for="inputName">الاسم الكامل <span aria-hidden="true" style="color:var(--color-danger);">*</span></label>
+              <input type="text" class="form-control" id="inputName" placeholder="نورة الشمري" required />
+              <span class="form-error" id="errName">الاسم مطلوب</span>
+            </div>
+            <div class="form-group" id="fgPhone">
+              <label class="form-label" for="inputPhone">رقم الهاتف <span aria-hidden="true" style="color:var(--color-danger);">*</span></label>
+              <input type="tel" class="form-control" id="inputPhone" placeholder="05XXXXXXXX" required pattern="^05\d{8}$" />
+              <span class="form-error" id="errPhone">رقم هاتف سعودي صالح مطلوب (05XXXXXXXX)</span>
+            </div>
+          </div>
+          <div class="form-group" id="fgEmail">
+            <label class="form-label" for="inputEmail">البريد الإلكتروني <span aria-hidden="true" style="color:var(--color-danger);">*</span></label>
+            <input type="email" class="form-control" id="inputEmail" placeholder="example@email.com" required />
+            <span class="form-error" id="errEmail">بريد إلكتروني صالح مطلوب</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group">
+              <label class="form-label" for="inputCity">المدينة</label>
+              <select class="form-select" id="inputCity">
+                <option value="">اختر المدينة</option>
+                <option>الرياض</option>
+                <option>جدة</option>
+                <option>الدمام</option>
+                <option>الخبر</option>
+                <option>مكة المكرمة</option>
+                <option>المدينة المنورة</option>
+                <option>تبوك</option>
+                <option>أبها</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="inputStatus">الحالة</label>
+              <select class="form-select" id="inputStatus">
+                <option value="نشط">نشط</option>
+                <option value="معلق">معلق</option>
+                <option value="VIP">VIP</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="inputNotes">ملاحظات</label>
+            <textarea class="form-control" id="inputNotes" rows="3" placeholder="ملاحظات اختيارية عن العميل..." style="resize:vertical;"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--ghost" onclick="closeFormModal()">إلغاء</button>
+        <button class="btn btn--primary" onclick="saveCustomer(event)" id="saveCustomerBtn">حفظ العميل</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       CUSTOMER DETAILS MODAL
+  ═══════════════════════════════════════════ -->
+  <div class="modal" id="customerDetailModal" role="dialog" aria-modal="true" aria-labelledby="customerDetailTitle">
+    <div class="modal__backdrop" onclick="closeDetailModal()"></div>
+    <div class="modal__box" style="max-width:680px;width:92%;">
+      <div class="modal__header">
+        <h3 class="modal__title" id="customerDetailTitle">تفاصيل العميل</h3>
+        <button class="modal__close" onclick="closeDetailModal()" aria-label="إغلاق النافذة">✕</button>
+      </div>
+      <div class="modal__body" id="customerDetailBody"></div>
+      <div class="modal__footer">
+        <button class="btn btn--ghost" onclick="closeDetailModal()">إغلاق</button>
+        <button class="btn btn--secondary" id="editFromDetailBtn">تعديل</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin-common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', AdminApp.initAdminPage);
+
+    const AVATAR_COLORS = ['#E91E63','#9C27B0','#3F51B5','#009688','#FF5722','#795548','#607D8B','#E91E63','#2196F3','#4CAF50'];
+
+    const CUSTOMERS_DATA = [
+      { id: 1,  name: 'نورة الشمري',  email: 'noura@example.com',   phone: '0501234567', city: 'الرياض', total: 4850, orders: 9,  status: 'VIP',  notes: 'عميلة منتظمة' },
+      { id: 2,  name: 'سارة العتيبي', email: 'sara@example.com',    phone: '0557891234', city: 'جدة',    total: 2210, orders: 5,  status: 'نشط',  notes: '' },
+      { id: 3,  name: 'منى الزهراني', email: 'mona@example.com',    phone: '0539876543', city: 'الدمام', total: 880,  orders: 3,  status: 'معلق', notes: 'تحقق من الحساب' },
+      { id: 4,  name: 'هيا القحطاني', email: 'haya@example.com',    phone: '0502345678', city: 'الرياض', total: 3120, orders: 7,  status: 'نشط',  notes: '' },
+      { id: 5,  name: 'ريم الدوسري',  email: 'reem@example.com',    phone: '0558765432', city: 'الخبر',  total: 1770, orders: 4,  status: 'نشط',  notes: '' },
+      { id: 6,  name: 'لمياء الحربي', email: 'lamia@example.com',   phone: '0543214321', city: 'مكة المكرمة',  total: 620,  orders: 2,  status: 'معلق', notes: '' },
+      { id: 7,  name: 'أميرة السلمي', email: 'amira@example.com',   phone: '0501112222', city: 'الرياض', total: 5900, orders: 11, status: 'VIP',  notes: 'عميلة مميزة — خصم دائم 10%' },
+      { id: 8,  name: 'دانة المطيري', email: 'dana@example.com',    phone: '0509988776', city: 'الرياض', total: 1510, orders: 3,  status: 'نشط',  notes: '' },
+      { id: 9,  name: 'غدير الرشيدي', email: 'ghadeer@example.com', phone: '0551122334', city: 'المدينة المنورة', total: 990,  orders: 3,  status: 'نشط',  notes: '' },
+      { id: 10, name: 'ولاء العنزي',  email: 'walaa@example.com',   phone: '0567788990', city: 'جدة',    total: 350,  orders: 1,  status: 'نشط',  notes: '' },
+    ];
+
+    const PURCHASE_HISTORY = {
+      1: [
+        { id: '#ORD-2841', date: '2025-01-15', products: 'فستان سهرة ذهبي', amount: 650,  status: 'مكتمل' },
+        { id: '#ORD-2701', date: '2024-11-20', products: 'عباية مطرزة', amount: 890,     status: 'مكتمل' },
+        { id: '#ORD-2612', date: '2024-10-05', products: 'حقيبة يد جلدية × 2', amount: 840, status: 'مكتمل' },
+        { id: '#ORD-2540', date: '2024-09-12', products: 'بلوزة حرير × 3', amount: 660,   status: 'مكتمل' },
+        { id: '#ORD-2488', date: '2024-08-28', products: 'فستان كاجوال', amount: 380,     status: 'مكتمل' },
+      ],
+    };
+
+    let filteredCustomers = [...CUSTOMERS_DATA];
+    let nextId = CUSTOMERS_DATA.length + 1;
+
+    const STATUS_BADGE = { 'نشط': 'badge--success', 'معلق': 'badge--warning', 'VIP': 'badge--info' };
+
+    function renderTable(data) {
+      const tbody = document.getElementById('customersTableBody');
+      document.getElementById('customersCount').textContent = `${data.length} عميل`;
+
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:var(--space-8);color:var(--color-text-muted);">لا يوجد عملاء مطابقون</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map((c, idx) => {
+        const initial = c.name.charAt(0);
+        const color   = AVATAR_COLORS[c.id % AVATAR_COLORS.length];
+        return `
+        <tr>
+          <td><input type="checkbox" aria-label="تحديد ${c.name}" /></td>
+          <td>
+            <div class="customer__name-cell">
+              <span class="customer__avatar" style="background:${color};" aria-hidden="true">${initial}</span>
+              <strong>${c.name}</strong>
+              ${c.status === 'VIP' ? '<span class="badge badge--info" style="margin-right:4px;">VIP</span>' : ''}
+            </div>
+          </td>
+          <td>${c.email}</td>
+          <td dir="ltr" style="text-align:right;">${c.phone}</td>
+          <td>${c.city}</td>
+          <td><strong>${c.total.toLocaleString('ar-SA')} ر.س</strong></td>
+          <td>${c.orders}</td>
+          <td><span class="badge ${STATUS_BADGE[c.status] || 'badge--neutral'}">${c.status}</span></td>
+          <td style="white-space:nowrap;">
+            <button class="btn btn--ghost btn--sm" onclick="viewCustomer(${c.id})" aria-label="عرض تفاصيل ${c.name}">عرض</button>
+            <button class="btn btn--secondary btn--sm" onclick="openEditModal(${c.id})" aria-label="تعديل بيانات ${c.name}">تعديل</button>
+            <button class="btn btn--danger btn--sm" onclick="deleteCustomer(${c.id})" aria-label="حذف ${c.name}">حذف</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function filterCustomers(q) {
+      const query = q.trim().toLowerCase();
+      filteredCustomers = CUSTOMERS_DATA.filter(c =>
+        c.name.includes(q) || c.email.toLowerCase().includes(query) || c.phone.includes(q)
+      );
+      renderTable(filteredCustomers);
+    }
+
+    // ─── Add/Edit Modal ───────────────────────────────────────────
+    function openAddModal() {
+      document.getElementById('customerFormTitle').textContent = 'إضافة عميل جديد';
+      document.getElementById('saveCustomerBtn').textContent   = 'حفظ العميل';
+      document.getElementById('editCustomerId').value = '';
+      document.getElementById('customerForm').reset();
+      clearFormErrors();
+      document.getElementById('customerFormModal').classList.add('modal--open');
+    }
+
+    function openEditModal(id) {
+      const c = CUSTOMERS_DATA.find(x => x.id === id);
+      if (!c) return;
+      document.getElementById('customerFormTitle').textContent = `تعديل: ${c.name}`;
+      document.getElementById('saveCustomerBtn').textContent   = 'حفظ التعديلات';
+      document.getElementById('editCustomerId').value = id;
+      document.getElementById('inputName').value   = c.name;
+      document.getElementById('inputEmail').value  = c.email;
+      document.getElementById('inputPhone').value  = c.phone;
+      document.getElementById('inputCity').value   = c.city;
+      document.getElementById('inputStatus').value = c.status;
+      document.getElementById('inputNotes').value  = c.notes;
+      clearFormErrors();
+      closeDetailModal();
+      document.getElementById('customerFormModal').classList.add('modal--open');
+    }
+
+    function closeFormModal() {
+      document.getElementById('customerFormModal').classList.remove('modal--open');
+    }
+
+    function clearFormErrors() {
+      ['fgName','fgPhone','fgEmail'].forEach(id => {
+        document.getElementById(id).classList.remove('form-group--error');
+      });
+    }
+
+    function saveCustomer(e) {
+      if (e && e.preventDefault) e.preventDefault();
+
+      const name   = document.getElementById('inputName').value.trim();
+      const phone  = document.getElementById('inputPhone').value.trim();
+      const email  = document.getElementById('inputEmail').value.trim();
+      const city   = document.getElementById('inputCity').value;
+      const status = document.getElementById('inputStatus').value;
+      const notes  = document.getElementById('inputNotes').value.trim();
+
+      let valid = true;
+      clearFormErrors();
+
+      if (!name) { document.getElementById('fgName').classList.add('form-group--error'); valid = false; }
+      if (!phone || !/^05\d{8}$/.test(phone)) { document.getElementById('fgPhone').classList.add('form-group--error'); valid = false; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('fgEmail').classList.add('form-group--error'); valid = false; }
+
+      if (!valid) return;
+
+      const editId = parseInt(document.getElementById('editCustomerId').value);
+      if (editId) {
+        const idx = CUSTOMERS_DATA.findIndex(c => c.id === editId);
+        if (idx !== -1) Object.assign(CUSTOMERS_DATA[idx], { name, phone, email, city, status, notes });
+      } else {
+        CUSTOMERS_DATA.push({ id: nextId++, name, email, phone, city, total: 0, orders: 0, status, notes });
+      }
+      closeFormModal();
+      filterCustomers(document.getElementById('customerSearch').value);
+    }
+
+    // ─── Customer Details Modal ───────────────────────────────────
+    function viewCustomer(id) {
+      const c = CUSTOMERS_DATA.find(x => x.id === id);
+      if (!c) return;
+      const history = PURCHASE_HISTORY[id] || [];
+      const color   = AVATAR_COLORS[c.id % AVATAR_COLORS.length];
+
+      document.getElementById('customerDetailTitle').textContent = `تفاصيل: ${c.name}`;
+      document.getElementById('editFromDetailBtn').onclick = () => openEditModal(id);
+
+      document.getElementById('customerDetailBody').innerHTML = `
+        <div style="display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-5);">
+          <span class="customer__avatar" style="background:${color};width:56px;height:56px;font-size:1.5rem;" aria-hidden="true">${c.name.charAt(0)}</span>
+          <div>
+            <div style="font-size:var(--font-size-xl);font-weight:700;">${c.name}</div>
+            <span class="badge ${STATUS_BADGE[c.status]}">${c.status}</span>
+          </div>
+        </div>
+
+        <div class="customer-detail__tabs" role="tablist" aria-label="تبويبات تفاصيل العميل">
+          <button class="customer-detail__tab customer-detail__tab--active" role="tab" aria-selected="true" onclick="switchTab(this, 'tabInfo')">المعلومات</button>
+          <button class="customer-detail__tab" role="tab" aria-selected="false" onclick="switchTab(this, 'tabHistory')">سجل الطلبات (${history.length})</button>
+        </div>
+
+        <div class="customer-detail__tab-panel customer-detail__tab-panel--active" id="tabInfo">
+          <div class="customer__info-grid">
+            <div class="customer__info-field"><label>البريد الإلكتروني</label><span>${c.email}</span></div>
+            <div class="customer__info-field"><label>الهاتف</label><span dir="ltr">${c.phone}</span></div>
+            <div class="customer__info-field"><label>المدينة</label><span>${c.city}</span></div>
+            <div class="customer__info-field"><label>إجمالي المشتريات</label><span>${c.total.toLocaleString('ar-SA')} ر.س</span></div>
+            <div class="customer__info-field"><label>عدد الطلبات</label><span>${c.orders}</span></div>
+            <div class="customer__info-field"><label>ملاحظات</label><span>${c.notes || '—'}</span></div>
+          </div>
+        </div>
+
+        <div class="customer-detail__tab-panel" id="tabHistory">
+          ${history.length === 0
+            ? '<p style="color:var(--color-text-muted);text-align:center;padding:var(--space-6) 0;">لا توجد طلبات سابقة</p>'
+            : `<table class="data-table__table" style="width:100%;">
+                <thead><tr><th>رقم الطلب</th><th>التاريخ</th><th>المنتجات</th><th>المبلغ</th><th>الحالة</th></tr></thead>
+                <tbody>
+                  ${history.map(h => `
+                    <tr>
+                      <td><strong>${h.id}</strong></td>
+                      <td>${new Date(h.date).toLocaleDateString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                      <td>${h.products}</td>
+                      <td>${h.amount.toLocaleString('ar-SA')} ر.س</td>
+                      <td><span class="badge badge--success">${h.status}</span></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>`
+          }
+        </div>
+      `;
+
+      document.getElementById('customerDetailModal').classList.add('modal--open');
+    }
+
+    function switchTab(btn, panelId) {
+      btn.closest('.modal__body').querySelectorAll('.customer-detail__tab').forEach(t => {
+        t.classList.remove('customer-detail__tab--active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      btn.closest('.modal__body').querySelectorAll('.customer-detail__tab-panel').forEach(p => {
+        p.classList.remove('customer-detail__tab-panel--active');
+      });
+      btn.classList.add('customer-detail__tab--active');
+      btn.setAttribute('aria-selected', 'true');
+      document.getElementById(panelId).classList.add('customer-detail__tab-panel--active');
+    }
+
+    function closeDetailModal() {
+      document.getElementById('customerDetailModal').classList.remove('modal--open');
+    }
+
+    function deleteCustomer(id) {
+      if (!confirm('هل أنت متأكد من حذف هذا العميل؟')) return;
+      const idx = CUSTOMERS_DATA.findIndex(c => c.id === id);
+      if (idx !== -1) CUSTOMERS_DATA.splice(idx, 1);
+      filterCustomers(document.getElementById('customerSearch').value);
+    }
+
+    function exportCustomers() { alert('جاري تصدير بيانات العملاء...'); }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeFormModal(); closeDetailModal(); }
+    });
+
+    renderTable(filteredCustomers);
+  </script>
+</body>
+</html>
