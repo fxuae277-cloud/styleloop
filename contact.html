@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .info-card { border: 1px solid #ddd; padding: 10px; margin: 10px 0; }
+        .faq { margin: 20px 0; }
+        .faq-question { cursor: pointer; }
+        .faq-answer { display: none; margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <h1>Contact Us</h1>
+
+    <form action="#" method="POST">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br>
+
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" required></textarea><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <h2>Our Info</h2>
+    <div class="info-card">
+        <h3>Support</h3>
+        <p>Email: support@example.com</p>
+    </div>
+    <div class="info-card">
+        <h3>Sales</h3>
+        <p>Email: sales@example.com</p>
+    </div>
+
+    <h2>FAQs</h2>
+    <div class="faq">
+        <div class="faq-item">
+            <div class="faq-question">What is your return policy?</div>
+            <div class="faq-answer">You can return items within 30 days of purchase.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">How can I contact support?</div>
+            <div class="faq-answer">You can reach support via the contact form above or email us directly.</div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.faq-question').forEach(function(question) {
+            question.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+    </script>
+</body>
+</html>
