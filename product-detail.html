@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنتج - StyleLoop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #FAFAF8;
+            color: #2A2A2A;
+            line-height: 1.6;
+        }
+        
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(24px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #F0E8EA;
+            box-shadow: 0 2px 20px rgba(233, 30, 99, 0.06);
+        }
+        
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #E91E63;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-links {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: #2A2A2A;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .nav-links a:hover {
+            color: #E91E63;
+        }
+        
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .icon-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: #FCE4EC;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .icon-btn:hover {
+            background: #F06292;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        /* Breadcrumb */
+        .breadcrumb {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #999999;
+        }
+        
+        .breadcrumb a {
+            color: #E91E63;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .breadcrumb a:hover {
+            color: #F06292;
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Product Detail Grid */
+        .product-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 5.5rem;
+        }
+        
+        /* Gallery */
+        .gallery-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .main-image {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(233, 30, 99, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+        
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .badge-new {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #E91E63;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 10;
+        }
+        
+        .thumbnail-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.8rem;
+        }
+        
+        .thumbnail {
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .thumbnail:hover,
+        .thumbnail.active {
+            border-color: #E91E63;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
+        }
+        
+        /* Product Info */
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .product-header {
+            border-bottom: 1px solid #F0E8EA;
+            padding-bottom: 2rem;
+        }
+        
+        .product-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #2A2A2A;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stars {
+            display: flex;
+            gap: 0.2rem;
+            font-size: 1rem;
+        }
+        
+        .stars .star.filled {
+            color: #FFB800;
+        }
+        
+        .stars .star.empty {
+            color: #F0E8EA;
+        }
+        
+        .rating-count {
+            color: #999999;
+            font-size: 0.9rem;
+        }
+        
+        .price-section {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+        }
+        
+        .price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #C9A96E;
+        }
+        
+        .original-price {
+            font-size: 1.2rem;
+            color: #999999;
+            text-decoration: line-through;
+        }
+        
+        .discount-badge {
+            background: #FF7043;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 14px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        /* Product Specs */
+        .specs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #F0E8EA;
+        }
+        
+        .spec {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .spec-label {
+            font-size: 0.85rem;
+            color: #999999;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .spec-value {
+            font-size: 1rem;
+            color: #2A2A2A;
+            font-weight: 500;
+        }
+        
+        /* Size Selection */
+        .size-section {
+            border-bottom: 1px solid #F0E8EA;
+            padding-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #2A2A2A;
+            margin-bottom: 1rem;
+        }
+        
+        .size-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.8rem;
+        }
+        
+        .size-btn {
+            padding: 0.8rem;
+            border: 2px solid #F0E8EA;
+            background: white;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .size-btn:hover {
+            border-color: #E91E63;
+            color: #E91E63;
+        }
+        
+        .size-btn.active {
+            background: #E91E63;
+            color: white;
+            border-color: #E91E63;
+        }
+        
+        /* Color Selection */
+        .color-section {
+            border-bottom: 1px solid #F0E8EA;
+            padding-bottom: 2rem;
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+        }
+        
+        .color-btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #F0E8EA;
+            background: white;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .color-sample {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+        }
+        
+        .color-btn:hover {
+            border-color: #E91E63;
+        }
+        
+        .color-btn.active {
+            border-color: #E91E63;
+            background: #FCE4EC;
+        }
+        
+        /* Quantity Section */
+        .quantity-section {
+            border-bottom: 1px solid #F0E8EA;
+            padding-bottom: 2rem;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: fit-content;
+        }
+        
+        .qty-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #F0E8EA;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .qty-btn:hover {
+            background: #FCE4EC;
+            border-color: #E91E63;
+        }
+        
+        .qty-display {
+            min-width: 50px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #E91E63 0%, #F06292 100%);
+            color: white;
+            box-shadow: 0 8px 20px rgba(233, 30, 99, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(233, 30, 99, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #E91E63;
+            border: 2px solid #F8BBD0;
+        }
+        
+        .btn-secondary:hover {
+            background: #FCE4EC;
+            border-color: #E91E63;
+        }
+        
+        .btn-tryon {
+            background: linear-gradient(135deg, #C9A96E 0%, #D4AF37 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-tryon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(201, 169, 110, 0.3);
+        }
+        
+        /* Description */
+        .description {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid #F0E8EA;
+            margin-bottom: 2rem;
+        }
+        
+        .description-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2A2A2A;
+            margin-bottom: 1rem;
+        }
+        
+        .description-text {
+            color: #666666;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        
+        .features-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+        
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #666666;
+        }
+        
+        .features-list li:before {
+            content: "✓";
+            color: #8FAE8B;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        /* Ratings Section */
+        .ratings-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid #F0E8EA;
+            margin-bottom: 2rem;
+        }
+        
+        .ratings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #F0E8EA;
+            padding-bottom: 1rem;
+        }
+        
+        .avg-rating {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .rating-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #2A2A2A;
+        }
+        
+        .rating-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        
+        .rating-stars {
+            display: flex;
+            gap: 0.2rem;
+            font-size: 1.1rem;
+        }
+        
+        .rating-stars .star.filled {
+            color: #FFB800;
+        }
+        
+        .rating-stars .star.empty {
+            color: #F0E8EA;
+        }
+        
+        .rating-count {
+            color: #999999;
+            font-size: 0.85rem;
+        }
+        
+        .write-review-btn {
+            background: #F8BBD0;
+            color: #E91E63;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .write-review-btn:hover {
+            background: #E91E63;
+            color: white;
+        }
+        
+        .review-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #F0E8EA;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .review-item:last-child {
+            border-bottom: none;
+        }
+        
+        .reviewer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #E91E63, #F06292);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        
+        .review-content {
+            flex: 1;
+        }
+        
+        .reviewer-name {
+            font-weight: 600;
+            color: #2A2A2A;
+            margin-bottom: 0.2rem;
+        }
+        
+        .review-stars {
+            display: flex;
+            gap: 0.2rem;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .review-stars .star.filled {
+            color: #FFB800;
+        }
+        
+        .review-text {
+            color: #666666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        /* Similar Products */
+        .similar-products {
+            margin-bottom: 5.5rem;
+        }
+        
+        .section-header {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #2A2A2A;
+            margin-bottom: 2rem;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #F0E8EA;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 2px 20px rgba(233, 30, 99, 0.06);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 40px rgba(233, 30, 99, 0.1);
+            border-color: #F8BBD0;
+        }
+        
+        .product-image {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: #F5F3F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 0.8rem;
+            right: 0.8rem;
+            background: #8FAE8B;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .product-info-card {
+            padding: 1.5rem;
+        }
+        
+        .product-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2A2A2A;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .product-category {
+            font-size: 0.85rem;
+            color: #999999;
+            margin-bottom: 1rem;
+        }
+        
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #C9A96E;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #999999;
+        }
+        
+        /* Footer */
+        footer {
+            background: #2A2A2A;
+            color: white;
+            padding: 3rem 2rem;
+            margin-top: 5.5rem;
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #E91E63;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-section ul a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section ul a:hover {
+            color: #E91E63;
+        }
+        
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 2rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .product-detail {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .size-grid,
+            .color-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .specs {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .navbar-container {
+                padding: 0.8rem 1rem;
+                gap: 1rem;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .product-title {
+                font-size: 1.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .size-grid,
+            .color-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">StyleLoop</a>
+            <ul class="nav-links">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="products.html">المنتجات</a></li>
+                <li><a href="tryon.html">استوديو التجربة</a></li>
+                <li><a href="sell.html">بيع ملابسك</a></li>
+                <li><a href="about.html">من نحن</a></li>
+                <li><a href="contact.html">تواصل معنا</a></li>
+            </ul>
+            <div class="nav-icons">
+                <button class="icon-btn">❤️</button>
+                <button class="icon-btn">🛒</button>
+                <button class="icon-btn">👤</button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">الرئيسية</a>
+        <span>/</span>
+        <a href="products.html">المنتجات</a>
+        <span>/</span>
+        <span>فستان سهرة فاخر</span>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Product Detail -->
+        <div class="product-detail">
+            <!-- Gallery -->
+            <div class="gallery-section">
+                <div class="main-image">
+                    <span>👗</span>
+                    <div class="badge-new">جديد</div>
+                </div>
+                <div class="thumbnail-list">
+                    <div class="thumbnail active">👗</div>
+                    <div class="thumbnail">👠</div>
+                    <div class="thumbnail">💍</div>
+                    <div class="thumbnail">👛</div>
+                </div>
+            </div>
+            
+            <!-- Product Info -->
+            <div class="product-info">
+                <div class="product-header">
+                    <h1 class="product-title">فستان سهرة فاخر من الحرير</h1>
+                    <div class="rating">
+                        <div class="stars">
+                            <span class="star filled">⭐</span>
+                            <span class="star filled">⭐</span>
+                            <span class="star filled">⭐</span>
+                            <span class="star filled">⭐</span>
+                            <span class="star filled">⭐</span>
+                        </div>
+                        <span class="rating-count">(245 تقييم)</span>
+                    </div>
+                    <div class="price-section">
+                        <span class="price">450 ر.س</span>
+                        <span class="original-price">650 ر.س</span>
+                        <span class="discount-badge">-30%</span>
+                    </div>
+                </div>
+                
+                <!-- Size Selection -->
+                <div class="size-section">
+                    <h3 class="section-title">الحجم</h3>
+                    <div class="size-grid">
+                        <button class="size-btn">XS</button>
+                        <button class="size-btn active">S</button>
+                        <button class="size-btn">M</button>
+                        <button class="size-btn">L</button>
+                    </div>
+                </div>
+                
+                <!-- Color Selection -->
+                <div class="color-section">
+                    <h3 class="section-title">اللون</h3>
+                    <div class="color-grid">
+                        <button class="color-btn active">
+                            <div class="color-sample" style="background: #000;"></div>
+                            أسود
+                        </button>
+                        <button class="color-btn">
+                            <div class="color-sample" style="background: #8B0000;"></div>
+                            أحمر
+                        </button>
+                        <button class="color-btn">
+                            <div class="color-sample" style="background: #FFD700;"></div>
+                            ذهبي
+                        </button>
+                        <button class="color-btn">
+                            <div class="color-sample" style="background: #800080;"></div>
+                            بنفسجي
+                        </button>
+                        <button class="color-btn">
+                            <div class="color-sample" style="background: #4169E1;"></div>
+                            أزرق
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Quantity -->
+                <div class="quantity-section">
+                    <h3 class="section-title">الكمية</h3>
+                    <div class="quantity-control">
+                        <button class="qty-btn">-</button>
+                        <div class="qty-display">1</div>
+                        <button class="qty-btn">+</button>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-tryon">جرب على نفسك مع AI</button>
+                    <button class="btn btn-primary">أضف للسلة</button>
+                </div>
+                <button class="btn btn-secondary">أضف للمفضلة ❤️</button>
+                
+                <!-- Specs -->
+                <div class="specs">
+                    <div class="spec">
+                        <span class="spec-label">المادة</span>
+                        <span class="spec-value">حرير 100%</span>
+                    </div>
+                    <div class="spec">
+                        <span class="spec-label">المنشأ</span>
+                        <span class="spec-value">دبي</span>
+                    </div>
+                    <div class="spec">
+                        <span class="spec-label">النوع</span>
+                        <span class="spec-value">فستان سهرة</span>
+                    </div>
+                    <div class="spec">
+                        <span class="spec-label">الحالة</span>
+                        <span class="spec-value">مستعمل - ممتاز</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Description -->
+        <div class="description">
+            <h3 class="description-title">الوصف التفصيلي</h3>
+            <p class="description-text">
+                فستان سهرة فاخر من الحرير الطبيعي 100%، مناسب للحفلات والمناسبات الخاصة. تصميم عصري وأنيق مع تفاصيل دقيقة وحرفية عالية. الفستان بحالة ممتازة ولم يُرتدى إلا عدة مرات. يتميز بالراحة والمرونة ويناسب جميع أشكال الجسم.
+            </p>
+            <h3 class="description-title" style="margin-top: 1.5rem;">المميزات</h3>
+            <ul class="features-list">
+                <li>حرير طبيعي 100% عالي الجودة</li>
+                <li>تصميم عصري وأنيق</li>
+                <li>يناسب جميع المناسبات</li>
+                <li>تفاصيل حرفية دقيقة</li>
+                <li>مريح وخفيف الوزن</li>
+                <li>ألوان عصرية متعددة</li>
+            </ul>
+        </div>
+        
+        <!-- Ratings -->
+        <div class="ratings-section">
+            <div class="ratings-header">
+                <div>
+                    <h3 class="description-title">التقييمات والآراء</h3>
+                </div>
+                <button class="write-review-btn">اكتب تقييمك</button>
+            </div>
+            
+            <div class="avg-rating" style="margin-bottom: 2rem;">
+                <div class="rating-number">4.8</div>
+                <div class="rating-info">
+                    <div class="rating-stars">
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                    </div>
+                    <span class="rating-count">بناءً على 245 تقييم</span>
+                </div>
+            </div>
+            
+            <div class="review-item">
+                <div class="reviewer-avatar">ف</div>
+                <div class="review-content">
+                    <div class="reviewer-name">فاطمة علي</div>
+                    <div class="review-stars">
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                    </div>
+                    <div class="review-text">الفستان جميل جداً وجودة الحرير ممتازة. التسليم كان سريع والتغليف أنيق. ممتنة جداً!</div>
+                </div>
+            </div>
+            
+            <div class="review-item">
+                <div class="reviewer-avatar">ن</div>
+                <div class="review-content">
+                    <div class="reviewer-name">نور محمد</div>
+                    <div class="review-stars">
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                        <span class="star empty">⭐</span>
+                    </div>
+                    <div class="review-text">منتج رائع، الحجم مناسب جداً. الخياطة نظيفة والألوان زاهية. موصى به بشدة!</div>
+                </div>
+            </div>
+            
+            <div class="review-item">
+                <div class="reviewer-avatar">د</div>
+                <div class="review-content">
+                    <div class="reviewer-name">دنيا أحمد</div>
+                    <div class="review-stars">
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                        <span class="star filled">⭐</span>
+                    </div>
+                    <div class="review-text">أفضل فستان اشتريته من StyleLoop. الجودة عالية والسعر مناسب جداً. شكراً!</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Similar Products -->
+        <section class="similar-products">
+            <h2 class="section-header">منتجات مشابهة قد تعجبك</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-image">
+                        👗
+                        <div class="product-badge">الأكثر طلباً</div>
+                    </div>
+                    <div class="product-info-card">
+                        <h3 class="product-name">فستان كوكتيل أنيق</h3>
+                        <p class="product-category">فساتين</p>
+                        <div class="product-price">380 ر.س</div>
+                        <div class="product-rating">⭐ 4.9 (128)</div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        👗
+                        <div class="product-badge">خصم</div>
+                    </div>
+                    <div class="product-info-card">
+                        <h3 class="product-name">فستان سهرة كلاسيكي</h3>
+                        <p class="product-category">فساتين</p>
+                        <div class="product-price">320 ر.س</div>
+                        <div class="product-rating">⭐ 4.7 (95)</div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        👗
+                        <div class="product-badge">جديد</div>
+                    </div>
+                    <div class="product-info-card">
+                        <h3 class="product-name">فستان مسائي برّاق</h3>
+                        <p class="product-category">فساتين</p>
+                        <div class="product-price">420 ر.س</div>
+                        <div class="product-rating">⭐ 4.8 (156)</div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        👗
+                        <div class="product-badge">مستدام</div>
+                    </div>
+                    <div class="product-info-card">
+                        <h3 class="product-name">فستان سهرة مستدام</h3>
+                        <p class="product-category">فساتين</p>
+                        <div class="product-price">510 ر.س</div>
+                        <div class="product-rating">⭐ 4.9 (213)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>StyleLoop</h3>
+                <ul>
+                    <li><a href="#">عن StyleLoop</a></li>
+                    <li><a href="#">الوظائف</a></li>
+                    <li><a href="#">الأخبار</a></li>
+                    <li><a href="#">اتصل بنا</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>المساعدة</h3>
+                <ul>
+                    <li><a href="#">سياسة الخصوصية</a></li>
+                    <li><a href="#">شروط الاستخدام</a></li>
+                    <li><a href="#">سياسة التوصيل</a></li>
+                    <li><a href="#">سياسة الإرجاع</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>المتجر</h3>
+                <ul>
+                    <li><a href="#">جميع المنتجات</a></li>
+                    <li><a href="#">المبيعات والعروض</a></li>
+                    <li><a href="#">المنتجات الجديدة</a></li>
+                    <li><a href="#">الأكثر طلباً</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>التواصل</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">WhatsApp</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 StyleLoop. جميع الحقوق محفوظة.</span>
+            <span>مصنوع بـ 💖 لك</span>
+        </div>
+    </footer>
+    
+    <script>
+        // Quantity controls
+        document.querySelectorAll('.qty-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const display = this.closest('.quantity-control').querySelector('.qty-display');
+                let qty = parseInt(display.textContent);
+                if (this.textContent === '+') {
+                    display.textContent = qty + 1;
+                } else if (qty > 1) {
+                    display.textContent = qty - 1;
+                }
+            });
+        });
+        
+        // Size selection
+        document.querySelectorAll('.size-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.closest('.size-grid').querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Color selection
+        document.querySelectorAll('.color-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.closest('.color-grid').querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Thumbnail selection
+        document.querySelectorAll('.thumbnail').forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                this.closest('.thumbnail-list').querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
