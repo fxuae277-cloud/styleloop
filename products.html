@@ -1,57 +1,983 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products Page</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StyleLoop — تصفحي المنتجات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pink:#E91E63;--pink2:#F06292;--pink3:#F8BBD0;--pink4:#FCE4EC;--pink5:#FFF0F5;
+  --gold:#C9A96E;--gold2:#D4AF37;--gold3:#F5E6C8;--gold4:#FFF8E8;
+  --sage:#8FAE8B;--sage2:#A8C4A4;--sage3:#E8F0E7;
+  --coral:#FF7043;--lavender:#B39DDB;--lavender3:#F0EAF5;
+  --sky:#64B5F6;--sky3:#E3F2FD;
+  --bg:#FFFFFF;--bg2:#FAFAF8;--bg3:#F5F3F0;
+  --card:#FFFFFF;--card-hover:#FFF8FA;
+  --line:#F0E8EA;--line2:#E8DDE0;
+  --t1:#2A2A2A;--t2:#666666;--t3:#999999;--t4:#CCCCCC;
+  --shadow:0 2px 20px rgba(233,30,99,.06);
+  --shadow2:0 8px 40px rgba(233,30,99,.1);
+  --shadow3:0 20px 60px rgba(0,0,0,.06);
+  --shadow4:0 4px 15px rgba(0,0,0,.04);
+  --radius:14px;--radius2:20px;--radius3:28px;
+  --fc:'Cairo',sans-serif;--fp:'Poppins',sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:var(--fc);background:var(--bg);color:var(--t1);line-height:1.8;font-weight:400;-webkit-font-smoothing:antialiased}
+::selection{background:var(--pink3);color:var(--pink)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--pink3);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:var(--pink2)}
+
+/* ====== NAV ====== */
+.nv{position:fixed;top:0;inset-inline:0;z-index:10000;padding:.9rem 2.5rem;display:flex;align-items:center;justify-content:space-between;transition:all .5s var(--ease);background:rgba(255,255,255,.88);backdrop-filter:blur(24px);border-bottom:1px solid transparent}
+.nv.scrolled{box-shadow:0 2px 30px rgba(0,0,0,.04);border-bottom-color:var(--line);padding:.65rem 2.5rem}
+.nv-logo{display:flex;align-items:center;gap:.5rem;cursor:pointer;text-decoration:none}
+.nv-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--pink),var(--pink2));border-radius:50%;display:grid;place-items:center;color:#fff;font-size:.95rem;font-weight:800;transition:all .4s var(--ease)}
+.nv-logo:hover .nv-logo-icon{transform:rotate(180deg);border-radius:var(--radius)}
+.nv-logo-text{font-family:var(--fp);font-size:1.35rem;font-weight:700;color:var(--t1);letter-spacing:-.02em}
+.nv-logo-text span{color:var(--pink)}
+.nv-links{display:flex;align-items:center;gap:1.5rem;list-style:none}
+.nv-links a{color:var(--t2);text-decoration:none;font-size:.8rem;font-weight:500;transition:color .3s;position:relative}
+.nv-links a:hover,.nv-links a.active{color:var(--pink)}
+.nv-links a::after{content:'';position:absolute;bottom:-4px;inset-inline-end:0;width:0;height:2px;background:var(--pink);border-radius:2px;transition:width .3s var(--ease)}
+.nv-links a:hover::after,.nv-links a.active::after{width:100%}
+.nv-actions{display:flex;align-items:center;gap:.7rem}
+.nv-cart{position:relative;width:38px;height:38px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;cursor:pointer;transition:all .3s;font-size:1rem;border:none}
+.nv-cart:hover{background:var(--pink4)}
+.nv-cart-badge{position:absolute;top:-3px;inset-inline-start:-3px;min-width:18px;height:18px;background:var(--pink);border-radius:50%;font-size:.55rem;color:#fff;display:grid;place-items:center;padding:0 4px}
+.nv-user{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--pink3),var(--gold3));display:grid;place-items:center;cursor:pointer;font-size:.75rem;font-weight:700;color:var(--pink);border:2px solid #fff;box-shadow:var(--shadow4)}
+.btn-p{padding:.7rem 1.8rem;background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff;border:none;border-radius:var(--radius);font-family:var(--fc);font-size:.85rem;font-weight:700;cursor:pointer;transition:all .3s var(--ease);box-shadow:0 4px 15px rgba(233,30,99,.2)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(233,30,99,.3)}
+.btn-g{padding:.7rem 1.8rem;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border:none;border-radius:var(--radius);font-family:var(--fc);font-size:.85rem;font-weight:700;cursor:pointer;transition:all .3s var(--ease);box-shadow:0 4px 15px rgba(201,169,110,.2)}
+.btn-g:hover{transform:translateY(-2px)}
+.nv-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.nv-burger span{width:22px;height:2px;background:var(--t1);border-radius:2px;transition:all .3s}
+
+/* Mobile Menu */
+.mobile-menu{display:none;position:fixed;inset:0;background:rgba(255,255,255,.97);backdrop-filter:blur(20px);z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:var(--t1);text-decoration:none;font-size:1.3rem;font-weight:600;transition:color .3s}
+.mobile-menu a:hover{color:var(--pink)}
+.mobile-menu-close{position:absolute;top:1.5rem;inset-inline-end:1.5rem;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--t2)}
+
+/* ====== PAGE HEADER ====== */
+.page-header{padding:7rem 2.5rem 2.5rem;background:linear-gradient(135deg,var(--pink5) 0%,#FFFFFF 50%,var(--gold4) 100%);border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.page-header::before{content:'';position:absolute;top:-100px;inset-inline-end:-100px;width:350px;height:350px;background:radial-gradient(circle,rgba(233,30,99,.04),transparent 70%);pointer-events:none}
+.ph-inner{max-width:1400px;margin:0 auto}
+.ph-breadcrumb{display:flex;align-items:center;gap:.4rem;font-size:.72rem;color:var(--t3);margin-bottom:1rem}
+.ph-breadcrumb a{color:var(--t3);text-decoration:none;transition:color .3s}
+.ph-breadcrumb a:hover{color:var(--pink)}
+.ph-breadcrumb span{color:var(--t4)}
+.ph-title{font-family:var(--fp);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:700;line-height:1.3;margin-bottom:.4rem}
+.ph-title em{font-style:italic;color:var(--pink);font-weight:400}
+.ph-sub{font-size:.9rem;color:var(--t2);margin-bottom:1.5rem}
+.ph-controls{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+.search-bar{flex:1;min-width:240px;display:flex;align-items:center;gap:.5rem;background:#fff;border:2px solid var(--line2);border-radius:var(--radius);padding:.55rem .9rem;transition:all .3s}
+.search-bar:focus-within{border-color:var(--pink3);box-shadow:0 0 0 4px rgba(233,30,99,.06)}
+.search-bar input{flex:1;border:none;outline:none;font-family:var(--fc);font-size:.85rem;color:var(--t1);background:transparent}
+.search-bar input::placeholder{color:var(--t4)}
+.search-icon{color:var(--t3);font-size:.9rem}
+.sort-select{padding:.55rem .9rem;background:#fff;border:2px solid var(--line2);border-radius:var(--radius);font-family:var(--fc);font-size:.82rem;color:var(--t2);outline:none;cursor:pointer;transition:all .3s;min-width:160px}
+.sort-select:focus{border-color:var(--pink3)}
+.view-toggle{display:flex;gap:.3rem}
+.vt-btn{width:36px;height:36px;border-radius:var(--radius);background:#fff;border:2px solid var(--line2);display:grid;place-items:center;cursor:pointer;transition:all .3s;font-size:.85rem}
+.vt-btn.active,.vt-btn:hover{border-color:var(--pink);background:var(--pink4)}
+.results-count{font-size:.8rem;color:var(--t3);white-space:nowrap}
+.results-count strong{color:var(--t1)}
+
+/* ====== LAYOUT ====== */
+.page-body{max-width:1400px;margin:0 auto;padding:2rem 2.5rem;display:grid;grid-template-columns:260px 1fr;gap:2rem;align-items:start}
+
+/* ====== SIDEBAR ====== */
+.sidebar{background:#fff;border-radius:var(--radius2);box-shadow:var(--shadow4);border:1px solid var(--line);overflow:hidden;position:sticky;top:5.5rem}
+.sb-header{padding:1.2rem 1.4rem;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.sb-header h3{font-family:var(--fp);font-size:.95rem;font-weight:700}
+.sb-clear{font-size:.72rem;color:var(--pink);cursor:pointer;font-weight:600;background:none;border:none;font-family:var(--fc)}
+.sb-clear:hover{text-decoration:underline}
+.sb-section{padding:1.2rem 1.4rem;border-bottom:1px solid var(--line)}
+.sb-section:last-child{border-bottom:none}
+.sb-section-title{font-size:.78rem;font-weight:700;color:var(--t1);margin-bottom:.8rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.sb-section-title .arrow{font-size:.65rem;color:var(--t3);transition:transform .3s}
+.sb-section-title.collapsed .arrow{transform:rotate(180deg)}
+.sb-content{}
+.sb-cats{display:flex;flex-direction:column;gap:.3rem}
+.sb-cat{display:flex;align-items:center;justify-content:space-between;padding:.45rem .6rem;border-radius:var(--radius);cursor:pointer;transition:all .3s;border:1.5px solid transparent}
+.sb-cat:hover{background:var(--pink4);border-color:var(--pink3)}
+.sb-cat.active{background:var(--pink4);border-color:var(--pink);color:var(--pink)}
+.sb-cat-left{display:flex;align-items:center;gap:.5rem;font-size:.8rem;font-weight:500}
+.sb-cat-count{font-size:.62rem;color:var(--t3);background:var(--bg2);padding:.1rem .4rem;border-radius:50px}
+.sb-cat.active .sb-cat-count{background:#fff;color:var(--pink)}
+
+/* Price Range */
+.price-range{margin-top:.3rem}
+.price-inputs{display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem}
+.price-input{flex:1;padding:.4rem .6rem;border:2px solid var(--line2);border-radius:var(--radius);font-family:var(--fp);font-size:.78rem;color:var(--t1);outline:none;transition:border-color .3s;text-align:center}
+.price-input:focus{border-color:var(--pink3)}
+.price-sep{color:var(--t4);font-size:.75rem}
+.range-slider{width:100%;appearance:none;height:4px;border-radius:4px;background:linear-gradient(to left,var(--pink) 0%,var(--pink) 60%,var(--line2) 60%);outline:none;cursor:pointer}
+.range-slider::-webkit-slider-thumb{appearance:none;width:16px;height:16px;border-radius:50%;background:var(--pink);border:2px solid #fff;box-shadow:var(--shadow4);cursor:pointer;transition:transform .2s}
+.range-slider::-webkit-slider-thumb:hover{transform:scale(1.2)}
+
+/* Colors */
+.color-swatches{display:flex;flex-wrap:wrap;gap:.5rem}
+.color-swatch{width:26px;height:26px;border-radius:50%;cursor:pointer;transition:all .3s;border:2px solid transparent;position:relative}
+.color-swatch:hover,.color-swatch.active{transform:scale(1.15);border-color:#fff;box-shadow:0 0 0 2px var(--pink)}
+.color-swatch.active::after{content:'✓';position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:.6rem;font-weight:700}
+
+/* Ratings */
+.rating-filters{display:flex;flex-direction:column;gap:.3rem}
+.rating-opt{display:flex;align-items:center;gap:.5rem;padding:.35rem .4rem;border-radius:var(--radius);cursor:pointer;transition:all .3s}
+.rating-opt:hover{background:var(--bg2)}
+.rating-opt input[type=radio]{accent-color:var(--pink);cursor:pointer}
+.rating-stars{color:#F9A825;font-size:.75rem;letter-spacing:.05em}
+.rating-label{font-size:.75rem;color:var(--t2)}
+
+/* Status checkboxes */
+.status-filters{display:flex;flex-direction:column;gap:.35rem}
+.status-opt{display:flex;align-items:center;gap:.5rem;padding:.35rem .4rem;border-radius:var(--radius);cursor:pointer;transition:all .3s}
+.status-opt:hover{background:var(--bg2)}
+.status-opt input[type=checkbox]{accent-color:var(--pink);width:14px;height:14px;cursor:pointer}
+.status-opt-label{font-size:.78rem;color:var(--t2)}
+.status-badge{font-size:.6rem;padding:.1rem .45rem;border-radius:50px;font-weight:700}
+.status-badge.new{background:var(--pink4);color:var(--pink)}
+.status-badge.sale{background:rgba(255,112,67,.1);color:var(--coral)}
+.status-badge.hot{background:var(--gold4);color:var(--gold)}
+.status-badge.eco{background:var(--sage3);color:var(--sage)}
+
+/* ====== PRODUCTS AREA ====== */
+.products-area{}
+.prod-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.7rem}
+.active-filters{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.filter-tag{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .6rem;background:var(--pink4);border:1px solid var(--pink3);border-radius:50px;font-size:.68rem;color:var(--pink);font-weight:600}
+.filter-tag button{background:none;border:none;color:var(--pink);cursor:pointer;font-size:.65rem;line-height:1;padding:0 0 0 .2rem}
+.prod-count{font-size:.78rem;color:var(--t3)}
+.prod-count strong{color:var(--t1)}
+
+/* Product Grid */
+.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.3rem}
+.prod-grid.list-view{grid-template-columns:1fr}
+.prod-card{background:#fff;border-radius:var(--radius2);overflow:hidden;transition:all .4s var(--ease);box-shadow:var(--shadow4);cursor:pointer;position:relative;border:1px solid var(--line)}
+.prod-card:hover{transform:translateY(-6px);box-shadow:var(--shadow2);border-color:var(--pink3)}
+.prod-img{aspect-ratio:3/4;position:relative;overflow:hidden}
+.prod-img-bg{width:100%;height:100%;display:grid;place-items:center;font-size:3.8rem;transition:transform .6s var(--ease)}
+.prod-card:hover .prod-img-bg{transform:scale(1.06)}
+.prod-badge{position:absolute;top:.7rem;inset-inline-start:.7rem;padding:.22rem .6rem;border-radius:50px;font-size:.58rem;font-weight:700;color:#fff}
+.prod-badge.new{background:var(--pink)}
+.prod-badge.hot{background:var(--coral)}
+.prod-badge.sale{background:var(--gold)}
+.prod-badge.eco{background:var(--sage)}
+.prod-wish{position:absolute;top:.7rem;inset-inline-end:.7rem;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);display:grid;place-items:center;cursor:pointer;border:none;font-size:.85rem;transition:all .3s;box-shadow:var(--shadow4)}
+.prod-wish:hover,.prod-wish.active{background:var(--pink4);transform:scale(1.1)}
+.prod-tryon{position:absolute;bottom:.7rem;inset-inline:.7rem;padding:.5rem;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-radius:var(--radius);text-align:center;font-size:.72rem;font-weight:700;color:var(--pink);opacity:0;transform:translateY(8px);transition:all .3s var(--ease);cursor:pointer;border:none;width:calc(100% - 1.4rem);font-family:var(--fc)}
+.prod-card:hover .prod-tryon{opacity:1;transform:translateY(0)}
+.prod-tryon:hover{background:var(--pink);color:#fff}
+.prod-body{padding:1rem}
+.prod-brand{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--t3)}
+.prod-name{font-size:.88rem;font-weight:600;margin:.2rem 0 .3rem;color:var(--t1);line-height:1.4}
+.prod-stars{display:flex;align-items:center;gap:.3rem;margin-bottom:.4rem}
+.prod-stars .stars{color:#F9A825;font-size:.7rem;letter-spacing:.05em}
+.prod-stars .count{font-size:.62rem;color:var(--t3)}
+.prod-bottom{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
+.prod-price{font-family:var(--fp);font-size:1rem;font-weight:700;color:var(--pink)}
+.prod-price .old{text-decoration:line-through;color:var(--t4);font-size:.72rem;font-weight:400;margin-inline-start:.3rem}
+.prod-size{font-size:.6rem;color:var(--t3);padding:.12rem .45rem;background:var(--bg2);border-radius:50px;font-weight:500}
+.prod-match{display:inline-flex;align-items:center;gap:.25rem;font-size:.6rem;font-weight:600;padding:.15rem .5rem;border-radius:50px;margin-bottom:.5rem}
+.prod-match.perf{background:var(--sage3);color:var(--sage)}
+.prod-match.good{background:var(--gold4);color:var(--gold)}
+.prod-actions{display:flex;gap:.4rem;margin-top:.2rem}
+.prod-act-btn{flex:1;padding:.5rem .4rem;border:1.5px solid var(--line2);border-radius:var(--radius);background:transparent;font-family:var(--fc);font-size:.68rem;font-weight:600;cursor:pointer;transition:all .3s;color:var(--t2)}
+.prod-act-btn:hover{border-color:var(--pink);color:var(--pink);background:var(--pink4)}
+.prod-act-btn.primary{background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff;border-color:var(--pink)}
+.prod-act-btn.primary:hover{opacity:.9;transform:translateY(-1px)}
+.prod-act-btn.gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border-color:var(--gold)}
+.prod-act-btn.gold:hover{opacity:.9;transform:translateY(-1px)}
+
+/* List view card */
+.prod-grid.list-view .prod-card{display:grid;grid-template-columns:160px 1fr}
+.prod-grid.list-view .prod-img{aspect-ratio:auto;height:100%}
+.prod-grid.list-view .prod-body{padding:1.2rem}
+
+/* ====== PAGINATION ====== */
+.pagination{display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:2.5rem}
+.pg-btn{width:38px;height:38px;border-radius:var(--radius);background:#fff;border:1.5px solid var(--line2);display:grid;place-items:center;cursor:pointer;font-family:var(--fp);font-size:.82rem;font-weight:600;color:var(--t2);transition:all .3s}
+.pg-btn:hover,.pg-btn.active{background:var(--pink);border-color:var(--pink);color:#fff}
+.pg-btn.active{box-shadow:0 4px 15px rgba(233,30,99,.2)}
+.pg-dots{color:var(--t4);font-size:.8rem}
+
+/* ====== ANIMATIONS ====== */
+@keyframes fiu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.rv{opacity:0;transform:translateY(20px);transition:all .7s var(--ease)}
+.rv.vis{opacity:1;transform:translateY(0)}
+.rv-d1{transition-delay:.05s}.rv-d2{transition-delay:.1s}.rv-d3{transition-delay:.15s}.rv-d4{transition-delay:.2s}
+
+/* ====== FOOTER ====== */
+.ft{padding:3.5rem 4rem 1.2rem;background:var(--bg2);border-top:1px solid var(--line)}
+.ft-g{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem}
+.ft-brand .nv-logo{margin-bottom:.6rem}
+.ft-brand p{font-size:.75rem;color:var(--t3);line-height:1.8;max-width:260px}
+.ft-col h4{font-size:.72rem;color:var(--t1);font-weight:700;margin-bottom:.6rem}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.ft-col a{color:var(--t3);text-decoration:none;font-size:.75rem;transition:color .3s}
+.ft-col a:hover{color:var(--pink)}
+.ft-bot{display:flex;justify-content:space-between;align-items:center;padding-top:1.2rem;border-top:1px solid var(--line);font-size:.65rem;color:var(--t3)}
+
+/* ====== RESPONSIVE ====== */
+@media(max-width:1200px){
+  .prod-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:1024px){
+  .page-body{grid-template-columns:1fr;padding:1.5rem}
+  .sidebar{position:static;display:none}
+  .sidebar.open{display:block}
+  .mobile-filter-btn{display:flex!important}
+  .prod-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  .page-header{padding:6rem 1.2rem 1.5rem}
+  .ph-controls{flex-direction:column;align-items:stretch}
+  .search-bar{min-width:unset}
+  .sort-select{width:100%}
+  .page-body{padding:1rem}
+  .prod-grid{grid-template-columns:repeat(2,1fr);gap:1rem}
+  .nv{padding:.7rem 1.2rem}.nv-links{display:none}.nv-burger{display:flex}
+  .ft-g{grid-template-columns:1fr 1fr}
+  .ft{padding:2.5rem 1.2rem 1rem}
+}
+@media(max-width:480px){
+  .prod-grid{grid-template-columns:1fr}
+  .ft-g{grid-template-columns:1fr}
+  .ft-bot{flex-direction:column;gap:.3rem;text-align:center}
+}
+
+/* Mobile filter button */
+.mobile-filter-btn{display:none;align-items:center;gap:.4rem;padding:.55rem 1rem;background:#fff;border:2px solid var(--line2);border-radius:var(--radius);font-family:var(--fc);font-size:.8rem;font-weight:600;color:var(--t2);cursor:pointer;transition:all .3s}
+.mobile-filter-btn:hover{border-color:var(--pink);color:var(--pink)}
+
+/* Empty state */
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--t3)}
+.empty-state .es-icon{font-size:3rem;margin-bottom:1rem}
+.empty-state h3{font-size:1rem;font-weight:600;color:var(--t2);margin-bottom:.4rem}
+.empty-state p{font-size:.8rem}
+</style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="tryon.html">Try On</a></li>
-            <li><a href="wallet.html">Wallet</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="sell.html">Sell</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
-    </nav>
-    
-    <main>
-        <h1>Our Products</h1>
-        <div class="product-list">
-            <div class="product-card">
-                <img src="😃" alt="Product 1" />
-                <h2>Product 1</h2>
-                <p>Price: $10.00</p>
-                <button>Try On</button>
-            </div>
-            <div class="product-card">
-                <img src="😎" alt="Product 2" />
-                <h2>Product 2</h2>
-                <p>Price: $15.00</p>
-                <button>Try On</button>
-            </div>
-            <div class="product-card">
-                <img src="🤩" alt="Product 3" />
-                <h2>Product 3</h2>
-                <p>Price: $20.00</p>
-                <button>Try On</button>
-            </div>
-            <div class="product-card">
-                <img src="🎉" alt="Product 4" />
-                <h2>Product 4</h2>
-                <p>Price: $25.00</p>
-                <button>Try On</button>
-            </div>
+
+<!-- NAV -->
+<nav class="nv" id="nv">
+  <a class="nv-logo" href="index.html"><div class="nv-logo-icon">S</div><span class="nv-logo-text">Style<span>Loop</span></span></a>
+  <ul class="nv-links">
+    <li><a href="products.html" class="active">المنتجات</a></li>
+    <li><a href="tryon.html">جرّبي الآن</a></li>
+    <li><a href="sell.html">بيعي ملابسك</a></li>
+    <li><a href="dashboard.html">حسابي</a></li>
+    <li><a href="about.html">عن StyleLoop</a></li>
+  </ul>
+  <div class="nv-actions">
+    <button class="nv-cart" onclick="location.href='cart.html'">🛒<span class="nv-cart-badge">٣</span></button>
+    <button class="btn-p" onclick="location.href='dashboard.html'">سجّلي الآن</button>
+    <div class="nv-user">س</div>
+  </div>
+  <button class="nv-burger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" onclick="toggleMenu()">✕</button>
+  <a href="index.html" onclick="toggleMenu()">الرئيسية</a>
+  <a href="products.html" onclick="toggleMenu()">المنتجات</a>
+  <a href="tryon.html" onclick="toggleMenu()">جرّبي الآن</a>
+  <a href="sell.html" onclick="toggleMenu()">بيعي ملابسك</a>
+  <a href="dashboard.html" onclick="toggleMenu()">حسابي</a>
+  <a href="about.html" onclick="toggleMenu()">عن StyleLoop</a>
+  <a href="contact.html" onclick="toggleMenu()">تواصلي معنا</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="ph-inner">
+    <div class="ph-breadcrumb">
+      <a href="index.html">الرئيسية</a>
+      <span>/</span>
+      <span style="color:var(--t1)">المنتجات</span>
+    </div>
+    <h1 class="ph-title">تصفحي <em>كل القطع</em> الرائعة</h1>
+    <p class="ph-sub">٢٤٠+ منتج من أفضل الماركات العالمية — جرّبي أي قطعة بالذكاء الاصطناعي</p>
+    <div class="ph-controls">
+      <button class="mobile-filter-btn" onclick="toggleSidebar()">🔧 الفلاتر</button>
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="ابحثي عن منتج، ماركة، أو تصنيف..." oninput="filterProducts()">
+      </div>
+      <select class="sort-select" id="sortSelect" onchange="sortProducts()">
+        <option value="default">الترتيب الافتراضي</option>
+        <option value="price-asc">السعر: الأقل أولاً</option>
+        <option value="price-desc">السعر: الأعلى أولاً</option>
+        <option value="rating">الأعلى تقييماً</option>
+        <option value="newest">الأحدث أولاً</option>
+        <option value="popular">الأكثر طلباً</option>
+      </select>
+      <div class="view-toggle">
+        <button class="vt-btn active" id="gridBtn" onclick="setView('grid')" title="عرض شبكي">⊞</button>
+        <button class="vt-btn" id="listBtn" onclick="setView('list')" title="عرض قائمة">☰</button>
+      </div>
+      <span class="results-count">يعرض <strong id="countDisplay">١٢</strong> منتج</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN BODY -->
+<div class="page-body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-header">
+      <h3>🔧 الفلاتر</h3>
+      <button class="sb-clear" onclick="clearFilters()">مسح الكل</button>
+    </div>
+
+    <!-- Categories -->
+    <div class="sb-section">
+      <div class="sb-section-title" onclick="toggleSection(this)">
+        التصنيفات <span class="arrow">▲</span>
+      </div>
+      <div class="sb-content">
+        <div class="sb-cats">
+          <div class="sb-cat active" onclick="selectCat(this,'all')">
+            <span class="sb-cat-left"><span>🛍️</span> كل المنتجات</span>
+            <span class="sb-cat-count">٢٤٠</span>
+          </div>
+          <div class="sb-cat" onclick="selectCat(this,'فساتين')">
+            <span class="sb-cat-left"><span>👗</span> فساتين</span>
+            <span class="sb-cat-count">٦٨</span>
+          </div>
+          <div class="sb-cat" onclick="selectCat(this,'أحذية')">
+            <span class="sb-cat-left"><span>👠</span> أحذية</span>
+            <span class="sb-cat-count">٤٥</span>
+          </div>
+          <div class="sb-cat" onclick="selectCat(this,'جاكيتات')">
+            <span class="sb-cat-left"><span>🧥</span> جاكيتات</span>
+            <span class="sb-cat-count">٣٢</span>
+          </div>
+          <div class="sb-cat" onclick="selectCat(this,'بلوزات')">
+            <span class="sb-cat-left"><span>👚</span> بلوزات</span>
+            <span class="sb-cat-count">٥٦</span>
+          </div>
+          <div class="sb-cat" onclick="selectCat(this,'جينز')">
+            <span class="sb-cat-left"><span>👖</span> جينز وبناطيل</span>
+            <span class="sb-cat-count">٣٨</span>
+          </div>
+          <div class="sb-cat" onclick="selectCat(this,'إكسسوارات')">
+            <span class="sb-cat-left"><span>💍</span> إكسسوارات</span>
+            <span class="sb-cat-count">٢٩</span>
+          </div>
+          <div class="sb-cat" onclick="selectCat(this,'حقائب')">
+            <span class="sb-cat-left"><span>👜</span> حقائب</span>
+            <span class="sb-cat-count">٢٢</span>
+          </div>
         </div>
-    </main>
-    
-    <footer>
-        <p>&copy; 2026 Your Company Name. All rights reserved.</p>
-    </footer>
+      </div>
+    </div>
+
+    <!-- Price Range -->
+    <div class="sb-section">
+      <div class="sb-section-title" onclick="toggleSection(this)">
+        نطاق السعر <span class="arrow">▲</span>
+      </div>
+      <div class="sb-content">
+        <div class="price-range">
+          <div class="price-inputs">
+            <input type="number" class="price-input" id="priceMin" value="0" placeholder="من" min="0" max="2000">
+            <span class="price-sep">—</span>
+            <input type="number" class="price-input" id="priceMax" value="500" placeholder="إلى" min="0" max="2000">
+            <span style="font-size:.68rem;color:var(--t3)">ر.س</span>
+          </div>
+          <input type="range" class="range-slider" id="priceSlider" min="0" max="2000" value="500" oninput="updatePriceRange(this.value)">
+        </div>
+      </div>
+    </div>
+
+    <!-- Colors -->
+    <div class="sb-section">
+      <div class="sb-section-title" onclick="toggleSection(this)">
+        الألوان <span class="arrow">▲</span>
+      </div>
+      <div class="sb-content">
+        <div class="color-swatches">
+          <div class="color-swatch active" style="background:#E91E63" title="وردي" onclick="toggleColor(this)"></div>
+          <div class="color-swatch" style="background:#2A2A2A" title="أسود" onclick="toggleColor(this)"></div>
+          <div class="color-swatch" style="background:#FFFFFF;border:2px solid var(--line2)" title="أبيض" onclick="toggleColor(this)"></div>
+          <div class="color-swatch" style="background:#1565C0" title="أزرق" onclick="toggleColor(this)"></div>
+          <div class="color-swatch" style="background:#8FAE8B" title="أخضر" onclick="toggleColor(this)"></div>
+          <div class="color-swatch" style="background:#C9A96E" title="ذهبي/بيج" onclick="toggleColor(this)"></div>
+          <div class="color-swatch" style="background:#B39DDB" title="بنفسجي" onclick="toggleColor(this)"></div>
+          <div class="color-swatch" style="background:#FF7043" title="برتقالي" onclick="toggleColor(this)"></div>
+          <div class="color-swatch" style="background:#795548" title="بني" onclick="toggleColor(this)"></div>
+          <div class="color-swatch" style="background:#FF7043" title="أحمر" onclick="toggleColor(this)" style="background:#D32F2F"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ratings -->
+    <div class="sb-section">
+      <div class="sb-section-title" onclick="toggleSection(this)">
+        التقييم <span class="arrow">▲</span>
+      </div>
+      <div class="sb-content">
+        <div class="rating-filters">
+          <label class="rating-opt">
+            <input type="radio" name="rating" value="all" checked>
+            <span class="rating-label">كل التقييمات</span>
+          </label>
+          <label class="rating-opt">
+            <input type="radio" name="rating" value="5">
+            <span class="rating-stars">★★★★★</span>
+            <span class="rating-label">فقط ٥ نجوم</span>
+          </label>
+          <label class="rating-opt">
+            <input type="radio" name="rating" value="4">
+            <span class="rating-stars">★★★★</span><span style="color:var(--t4);font-size:.75rem">★</span>
+            <span class="rating-label">٤ نجوم فأكثر</span>
+          </label>
+          <label class="rating-opt">
+            <input type="radio" name="rating" value="3">
+            <span class="rating-stars">★★★</span><span style="color:var(--t4);font-size:.75rem">★★</span>
+            <span class="rating-label">٣ نجوم فأكثر</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div class="sb-section">
+      <div class="sb-section-title" onclick="toggleSection(this)">
+        حالة المنتج <span class="arrow">▲</span>
+      </div>
+      <div class="sb-content">
+        <div class="status-filters">
+          <label class="status-opt">
+            <input type="checkbox" checked>
+            <span class="status-opt-label">كل المنتجات</span>
+          </label>
+          <label class="status-opt">
+            <input type="checkbox">
+            <span class="status-opt-label">جديد</span>
+            <span class="status-badge new">جديد</span>
+          </label>
+          <label class="status-opt">
+            <input type="checkbox">
+            <span class="status-opt-label">خصم خاص</span>
+            <span class="status-badge sale">مخفّض</span>
+          </label>
+          <label class="status-opt">
+            <input type="checkbox">
+            <span class="status-opt-label">الأكثر طلباً</span>
+            <span class="status-badge hot">🔥 ساخن</span>
+          </label>
+          <label class="status-opt">
+            <input type="checkbox">
+            <span class="status-opt-label">صديق البيئة</span>
+            <span class="status-badge eco">🌿 إيكو</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- PRODUCTS AREA -->
+  <main class="products-area">
+    <div class="prod-toolbar rv">
+      <div class="active-filters" id="activeFilters">
+        <span class="filter-tag">فساتين <button onclick="removeFilter(this)">✕</button></span>
+        <span class="filter-tag">وردي <button onclick="removeFilter(this)">✕</button></span>
+      </div>
+      <span class="prod-count">عرض <strong id="mainCount">١٢</strong> من <strong>٢٤٠</strong> منتج</span>
+    </div>
+
+    <div class="prod-grid" id="prodGrid">
+
+      <!-- Card 1 -->
+      <div class="prod-card rv" data-cat="فساتين" data-price="120" data-rating="5">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#F8BBD0,#FCE4EC)">👗</div>
+          <span class="prod-badge new">جديد</span>
+          <button class="prod-wish" onclick="toggleWish(this)">🤍</button>
+          <button class="prod-tryon" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Zara</div>
+          <div class="prod-name">فستان زهري صيفي أنيق</div>
+          <div class="prod-stars"><span class="stars">★★★★★</span><span class="count">(١٢٤ تقييم)</span></div>
+          <div class="prod-bottom">
+            <span class="prod-price">١٢٠ ر.س</span>
+            <span class="prod-size">M</span>
+          </div>
+          <div class="prod-match perf">✓ يناسب مقاسك ١٠٠٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn gold" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+            <button class="prod-act-btn primary" onclick="addToCart(this)">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="prod-card rv rv-d1" data-cat="جاكيتات" data-price="180" data-rating="5">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#F5E6C8,#FFF8E1)">🧥</div>
+          <span class="prod-badge hot">الأكثر طلباً</span>
+          <button class="prod-wish" onclick="toggleWish(this)">🤍</button>
+          <button class="prod-tryon" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Mango</div>
+          <div class="prod-name">جاكيت جلد أسود كلاسيكي</div>
+          <div class="prod-stars"><span class="stars">★★★★★</span><span class="count">(٨٩ تقييم)</span></div>
+          <div class="prod-bottom">
+            <span class="prod-price">١٨٠ ر.س</span>
+            <span class="prod-size">M</span>
+          </div>
+          <div class="prod-match perf">✓ يناسب مقاسك ٩٨٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn gold" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+            <button class="prod-act-btn primary" onclick="addToCart(this)">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="prod-card rv rv-d2" data-cat="بلوزات" data-price="85" data-rating="4">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#E1BEE7,#F3E5F5)">👚</div>
+          <span class="prod-badge sale">خصم ٣٠٪</span>
+          <button class="prod-wish active" onclick="toggleWish(this)">❤️</button>
+          <button class="prod-tryon" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">H&amp;M</div>
+          <div class="prod-name">بلوزة حرير بنفسجية ناعمة</div>
+          <div class="prod-stars"><span class="stars">★★★★</span><span style="color:var(--t4);font-size:.7rem">★</span><span class="count">(٦٧ تقييم)</span></div>
+          <div class="prod-bottom">
+            <span class="prod-price">٨٥ ر.س <span class="old">١٢٠</span></span>
+            <span class="prod-size">S</span>
+          </div>
+          <div class="prod-match good">~ يناسب مقاسك ٨٩٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn gold" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+            <button class="prod-act-btn primary" onclick="addToCart(this)">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="prod-card rv rv-d3" data-cat="أحذية" data-price="200" data-rating="5">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#E3F2FD,#BBDEFB)">👠</div>
+          <span class="prod-badge new">جديد</span>
+          <button class="prod-wish" onclick="toggleWish(this)">🤍</button>
+          <button class="prod-tryon" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Nike</div>
+          <div class="prod-name">حذاء رياضي أبيض Air Max</div>
+          <div class="prod-stars"><span class="stars">★★★★★</span><span class="count">(٢١٠ تقييم)</span></div>
+          <div class="prod-bottom">
+            <span class="prod-price">٢٠٠ ر.س</span>
+            <span class="prod-size">EU 38</span>
+          </div>
+          <div class="prod-match perf">✓ يناسب مقاسك ١٠٠٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn gold" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+            <button class="prod-act-btn primary" onclick="addToCart(this)">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="prod-card rv" data-cat="فساتين" data-price="250" data-rating="5">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#1A1A2E,#16213E)">👗</div>
+          <span class="prod-badge hot">الأكثر طلباً</span>
+          <button class="prod-wish" onclick="toggleWish(this)">🤍</button>
+          <button class="prod-tryon" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Massimo Dutti</div>
+          <div class="prod-name">فستان سهرة أسود فاخر</div>
+          <div class="prod-stars"><span class="stars">★★★★★</span><span class="count">(١٥٦ تقييم)</span></div>
+          <div class="prod-bottom">
+            <span class="prod-price">٢٥٠ ر.س</span>
+            <span class="prod-size">M</span>
+          </div>
+          <div class="prod-match perf">✓ يناسب مقاسك ١٠٠٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn gold" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+            <button class="prod-act-btn primary" onclick="addToCart(this)">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="prod-card rv rv-d1" data-cat="جينز" data-price="150" data-rating="4">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#C8E6C9,#E8F5E9)">👖</div>
+          <span class="prod-badge eco">🌿 إيكو</span>
+          <button class="prod-wish" onclick="toggleWish(this)">🤍</button>
+          <button class="prod-tryon" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Levi's</div>
+          <div class="prod-name">جينز واسع أزرق كلاسيكي</div>
+          <div class="prod-stars"><span class="stars">★★★★</span><span style="color:var(--t4);font-size:.7rem">★</span><span class="count">(٩٨ تقييم)</span></div>
+          <div class="prod-bottom">
+            <span class="prod-price">١٥٠ ر.س</span>
+            <span class="prod-size">32</span>
+          </div>
+          <div class="prod-match good">~ يناسب مقاسك ٩٢٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn gold" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+            <button class="prod-act-btn primary" onclick="addToCart(this)">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="prod-card rv rv-d2" data-cat="إكسسوارات" data-price="320" data-rating="5">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#FFF8E1,#FFECB3)">💍</div>
+          <span class="prod-badge new">جديد</span>
+          <button class="prod-wish" onclick="toggleWish(this)">🤍</button>
+          <button class="prod-tryon" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Gucci</div>
+          <div class="prod-name">طوق ذهبي فاخر مع حجر</div>
+          <div class="prod-stars"><span class="stars">★★★★★</span><span class="count">(٤٤ تقييم)</span></div>
+          <div class="prod-bottom">
+            <span class="prod-price">٣٢٠ ر.س</span>
+            <span class="prod-size">واحد مقاس</span>
+          </div>
+          <div class="prod-match perf">✓ يناسبك تماماً</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn gold" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+            <button class="prod-act-btn primary" onclick="addToCart(this)">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 8 -->
+      <div class="prod-card rv rv-d3" data-cat="حقائب" data-price="480" data-rating="5">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#F5E6C8,#FFF8E1)">👜</div>
+          <span class="prod-badge hot">الأكثر طلباً</span>
+          <button class="prod-wish" onclick="toggleWish(this)">🤍</button>
+          <button class="prod-tryon" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">CK</div>
+          <div class="prod-name">حقيبة كتف جلدية بيج أنيقة</div>
+          <div class="prod-stars"><span class="stars">★★★★★</span><span class="count">(١١٢ تقييم)</span></div>
+          <div class="prod-bottom">
+            <span class="prod-price">٤٨٠ ر.س</span>
+            <span class="prod-size">وسط</span>
+          </div>
+          <div class="prod-match perf">✓ إطار مثالي لأسلوبك</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn gold" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+            <button class="prod-act-btn primary" onclick="addToCart(this)">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 9 -->
+      <div class="prod-card rv" data-cat="فساتين" data-price="95" data-rating="4">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#FFF9C4,#FFF176)">👗</div>
+          <span class="prod-badge sale">خصم ٢٠٪</span>
+          <button class="prod-wish" onclick="toggleWish(this)">🤍</button>
+          <button class="prod-tryon" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Zara</div>
+          <div class="prod-name">فستان صيفي أصفر مشرق</div>
+          <div class="prod-stars"><span class="stars">★★★★</span><span style="color:var(--t4);font-size:.7rem">★</span><span class="count">(٧٣ تقييم)</span></div>
+          <div class="prod-bottom">
+            <span class="prod-price">٩٥ ر.س <span class="old">١١٨</span></span>
+            <span class="prod-size">S</span>
+          </div>
+          <div class="prod-match good">~ يناسب مقاسك ٨٧٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn gold" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+            <button class="prod-act-btn primary" onclick="addToCart(this)">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 10 -->
+      <div class="prod-card rv rv-d1" data-cat="بلوزات" data-price="65" data-rating="4">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#E8F5E9,#C8E6C9)">👚</div>
+          <span class="prod-badge eco">🌿 إيكو</span>
+          <button class="prod-wish" onclick="toggleWish(this)">🤍</button>
+          <button class="prod-tryon" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">H&amp;M</div>
+          <div class="prod-name">بلوزة قطنية خضراء ناعمة</div>
+          <div class="prod-stars"><span class="stars">★★★★</span><span style="color:var(--t4);font-size:.7rem">★</span><span class="count">(٥١ تقييم)</span></div>
+          <div class="prod-bottom">
+            <span class="prod-price">٦٥ ر.س</span>
+            <span class="prod-size">S</span>
+          </div>
+          <div class="prod-match good">~ يناسب مقاسك ٩٠٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn gold" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+            <button class="prod-act-btn primary" onclick="addToCart(this)">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 11 -->
+      <div class="prod-card rv rv-d2" data-cat="جاكيتات" data-price="320" data-rating="5">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#ECEFF1,#CFD8DC)">🧥</div>
+          <span class="prod-badge new">جديد</span>
+          <button class="prod-wish" onclick="toggleWish(this)">🤍</button>
+          <button class="prod-tryon" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">COS</div>
+          <div class="prod-name">بالطو صوف كحلي فاخر</div>
+          <div class="prod-stars"><span class="stars">★★★★★</span><span class="count">(٨٢ تقييم)</span></div>
+          <div class="prod-bottom">
+            <span class="prod-price">٣٢٠ ر.س</span>
+            <span class="prod-size">M</span>
+          </div>
+          <div class="prod-match perf">✓ يناسب مقاسك ٩٦٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn gold" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+            <button class="prod-act-btn primary" onclick="addToCart(this)">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 12 -->
+      <div class="prod-card rv rv-d3" data-cat="أحذية" data-price="155" data-rating="5">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#FCE4EC,#F8BBD0)">👠</div>
+          <span class="prod-badge hot">الأكثر طلباً</span>
+          <button class="prod-wish" onclick="toggleWish(this)">🤍</button>
+          <button class="prod-tryon" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Steve Madden</div>
+          <div class="prod-name">كعب عالي وردي أنيق</div>
+          <div class="prod-stars"><span class="stars">★★★★★</span><span class="count">(١٣٧ تقييم)</span></div>
+          <div class="prod-bottom">
+            <span class="prod-price">١٥٥ ر.س</span>
+            <span class="prod-size">EU 38</span>
+          </div>
+          <div class="prod-match perf">✓ يناسب مقاسك ١٠٠٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn gold" onclick="location.href='tryon.html'">🤖 جرّبي الآن</button>
+            <button class="prod-act-btn primary" onclick="addToCart(this)">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /prod-grid -->
+
+    <!-- PAGINATION -->
+    <div class="pagination rv">
+      <button class="pg-btn" onclick="changePage(this,'prev')">›</button>
+      <button class="pg-btn active">١</button>
+      <button class="pg-btn" onclick="changePage(this,'pg')">٢</button>
+      <button class="pg-btn" onclick="changePage(this,'pg')">٣</button>
+      <span class="pg-dots">…</span>
+      <button class="pg-btn" onclick="changePage(this,'pg')">٢٠</button>
+      <button class="pg-btn" onclick="changePage(this,'next')">‹</button>
+    </div>
+  </main>
+
+</div><!-- /page-body -->
+
+<!-- FOOTER -->
+<footer class="ft">
+  <div class="ft-g">
+    <div class="ft-brand">
+      <a class="nv-logo" href="index.html"><div class="nv-logo-icon">S</div><span class="nv-logo-text">Style<span>Loop</span></span></a>
+      <p>جرّبي الملابس عليك بالذكاء الاصطناعي قبل ما تشترون. بيعي، استبدلي، واشتري بثقة.</p>
+    </div>
+    <div class="ft-col"><h4>StyleLoop</h4><ul>
+      <li><a href="products.html">المنتجات</a></li>
+      <li><a href="tryon.html">جرّبي الآن</a></li>
+      <li><a href="sell.html">بيعي ملابسك</a></li>
+      <li><a href="#">الأسعار</a></li>
+    </ul></div>
+    <div class="ft-col"><h4>المساعدة</h4><ul>
+      <li><a href="#">مركز المساعدة</a></li>
+      <li><a href="#">الشروط والأحكام</a></li>
+      <li><a href="#">سياسة الخصوصية</a></li>
+      <li><a href="contact.html">تواصلي معنا</a></li>
+    </ul></div>
+    <div class="ft-col"><h4>المتجر</h4><ul>
+      <li><a href="dashboard.html">حسابي</a></li>
+      <li><a href="wallet.html">محفظتي</a></li>
+      <li><a href="cart.html">سلة التسوق</a></li>
+      <li><a href="#">طلباتي</a></li>
+    </ul></div>
+  </div>
+  <div class="ft-bot">
+    <span>© ٢٠٢٦ StyleLoop. جميع الحقوق محفوظة.</span>
+    <span>صُنع بـ 💗 لمستقبل أجمل</span>
+  </div>
+</footer>
+
+<script>
+// Nav scroll
+const nv = document.getElementById('nv');
+window.addEventListener('scroll', () => { nv.classList.toggle('scrolled', window.scrollY > 40) });
+
+// Intersection observer for animations
+const ro = new IntersectionObserver(e => { e.forEach(n => { if (n.isIntersecting) n.target.classList.add('vis') }) }, { threshold: .06 });
+document.querySelectorAll('.rv').forEach(el => ro.observe(el));
+
+// Mobile menu
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// Sidebar toggle (mobile)
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// Sidebar section collapse
+function toggleSection(title) {
+  title.classList.toggle('collapsed');
+  const content = title.nextElementSibling;
+  content.style.display = content.style.display === 'none' ? '' : 'none';
+}
+
+// Category selection
+function selectCat(el, cat) {
+  document.querySelectorAll('.sb-cat').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  filterProducts();
+}
+
+// Color toggle
+function toggleColor(el) {
+  el.classList.toggle('active');
+}
+
+// Clear filters
+function clearFilters() {
+  document.querySelectorAll('.sb-cat').forEach((c, i) => { c.classList.remove('active'); if (i === 0) c.classList.add('active'); });
+  document.querySelectorAll('.color-swatch').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.rating-opt input').forEach((r, i) => { r.checked = i === 0; });
+  document.getElementById('priceMin').value = 0;
+  document.getElementById('priceMax').value = 500;
+  document.getElementById('priceSlider').value = 500;
+  document.getElementById('activeFilters').innerHTML = '';
+  filterProducts();
+}
+
+// Price range slider
+function updatePriceRange(val) {
+  document.getElementById('priceMax').value = val;
+}
+
+// Remove filter tag
+function removeFilter(btn) {
+  btn.parentElement.remove();
+}
+
+// Wishlist toggle
+function toggleWish(btn) {
+  btn.classList.toggle('active');
+  btn.textContent = btn.classList.contains('active') ? '❤️' : '🤍';
+}
+
+// Add to cart
+function addToCart(btn) {
+  const orig = btn.textContent;
+  btn.textContent = '✓ تمت الإضافة';
+  btn.style.background = 'var(--sage)';
+  btn.style.borderColor = 'var(--sage)';
+  const badge = document.querySelector('.nv-cart-badge');
+  if (badge) {
+    const nums = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+    const current = parseInt([...badge.textContent].map(c => nums.indexOf(c)).join('')) || 0;
+    badge.textContent = nums[current + 1] || (current + 1).toString();
+  }
+  setTimeout(() => {
+    btn.textContent = orig;
+    btn.style.background = '';
+    btn.style.borderColor = '';
+  }, 1800);
+}
+
+// Filter products (basic demo)
+function filterProducts() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const cards = document.querySelectorAll('.prod-card');
+  let shown = 0;
+  cards.forEach(card => {
+    const name = card.querySelector('.prod-name')?.textContent.toLowerCase() || '';
+    const brand = card.querySelector('.prod-brand')?.textContent.toLowerCase() || '';
+    const match = !q || name.includes(q) || brand.includes(q);
+    card.style.display = match ? '' : 'none';
+    if (match) shown++;
+  });
+  const countEl = document.getElementById('countDisplay');
+  const mainCountEl = document.getElementById('mainCount');
+  const arabic = n => n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  if (countEl) countEl.textContent = arabic(shown);
+  if (mainCountEl) mainCountEl.textContent = arabic(shown);
+}
+
+// Sort products (demo)
+function sortProducts() {
+  const val = document.getElementById('sortSelect').value;
+  const grid = document.getElementById('prodGrid');
+  const cards = [...grid.querySelectorAll('.prod-card')];
+  cards.sort((a, b) => {
+    if (val === 'price-asc') return parseInt(a.dataset.price) - parseInt(b.dataset.price);
+    if (val === 'price-desc') return parseInt(b.dataset.price) - parseInt(a.dataset.price);
+    if (val === 'rating') return parseInt(b.dataset.rating) - parseInt(a.dataset.rating);
+    return 0;
+  });
+  cards.forEach(c => grid.appendChild(c));
+}
+
+// View toggle
+function setView(mode) {
+  const grid = document.getElementById('prodGrid');
+  const gBtn = document.getElementById('gridBtn');
+  const lBtn = document.getElementById('listBtn');
+  if (mode === 'list') {
+    grid.classList.add('list-view');
+    lBtn.classList.add('active');
+    gBtn.classList.remove('active');
+  } else {
+    grid.classList.remove('list-view');
+    gBtn.classList.add('active');
+    lBtn.classList.remove('active');
+  }
+}
+
+// Pagination
+function changePage(btn, type) {
+  if (type === 'prev' || type === 'next') return;
+  document.querySelectorAll('.pg-btn.active').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
 </body>
 </html>
