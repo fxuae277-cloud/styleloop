@@ -652,12 +652,49 @@
       const methodMap = { cash: 'نقداً', card: 'بطاقة ائتمان', wallet: 'محفظة إلكترونية' };
 
       document.getElementById('receiptNum').textContent = `#${++saleCount}`;
-      document.getElementById('receiptItems').innerHTML = `
-        <p style="font-size:var(--font-size-sm);margin-bottom:var(--space-2);">العميل: <strong>${customer}</strong></p>
-        ${cart.map(i => `<div class="pos__receipt-row"><span>${i.name} × ${i.qty}</span><span>${(i.price * i.qty).toLocaleString('ar-SA')} ر.س</span></div>`).join('')}
-        <div class="pos__receipt-row"><span>ضريبة 15%</span><span>${tax.toFixed(2)} ر.س</span></div>
-        <div class="pos__receipt-row"><span>طريقة الدفع</span><span>${methodMap[method]}</span></div>
-      `;
+
+      const receiptItems = document.getElementById('receiptItems');
+      receiptItems.textContent = '';
+
+      const customerPara = document.createElement('p');
+      customerPara.style.cssText = 'font-size:var(--font-size-sm);margin-bottom:var(--space-2);';
+      customerPara.textContent = 'العميل: ';
+      const customerStrong = document.createElement('strong');
+      customerStrong.textContent = customer;
+      customerPara.appendChild(customerStrong);
+      receiptItems.appendChild(customerPara);
+
+      cart.forEach(i => {
+        const row = document.createElement('div');
+        row.className = 'pos__receipt-row';
+        const itemSpan = document.createElement('span');
+        itemSpan.textContent = `${i.name} × ${i.qty}`;
+        const priceSpan = document.createElement('span');
+        priceSpan.textContent = `${(i.price * i.qty).toLocaleString('ar-SA')} ر.س`;
+        row.appendChild(itemSpan);
+        row.appendChild(priceSpan);
+        receiptItems.appendChild(row);
+      });
+
+      const taxRow = document.createElement('div');
+      taxRow.className = 'pos__receipt-row';
+      const taxLabel = document.createElement('span');
+      taxLabel.textContent = 'ضريبة 15%';
+      const taxValue = document.createElement('span');
+      taxValue.textContent = `${tax.toFixed(2)} ر.س`;
+      taxRow.appendChild(taxLabel);
+      taxRow.appendChild(taxValue);
+      receiptItems.appendChild(taxRow);
+
+      const methodRow = document.createElement('div');
+      methodRow.className = 'pos__receipt-row';
+      const methodLabel = document.createElement('span');
+      methodLabel.textContent = 'طريقة الدفع';
+      const methodValue = document.createElement('span');
+      methodValue.textContent = methodMap[method];
+      methodRow.appendChild(methodLabel);
+      methodRow.appendChild(methodValue);
+      receiptItems.appendChild(methodRow);
       document.getElementById('receiptTotal').textContent = `الإجمالي: ${grand} ر.س`;
       receipt.classList.add('pos__receipt--visible');
       receipt.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
