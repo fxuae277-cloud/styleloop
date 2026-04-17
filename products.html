@@ -105,7 +105,7 @@ body{font-family:var(--fc);background:var(--bg);color:var(--t1);line-height:1.8;
 .sb-section-title{font-size:.78rem;font-weight:700;color:var(--t1);margin-bottom:.8rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
 .sb-section-title .arrow{font-size:.65rem;color:var(--t3);transition:transform .3s}
 .sb-section-title.collapsed .arrow{transform:rotate(180deg)}
-.sb-content{}
+
 .sb-cats{display:flex;flex-direction:column;gap:.3rem}
 .sb-cat{display:flex;align-items:center;justify-content:space-between;padding:.45rem .6rem;border-radius:var(--radius);cursor:pointer;transition:all .3s;border:1.5px solid transparent}
 .sb-cat:hover{background:var(--pink4);border-color:var(--pink3)}
@@ -151,7 +151,7 @@ body{font-family:var(--fc);background:var(--bg);color:var(--t1);line-height:1.8;
 .status-badge.eco{background:var(--sage3);color:var(--sage)}
 
 /* ====== PRODUCTS AREA ====== */
-.products-area{}
+
 .prod-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.7rem}
 .active-filters{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
 .filter-tag{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .6rem;background:var(--pink4);border:1px solid var(--pink3);border-radius:50px;font-size:.68rem;color:var(--pink);font-weight:600}
@@ -418,7 +418,7 @@ body{font-family:var(--fc);background:var(--bg);color:var(--t1);line-height:1.8;
           <div class="color-swatch" style="background:#B39DDB" title="بنفسجي" onclick="toggleColor(this)"></div>
           <div class="color-swatch" style="background:#FF7043" title="برتقالي" onclick="toggleColor(this)"></div>
           <div class="color-swatch" style="background:#795548" title="بني" onclick="toggleColor(this)"></div>
-          <div class="color-swatch" style="background:#FF7043" title="أحمر" onclick="toggleColor(this)" style="background:#D32F2F"></div>
+          <div class="color-swatch" style="background:#D32F2F" title="أحمر" onclick="toggleColor(this)"></div>
         </div>
       </div>
     </div>
@@ -793,13 +793,13 @@ body{font-family:var(--fc);background:var(--bg);color:var(--t1);line-height:1.8;
 
     <!-- PAGINATION -->
     <div class="pagination rv">
-      <button class="pg-btn" onclick="changePage(this,'prev')">›</button>
+      <button class="pg-btn" onclick="changePage(this,'prev')">‹</button>
       <button class="pg-btn active">١</button>
       <button class="pg-btn" onclick="changePage(this,'pg')">٢</button>
       <button class="pg-btn" onclick="changePage(this,'pg')">٣</button>
       <span class="pg-dots">…</span>
       <button class="pg-btn" onclick="changePage(this,'pg')">٢٠</button>
-      <button class="pg-btn" onclick="changePage(this,'next')">‹</button>
+      <button class="pg-btn" onclick="changePage(this,'next')">›</button>
     </div>
   </main>
 
@@ -911,9 +911,10 @@ function addToCart(btn) {
   btn.style.borderColor = 'var(--sage)';
   const badge = document.querySelector('.nv-cart-badge');
   if (badge) {
-    const nums = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-    const current = parseInt([...badge.textContent].map(c => nums.indexOf(c)).join('')) || 0;
-    badge.textContent = nums[current + 1] || (current + 1).toString();
+    const toWestern = s => s.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+    const toArabic = n => n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+    const current = parseInt(toWestern(badge.textContent)) || 0;
+    badge.textContent = toArabic(current + 1);
   }
   setTimeout(() => {
     btn.textContent = orig;
