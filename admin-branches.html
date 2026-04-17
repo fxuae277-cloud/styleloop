@@ -652,7 +652,7 @@
               <div style="font-size:var(--font-size-xs);color:var(--color-text-muted);">مبيعات هذا الشهر</div>
             </div>
             <div style="text-align:center;background:var(--color-success-light);border-radius:var(--radius-md);padding:var(--space-3);">
-              <div style="font-size:var(--font-size-xl);font-weight:700;color:var(--color-success);">${Math.round(b.monthlyData.reduce((a,v)=>a+v,0)/b.monthlyData.filter(v=>v>0).length).toLocaleString('ar-SA')}</div>
+              <div style="font-size:var(--font-size-xl);font-weight:700;color:var(--color-success);">${(()=>{const pos=b.monthlyData.filter(v=>v>0);return pos.length?Math.round(b.monthlyData.reduce((a,v)=>a+v,0)/pos.length).toLocaleString('ar-SA'):'0';})()}</div>
               <div style="font-size:var(--font-size-xs);color:var(--color-text-muted);">متوسط المبيعات</div>
             </div>
             <div style="text-align:center;background:var(--color-info-light);border-radius:var(--radius-md);padding:var(--space-3);">
