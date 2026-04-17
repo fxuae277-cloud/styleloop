@@ -1,132 +1,450 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!--
+  admin-dashboard.html — StyleLoop Admin Panel Dashboard
+  Main overview page showing sales stats, recent orders, and activity feed.
+  Depends on: admin-styles.css, admin-common.js
+-->
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الإدارية</title>
-    <link rel="stylesheet" href="admin-styles.css">
-    <script src="admin-common.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="لوحة التحكم الرئيسية — StyleLoop Admin" />
+
+  <title>لوحة التحكم — لوحة تحكم StyleLoop</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="admin-styles.css" />
+
+  <style>
+    /* ── Dashboard page-specific styles ─────────────────────────── */
+    .dashboard__page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+    .dashboard__page-title {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin: 0;
+    }
+    .dashboard__breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+      margin-top: var(--space-1);
+    }
+    .dashboard__breadcrumb a {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+    .dashboard__breadcrumb a:hover { text-decoration: underline; }
+    .dashboard__breadcrumb-sep { color: var(--color-border); }
+
+    .dashboard__two-col {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 900px) {
+      .dashboard__two-col { grid-template-columns: 1fr; }
+    }
+
+    .dashboard__quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      margin-bottom: 2rem;
+    }
+
+    .dashboard__activity-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .dashboard__activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .dashboard__activity-item:last-child { border-bottom: none; }
+    .dashboard__activity-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .dashboard__activity-icon--order  { background: var(--color-primary-alpha-10); }
+    .dashboard__activity-icon--user   { background: var(--color-info-light); }
+    .dashboard__activity-icon--stock  { background: var(--color-warning-light); }
+    .dashboard__activity-icon--sale   { background: var(--color-success-light); }
+    .dashboard__activity-text  { font-size: var(--font-size-sm); color: var(--color-text-primary); line-height: 1.5; }
+    .dashboard__activity-time  { font-size: var(--font-size-xs); color: var(--color-text-muted); margin-top: 2px; }
+
+    .stat-card { cursor: default; }
+    .stat-card__trend--up   { color: var(--color-success); }
+    .stat-card__trend--down { color: var(--color-danger); }
+
+    @media (max-width: 640px) {
+      .dashboard__quick-actions .btn { flex: 1 1 calc(50% - var(--space-3)); }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>لوحة التحكم الإدارية</h1>
-        <nav>
-            <ul>
-                <li><a href="#">الرئيسية</a></li>
-                <li><a href="#">الإيرادات</a></li>
-                <li><a href="#">الطلبات</a></li>
-                <li><a href="#">العملاء</a></li>
-                <li><a href="#">المنتجات</a></li>
-                <li><a href="#">التقارير</a></li>
-                <li><a href="#">الإعدادات</a></li>
-                <li><a href="#">الدعم</a></li>
-                <li><a href="#">الارتباطات</a></li>
-                <li><a href="#">الملاحظات</a></li>
-                <li><a href="#">التسجيلات</a></li>
-                <li><a href="#">الخروج</a></li>
-            </ul>
-        </nav>
-    </header>
-    <aside>
-        <h2>إحصائيات كنها:</h2>
-        <div class="stats">
-            <div class="stat-card">الإيرادات: $1000</div>
-            <div class="stat-card">الطلبات: 200</div>
-            <div class="stat-card">العملاء: 150</div>
-            <div class="stat-card">المنتجات: 50</div>
-        </div>
+  <div class="admin-layout" id="adminLayout">
+
+    <!-- ═══════════════════════════════════════════
+         SIDEBAR
+    ═══════════════════════════════════════════ -->
+    <aside class="sidebar" id="sidebar" aria-label="القائمة الجانبية">
+      <a href="admin-dashboard.html" class="sidebar__logo">
+        <span class="sidebar__logo-img" style="width:36px;height:36px;background:linear-gradient(135deg,#E91E63,#ad1457);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-family:Poppins,sans-serif;font-size:1rem;flex-shrink:0;">SL</span>
+        <span class="sidebar__logo-text">StyleLoop</span>
+        <span class="sidebar__logo-badge">Admin</span>
+      </a>
+      <nav class="sidebar__nav" aria-label="التنقل الرئيسي">
+        <p class="sidebar__section-label">الرئيسية</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-dashboard.html" class="sidebar__link sidebar__link--active" aria-current="page">
+              <span class="sidebar__link-icon" aria-hidden="true">🏠</span>
+              <span class="sidebar__link-label">لوحة التحكم</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-pos.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🛒</span>
+              <span class="sidebar__link-label">نقطة البيع</span>
+            </a>
+          </li>
+        </ul>
+        <p class="sidebar__section-label">الإدارة</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-orders.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">📋</span>
+              <span class="sidebar__link-label">الطلبات</span>
+              <span class="sidebar__link-badge">12</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-customers.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">👥</span>
+              <span class="sidebar__link-label">العملاء</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-products.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">👗</span>
+              <span class="sidebar__link-label">المنتجات</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-branches.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🏪</span>
+              <span class="sidebar__link-label">الفروع</span>
+            </a>
+          </li>
+        </ul>
+        <p class="sidebar__section-label">النظام</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-login.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🚪</span>
+              <span class="sidebar__link-label">تسجيل الخروج</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <button class="sidebar__toggle-btn" id="sidebarToggleBtn" aria-label="طي الشريط الجانبي">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11 8L6 3l-1 1 4 4-4 4 1 1z"/></svg>
+      </button>
     </aside>
-    <main>
-        <section>
-            <h2>الطلبات الأخيرة</h2>
-            <table>
+
+    <!-- ═══════════════════════════════════════════
+         HEADER
+    ═══════════════════════════════════════════ -->
+    <header class="header" role="banner">
+      <div class="header__brand">
+        <button class="header__hamburger" id="hamburgerBtn" aria-label="فتح القائمة" aria-expanded="false" aria-controls="sidebar">
+          <span class="header__hamburger-line"></span>
+          <span class="header__hamburger-line"></span>
+          <span class="header__hamburger-line"></span>
+        </button>
+        <span class="header__page-title">لوحة التحكم</span>
+      </div>
+      <div class="header__actions">
+        <button class="header__action-btn" id="themeToggleBtn" aria-label="تبديل الوضع المظلم" data-action="toggle-theme">
+          <svg class="header__theme-icon header__theme-icon--dark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="header__theme-icon header__theme-icon--light" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <div class="header__user-menu" id="userMenu">
+          <button class="header__user-btn" aria-haspopup="true" aria-expanded="false" aria-controls="userDropdown">
+            <span class="header__avatar" aria-hidden="true">أ</span>
+            <span class="header__user-name">المدير</span>
+          </button>
+          <ul class="header__dropdown" id="userDropdown" role="menu">
+            <li role="menuitem"><a href="admin-login.html">تسجيل الخروج</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sidebar overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <!-- ═══════════════════════════════════════════
+         MAIN CONTENT
+    ═══════════════════════════════════════════ -->
+    <main class="main-content" id="mainContent">
+
+      <!-- Page header -->
+      <div class="dashboard__page-header">
+        <div>
+          <h1 class="dashboard__page-title">لوحة التحكم</h1>
+          <nav class="dashboard__breadcrumb" aria-label="مسار التنقل">
+            <a href="admin-dashboard.html">الرئيسية</a>
+            <span class="dashboard__breadcrumb-sep" aria-hidden="true">›</span>
+            <span aria-current="page">لوحة التحكم</span>
+          </nav>
+        </div>
+        <div style="display:flex;gap:var(--space-2);align-items:center;">
+          <span style="font-size:var(--font-size-sm);color:var(--color-text-muted);">آخر تحديث: منذ دقيقتين</span>
+          <button class="btn btn--secondary btn--sm" aria-label="تحديث البيانات">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            تحديث
+          </button>
+        </div>
+      </div>
+
+      <!-- Stat cards grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-bottom:2rem;" role="region" aria-label="إحصائيات عامة">
+
+        <article class="stat-card" aria-label="إجمالي المبيعات">
+          <div class="stat-card__icon" style="background:var(--color-primary-alpha-10);color:var(--color-primary);" aria-hidden="true">💰</div>
+          <div>
+            <div class="stat-card__value">142,500 ر.س</div>
+            <div class="stat-card__label">إجمالي المبيعات</div>
+            <div class="stat-card__trend stat-card__trend--up" aria-label="ارتفاع بنسبة 12.5 بالمئة">↑ 12.5%</div>
+          </div>
+        </article>
+
+        <article class="stat-card" aria-label="الطلبات الجديدة">
+          <div class="stat-card__icon" style="background:var(--color-info-light);color:var(--color-info);" aria-hidden="true">📦</div>
+          <div>
+            <div class="stat-card__value">48</div>
+            <div class="stat-card__label">الطلبات الجديدة</div>
+            <div class="stat-card__trend stat-card__trend--up" aria-label="ارتفاع بنسبة 8.2 بالمئة">↑ 8.2%</div>
+          </div>
+        </article>
+
+        <article class="stat-card" aria-label="العملاء">
+          <div class="stat-card__icon" style="background:var(--color-accent-alpha-10);color:var(--color-accent-dark);" aria-hidden="true">👥</div>
+          <div>
+            <div class="stat-card__value">1,240</div>
+            <div class="stat-card__label">العملاء</div>
+            <div class="stat-card__trend stat-card__trend--up" aria-label="ارتفاع بنسبة 5.1 بالمئة">↑ 5.1%</div>
+          </div>
+        </article>
+
+        <article class="stat-card" aria-label="المنتجات">
+          <div class="stat-card__icon" style="background:var(--color-secondary-alpha-10);color:var(--color-secondary-dark);" aria-hidden="true">👗</div>
+          <div>
+            <div class="stat-card__value">386</div>
+            <div class="stat-card__label">المنتجات</div>
+            <div class="stat-card__trend stat-card__trend--down" aria-label="انخفاض بنسبة 2.3 بالمئة">↓ 2.3%</div>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Two-column section -->
+      <div class="dashboard__two-col">
+
+        <!-- Recent orders card -->
+        <section class="card" aria-labelledby="recentOrdersTitle">
+          <div class="card__header">
+            <h2 class="card__title" id="recentOrdersTitle">أحدث الطلبات</h2>
+            <a href="admin-orders.html" class="btn btn--ghost btn--sm">عرض الكل</a>
+          </div>
+          <div class="card__body" style="padding:0;">
+            <div class="data-table__wrapper">
+              <table class="data-table__table" aria-label="جدول أحدث الطلبات">
                 <thead>
-                    <tr>
-                        <th>رقم الطلب</th>
-                        <th>العميل</th>
-                        <th>المبلغ</th>
-                        <th>الحالة</th>
-                    </tr>
+                  <tr>
+                    <th scope="col">رقم الطلب</th>
+                    <th scope="col">العميل</th>
+                    <th scope="col">التاريخ</th>
+                    <th scope="col">المبلغ</th>
+                    <th scope="col">الحالة</th>
+                  </tr>
                 </thead>
                 <tbody>
-                    <!-- Sample Orders -->
-                    <tr>
-                        <td>1001</td>
-                        <td>محمد علي</td>
-                        <td>$10</td>
-                        <td>مكتمل</td>
-                    </tr>
-                    <tr>
-                        <td>1002</td>
-                        <td>فاطمة الزهراء</td>
-                        <td>$20</td>
-                        <td>قيد المعالجة</td>
-                    </tr>
-                    <tr>
-                        <td>1003</td>
-                        <td>علي عبد الله</td>
-                        <td>$30</td>
-                        <td>مكتمل</td>
-                    </tr>
-                    <tr>
-                        <td>1004</td>
-                        <td>سعاد خليل</td>
-                        <td>$40</td>
-                        <td>ملغي</td>
-                    </tr>
-                    <tr>
-                        <td>1005</td>
-                        <td>حسن إبراهيم</td>
-                        <td>$50</td>
-                        <td>مكتمل</td>
-                    </tr>
-                    <tr>
-                        <td>1006</td>
-                        <td>عائشة رضي الله عنها</td>
-                        <td>$60</td>
-                        <td>مكتمل</td>
-                    </tr>
-                    <tr>
-                        <td>1007</td>
-                        <td>يوسف بن إدريس</td>
-                        <td>$70</td>
-                        <td>قيد المعالجة</td>
-                    </tr>
-                    <tr>
-                        <td>1008</td>
-                        <td>مريم القاضي</td>
-                        <td>$80</td>
-                        <td>مكتمل</td>
-                    </tr>
-                    <tr>
-                        <td>1009</td>
-                        <td>عبد الرحمن الجابري</td>
-                        <td>$90</td>
-                        <td>ملغي</td>
-                    </tr>
-                    <tr>
-                        <td>1010</td>
-                        <td>نور جمال</td>
-                        <td>$100</td>
-                        <td>قيد المعالجة</td>
-                    </tr>
+                  <tr>
+                    <td><strong>#ORD-2841</strong></td>
+                    <td>نورة الشمري</td>
+                    <td>15 يناير 2025</td>
+                    <td>485 ر.س</td>
+                    <td><span class="badge badge--success">مكتمل</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>#ORD-2840</strong></td>
+                    <td>سارة العتيبي</td>
+                    <td>15 يناير 2025</td>
+                    <td>1,220 ر.س</td>
+                    <td><span class="badge badge--warning">قيد التوصيل</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>#ORD-2839</strong></td>
+                    <td>منى الزهراني</td>
+                    <td>14 يناير 2025</td>
+                    <td>320 ر.س</td>
+                    <td><span class="badge badge--info">معلق</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>#ORD-2838</strong></td>
+                    <td>هيا القحطاني</td>
+                    <td>14 يناير 2025</td>
+                    <td>750 ر.س</td>
+                    <td><span class="badge badge--success">مكتمل</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>#ORD-2837</strong></td>
+                    <td>ريم الدوسري</td>
+                    <td>13 يناير 2025</td>
+                    <td>960 ر.س</td>
+                    <td><span class="badge badge--success">مكتمل</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>#ORD-2836</strong></td>
+                    <td>لمياء الحربي</td>
+                    <td>13 يناير 2025</td>
+                    <td>275 ر.س</td>
+                    <td><span class="badge badge--danger">ملغى</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>#ORD-2835</strong></td>
+                    <td>أميرة السلمي</td>
+                    <td>12 يناير 2025</td>
+                    <td>1,450 ر.س</td>
+                    <td><span class="badge badge--warning">قيد التوصيل</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>#ORD-2834</strong></td>
+                    <td>دانة المطيري</td>
+                    <td>12 يناير 2025</td>
+                    <td>590 ر.س</td>
+                    <td><span class="badge badge--success">مكتمل</span></td>
+                  </tr>
                 </tbody>
-            </table>
+              </table>
+            </div>
+          </div>
         </section>
-        <section>
-            <h2>جدول النشاط</h2>
-            <!-- Timeline Section Here -->
+
+        <!-- Activity feed card -->
+        <section class="card" aria-labelledby="activityFeedTitle">
+          <div class="card__header">
+            <h2 class="card__title" id="activityFeedTitle">آخر النشاطات</h2>
+          </div>
+          <div class="card__body" style="padding: var(--space-4);">
+            <ul class="dashboard__activity-list" aria-label="قائمة النشاطات الأخيرة">
+              <li class="dashboard__activity-item">
+                <div class="dashboard__activity-icon dashboard__activity-icon--order" aria-hidden="true">📦</div>
+                <div>
+                  <div class="dashboard__activity-text">طلب جديد <strong>#ORD-2841</strong> من نورة الشمري</div>
+                  <div class="dashboard__activity-time">منذ 5 دقائق</div>
+                </div>
+              </li>
+              <li class="dashboard__activity-item">
+                <div class="dashboard__activity-icon dashboard__activity-icon--user" aria-hidden="true">👤</div>
+                <div>
+                  <div class="dashboard__activity-text">تسجيل عميلة جديدة: <strong>دانة المطيري</strong></div>
+                  <div class="dashboard__activity-time">منذ 23 دقيقة</div>
+                </div>
+              </li>
+              <li class="dashboard__activity-item">
+                <div class="dashboard__activity-icon dashboard__activity-icon--sale" aria-hidden="true">💳</div>
+                <div>
+                  <div class="dashboard__activity-text">اكتملت عملية بيع بقيمة <strong>1,220 ر.س</strong></div>
+                  <div class="dashboard__activity-time">منذ 47 دقيقة</div>
+                </div>
+              </li>
+              <li class="dashboard__activity-item">
+                <div class="dashboard__activity-icon dashboard__activity-icon--stock" aria-hidden="true">⚠️</div>
+                <div>
+                  <div class="dashboard__activity-text">تنبيه: مخزون <strong>فستان سهرة ذهبي</strong> وصل للحد الأدنى</div>
+                  <div class="dashboard__activity-time">منذ ساعة</div>
+                </div>
+              </li>
+              <li class="dashboard__activity-item">
+                <div class="dashboard__activity-icon dashboard__activity-icon--order" aria-hidden="true">🔄</div>
+                <div>
+                  <div class="dashboard__activity-text">تم تحديث حالة الطلب <strong>#ORD-2835</strong> إلى قيد التوصيل</div>
+                  <div class="dashboard__activity-time">منذ ساعتين</div>
+                </div>
+              </li>
+              <li class="dashboard__activity-item">
+                <div class="dashboard__activity-icon dashboard__activity-icon--sale" aria-hidden="true">🏪</div>
+                <div>
+                  <div class="dashboard__activity-text">فتح فرع <strong>الرياض - العليا</strong> لليوم</div>
+                  <div class="dashboard__activity-time">منذ 3 ساعات</div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </section>
-        <section>
-            <h2>الرسوم البيانية</h2>
-            <!-- Charts Section Here -->
-        </section>
-        <section>
-            <h2>إجراءات سريعة</h2>
-            <button>إضافة منتج</button>
-            <button>عرض العملاء</button>
-            <button>إنشاء تقرير</button>
-        </section>
+
+      </div>
+
+      <!-- Quick actions -->
+      <section class="card" aria-labelledby="quickActionsTitle">
+        <div class="card__header">
+          <h2 class="card__title" id="quickActionsTitle">الإجراءات السريعة</h2>
+        </div>
+        <div class="card__body">
+          <div class="dashboard__quick-actions">
+            <a href="admin-pos.html" class="btn btn--primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              نقطة بيع جديدة
+            </a>
+            <a href="admin-orders.html" class="btn btn--primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              إدارة الطلبات
+            </a>
+            <a href="admin-products.html" class="btn btn--primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              إضافة منتج
+            </a>
+            <a href="admin-customers.html" class="btn btn--primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              إدارة العملاء
+            </a>
+          </div>
+        </div>
+      </section>
+
     </main>
+  </div>
+
+  <script src="admin-common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', AdminApp.initAdminPage);
+  </script>
 </body>
 </html>
