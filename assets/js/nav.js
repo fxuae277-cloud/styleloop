@@ -7,7 +7,10 @@
  */
 (function () {
   /* ── 1. Language setup ──────────────────────────────────────────── */
-  var lang = localStorage.getItem('sl-lang') || 'ar';
+  /* Wrap localStorage access in try-catch to handle restricted contexts
+     (e.g. Safari private mode, cross-origin iframes, strict security policies) */
+  var lang = 'ar';
+  try { lang = localStorage.getItem('sl-lang') || 'ar'; } catch (e) { /* use default */ }
   var isRTL = lang === 'ar';
   document.documentElement.setAttribute('lang', lang);
   document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
@@ -348,7 +351,7 @@
 
   /* ── 7. Handlers (global) ───────────────────────────────────────── */
   window.slToggleLang = function () {
-    localStorage.setItem('sl-lang', lang === 'ar' ? 'en' : 'ar');
+    try { localStorage.setItem('sl-lang', lang === 'ar' ? 'en' : 'ar'); } catch (e) { /* ignore */ }
     location.reload();
   };
 
