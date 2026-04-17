@@ -1,57 +1,1275 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products Page</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المنتجات - StyleLoop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pink:#E91E63;--pink2:#F06292;--pink3:#F8BBD0;--pink4:#FCE4EC;--pink5:#FFF0F5;
+  --gold:#C9A96E;--gold2:#D4AF37;--gold3:#F5E6C8;--gold4:#FFF8E8;
+  --sage:#8FAE8B;--sage2:#A8C4A4;--sage3:#E8F0E7;
+  --coral:#FF7043;--lavender:#B39DDB;--lavender3:#F0EAF5;
+  --bg:#FFFFFF;--bg2:#FAFAF8;--bg3:#F5F3F0;
+  --card:#FFFFFF;
+  --line:#F0E8EA;--line2:#E8DDE0;
+  --t1:#2A2A2A;--t2:#666666;--t3:#999999;--t4:#CCCCCC;
+  --shadow:0 2px 20px rgba(233,30,99,.06);
+  --shadow2:0 8px 40px rgba(233,30,99,.1);
+  --shadow3:0 20px 60px rgba(0,0,0,.06);
+  --shadow4:0 4px 15px rgba(0,0,0,.04);
+  --radius:14px;--radius2:20px;--radius3:28px;
+  --fc:'Cairo',sans-serif;--fp:'Poppins',sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:var(--fc);background:var(--bg2);color:var(--t1);line-height:1.8;font-weight:400;-webkit-font-smoothing:antialiased}
+::selection{background:var(--pink3);color:var(--pink)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--pink3);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:var(--pink2)}
+
+/* ====== NAV ====== */
+.nv{position:sticky;top:0;z-index:1000;padding:.9rem 2.5rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;transition:all .5s var(--ease);background:rgba(255,255,255,.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+.nv-logo{display:flex;align-items:center;gap:.5rem;text-decoration:none;flex-shrink:0}
+.nv-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--pink),var(--pink2));border-radius:50%;display:grid;place-items:center;color:#fff;font-size:.95rem;font-weight:800;transition:all .4s var(--ease)}
+.nv-logo:hover .nv-logo-icon{transform:rotate(180deg);border-radius:var(--radius)}
+.nv-logo-text{font-family:var(--fp);font-size:1.35rem;font-weight:700;color:var(--t1);letter-spacing:-.02em}
+.nv-logo-text span{color:var(--pink)}
+.nv-links{display:flex;align-items:center;gap:1.5rem;list-style:none;flex:1;justify-content:center}
+.nv-links a{color:var(--t2);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .3s;position:relative}
+.nv-links a:hover,.nv-links a.active{color:var(--pink)}
+.nv-links a::after{content:'';position:absolute;bottom:-4px;inset-inline-end:0;width:0;height:2px;background:var(--pink);border-radius:2px;transition:width .3s var(--ease)}
+.nv-links a:hover::after,.nv-links a.active::after{width:100%}
+.nv-actions{display:flex;align-items:center;gap:.7rem;flex-shrink:0}
+.nv-search-btn{width:38px;height:38px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;cursor:pointer;transition:all .3s;font-size:1rem;border:none;color:var(--t2)}
+.nv-search-btn:hover{background:var(--pink4);color:var(--pink)}
+.nv-cart{position:relative;width:38px;height:38px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;cursor:pointer;transition:all .3s;font-size:1rem;border:none;color:var(--t2)}
+.nv-cart:hover{background:var(--pink4)}
+.nv-cart-badge{position:absolute;top:-3px;inset-inline-start:-3px;min-width:18px;height:18px;background:var(--pink);border-radius:50%;font-size:.55rem;color:#fff;padding:0 4px;display:grid;place-items:center;font-weight:700}
+.nv-user{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--pink3),var(--gold3));display:grid;place-items:center;cursor:pointer;font-size:.75rem;font-weight:700;color:var(--pink);border:2px solid #fff;box-shadow:var(--shadow4)}
+.nv-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.nv-burger span{width:22px;height:2px;background:var(--t1);border-radius:2px;transition:all .3s}
+
+/* Mobile Menu */
+.mobile-menu{display:none;position:fixed;inset:0;z-index:2000;background:rgba(255,255,255,.98);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:1.5rem}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:var(--t1);text-decoration:none;font-size:1.4rem;font-weight:700;transition:color .3s}
+.mobile-menu a:hover{color:var(--pink)}
+.mobile-menu-close{position:absolute;top:1.5rem;inset-inline-end:1.5rem;width:44px;height:44px;background:var(--bg2);border:none;border-radius:50%;cursor:pointer;font-size:1.2rem;display:grid;place-items:center}
+
+/* ====== PAGE HEADER ====== */
+.page-header{background:linear-gradient(135deg,var(--pink5) 0%,#fff 50%,var(--gold4) 100%);padding:3rem 2.5rem 2rem;position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.page-header::before{content:'';position:absolute;top:-80px;inset-inline-start:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(233,30,99,.04),transparent 70%);pointer-events:none}
+.page-header::after{content:'';position:absolute;bottom:-60px;inset-inline-end:-60px;width:250px;height:250px;background:radial-gradient(circle,rgba(201,169,110,.04),transparent 70%);pointer-events:none}
+.page-header-inner{max-width:1400px;margin:0 auto;position:relative;z-index:1}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;font-size:.8rem;color:var(--t3)}
+.breadcrumb a{color:var(--t3);text-decoration:none;transition:color .3s}
+.breadcrumb a:hover{color:var(--pink)}
+.breadcrumb span{color:var(--t4)}
+.page-header h1{font-family:var(--fp);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;color:var(--t1);margin-bottom:.4rem}
+.page-header h1 em{font-style:italic;color:var(--pink)}
+.page-header p{color:var(--t2);font-size:.9rem;max-width:480px}
+.page-header-stats{display:flex;gap:2rem;margin-top:1.2rem;flex-wrap:wrap}
+.ph-stat{display:flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--t2)}
+.ph-stat strong{color:var(--t1);font-weight:700}
+.ph-stat-dot{width:6px;height:6px;border-radius:50%;background:var(--pink);flex-shrink:0}
+
+/* ====== SEARCH BAR ====== */
+.search-bar-wrap{background:#fff;border-bottom:1px solid var(--line);padding:1rem 2.5rem}
+.search-bar-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:1rem}
+.search-input-wrap{flex:1;position:relative;max-width:520px}
+.search-input{width:100%;padding:.7rem 1rem .7rem 3rem;background:var(--bg2);border:2px solid transparent;border-radius:var(--radius);font-family:var(--fc);font-size:.9rem;color:var(--t1);outline:none;transition:all .3s}
+.search-input:focus{border-color:var(--pink3);background:#fff;box-shadow:0 0 0 4px rgba(233,30,99,.06)}
+.search-input::placeholder{color:var(--t4)}
+.search-icon{position:absolute;inset-inline-start:1rem;top:50%;transform:translateY(-50%);color:var(--t3);font-size:1rem;pointer-events:none}
+.sort-wrap{display:flex;align-items:center;gap:.5rem;margin-inline-start:auto}
+.sort-label{font-size:.8rem;color:var(--t2);font-weight:600;white-space:nowrap}
+.sort-select{padding:.5rem .8rem;background:var(--bg2);border:2px solid var(--line);border-radius:var(--radius);font-family:var(--fc);font-size:.82rem;color:var(--t1);outline:none;cursor:pointer;transition:all .3s;appearance:none;padding-inline-start:2rem;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' stroke='%23999' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:inset-inline-start .7rem center}
+.sort-select:focus{border-color:var(--pink3)}
+.view-toggle{display:flex;gap:.3rem}
+.view-btn{width:34px;height:34px;border:2px solid var(--line);border-radius:var(--radius);background:#fff;cursor:pointer;display:grid;place-items:center;font-size:.9rem;transition:all .3s;color:var(--t3)}
+.view-btn:hover,.view-btn.active{border-color:var(--pink3);color:var(--pink);background:var(--pink5)}
+.results-count{font-size:.8rem;color:var(--t3);white-space:nowrap}
+
+/* ====== MAIN LAYOUT ====== */
+.page-body{max-width:1400px;margin:0 auto;padding:2rem 2.5rem;display:grid;grid-template-columns:260px 1fr;gap:2rem;align-items:start}
+
+/* ====== SIDEBAR FILTERS ====== */
+.sidebar{position:sticky;top:70px;background:#fff;border-radius:var(--radius2);border:1px solid var(--line);overflow:hidden;box-shadow:var(--shadow4)}
+.sidebar-header{padding:1.2rem 1.5rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.sidebar-header h3{font-family:var(--fp);font-size:.95rem;font-weight:700}
+.sidebar-clear{font-size:.75rem;color:var(--pink);cursor:pointer;background:none;border:none;font-family:var(--fc);font-weight:600;transition:opacity .3s}
+.sidebar-clear:hover{opacity:.7}
+.filter-section{padding:1.2rem 1.5rem;border-bottom:1px solid var(--line)}
+.filter-section:last-child{border-bottom:none}
+.filter-title{display:flex;justify-content:space-between;align-items:center;cursor:pointer;margin-bottom:.8rem}
+.filter-title h4{font-size:.85rem;font-weight:700}
+.filter-arrow{font-size:.7rem;color:var(--t3);transition:transform .3s}
+.filter-section.collapsed .filter-arrow{transform:rotate(-90deg)}
+.filter-section.collapsed .filter-body{display:none}
+
+/* Category filter */
+.cat-list{display:flex;flex-direction:column;gap:.3rem}
+.cat-item{display:flex;align-items:center;justify-content:space-between;padding:.45rem .6rem;border-radius:var(--radius);cursor:pointer;transition:all .3s;border:none;background:transparent;width:100%;font-family:var(--fc);text-align:start}
+.cat-item:hover{background:var(--pink5)}
+.cat-item.active{background:var(--pink4);color:var(--pink)}
+.cat-item-label{display:flex;align-items:center;gap:.5rem;font-size:.82rem;font-weight:500;color:inherit}
+.cat-item.active .cat-item-label{color:var(--pink);font-weight:700}
+.cat-item-icon{font-size:1rem}
+.cat-item-count{font-size:.68rem;color:var(--t4);background:var(--bg2);padding:.1rem .4rem;border-radius:50px;font-weight:600}
+.cat-item.active .cat-item-count{background:var(--pink3);color:var(--pink)}
+
+/* Price range */
+.price-inputs{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.8rem}
+.price-input{padding:.4rem .6rem;background:var(--bg2);border:2px solid var(--line);border-radius:var(--radius);font-family:var(--fc);font-size:.8rem;outline:none;transition:all .3s;width:100%}
+.price-input:focus{border-color:var(--pink3)}
+.price-range{width:100%;height:4px;border-radius:4px;background:var(--pink4);appearance:none;cursor:pointer;accent-color:var(--pink)}
+.price-labels{display:flex;justify-content:space-between;font-size:.7rem;color:var(--t3);margin-top:.5rem}
+
+/* Size filter */
+.size-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem}
+.size-btn{padding:.4rem;border:2px solid var(--line);border-radius:var(--radius);background:#fff;cursor:pointer;font-family:var(--fc);font-size:.75rem;font-weight:600;transition:all .3s;text-align:center;color:var(--t2)}
+.size-btn:hover{border-color:var(--pink3);color:var(--pink)}
+.size-btn.active{border-color:var(--pink);background:var(--pink4);color:var(--pink)}
+
+/* Color filter */
+.color-grid{display:flex;flex-wrap:wrap;gap:.5rem}
+.color-btn{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .3s;position:relative}
+.color-btn:hover{transform:scale(1.15)}
+.color-btn.active{border-color:var(--t1)}
+.color-btn.active::after{content:'✓';position:absolute;inset:0;display:grid;place-items:center;font-size:.55rem;color:#fff;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+
+/* Rating filter */
+.rating-list{display:flex;flex-direction:column;gap:.4rem}
+.rating-item{display:flex;align-items:center;gap:.5rem;cursor:pointer;padding:.3rem 0;transition:opacity .3s}
+.rating-item:hover{opacity:.7}
+.rating-stars{display:flex;gap:1px;font-size:.8rem}
+.rating-count{font-size:.72rem;color:var(--t3)}
+.rating-check{width:16px;height:16px;border:2px solid var(--line);border-radius:4px;display:grid;place-items:center;transition:all .3s;flex-shrink:0;margin-inline-start:auto}
+.rating-item.active .rating-check{background:var(--pink);border-color:var(--pink);color:#fff;font-size:.5rem}
+
+/* Badges filter */
+.badge-list{display:flex;flex-direction:column;gap:.3rem}
+.badge-filter-item{display:flex;align-items:center;gap:.6rem;cursor:pointer;padding:.35rem 0}
+.badge-filter-item input[type=checkbox]{accent-color:var(--pink);width:15px;height:15px;cursor:pointer}
+.badge-filter-item label{font-size:.82rem;cursor:pointer;display:flex;align-items:center;gap:.4rem}
+.badge-pill{padding:.1rem .5rem;border-radius:50px;font-size:.65rem;font-weight:700}
+.badge-new{background:var(--pink4);color:var(--pink)}
+.badge-sale{background:var(--gold4);color:var(--gold)}
+.badge-hot{background:rgba(255,112,67,.12);color:var(--coral)}
+.badge-eco{background:var(--sage3);color:var(--sage)}
+
+/* ====== PRODUCTS AREA ====== */
+.active-filters{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.active-filter-tag{display:flex;align-items:center;gap:.3rem;padding:.3rem .7rem;background:var(--pink4);border-radius:50px;font-size:.72rem;font-weight:600;color:var(--pink)}
+.active-filter-tag button{background:none;border:none;cursor:pointer;color:var(--pink);font-size:.8rem;line-height:1;padding:0;margin-inline-start:.1rem}
+
+/* ====== PRODUCT GRID ====== */
+.prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+.prod-grid.list-view{grid-template-columns:1fr}
+
+/* ====== PRODUCT CARD ====== */
+.prod-card{background:#fff;border-radius:var(--radius2);overflow:hidden;transition:all .4s var(--ease);box-shadow:var(--shadow4);cursor:pointer;position:relative;border:1px solid var(--line)}
+.prod-card:hover{transform:translateY(-5px);box-shadow:var(--shadow2);border-color:var(--pink3)}
+.prod-img{aspect-ratio:3/4;position:relative;overflow:hidden}
+.prod-img-bg{width:100%;height:100%;display:grid;place-items:center;font-size:3.5rem;transition:transform .6s var(--ease)}
+.prod-card:hover .prod-img-bg{transform:scale(1.06)}
+.prod-badge{position:absolute;top:.7rem;inset-inline-start:.7rem;padding:.22rem .65rem;border-radius:50px;font-size:.6rem;font-weight:700;color:#fff;z-index:2}
+.prod-badge.new{background:var(--pink)}
+.prod-badge.hot{background:var(--coral)}
+.prod-badge.sale{background:var(--gold)}
+.prod-badge.eco{background:var(--sage)}
+.prod-wishlist{position:absolute;top:.7rem;inset-inline-end:.7rem;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border:none;cursor:pointer;display:grid;place-items:center;font-size:.9rem;transition:all .3s;z-index:2;opacity:0}
+.prod-card:hover .prod-wishlist{opacity:1}
+.prod-wishlist:hover{background:#fff;transform:scale(1.1)}
+.prod-tryon{position:absolute;bottom:.7rem;inset-inline:.7rem;padding:.55rem;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-radius:var(--radius);text-align:center;font-size:.75rem;font-weight:700;color:var(--pink);opacity:0;transform:translateY(8px);transition:all .3s var(--ease);cursor:pointer;border:none;width:calc(100% - 1.4rem);font-family:var(--fc)}
+.prod-card:hover .prod-tryon{opacity:1;transform:translateY(0)}
+.prod-tryon:hover{background:var(--pink);color:#fff}
+.prod-body{padding:1rem}
+.prod-brand{font-size:.65rem;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;font-weight:600;font-family:var(--fp)}
+.prod-name{font-size:.88rem;font-weight:700;margin:.25rem 0 .3rem;color:var(--t1);line-height:1.4}
+.prod-rating{display:flex;align-items:center;gap:.3rem;margin-bottom:.4rem}
+.prod-stars{display:flex;gap:1px;font-size:.7rem}
+.prod-rating-val{font-size:.7rem;font-weight:700;color:var(--t2)}
+.prod-rating-count{font-size:.65rem;color:var(--t4)}
+.prod-bottom{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.prod-price{font-family:var(--fp);font-size:1.05rem;font-weight:700;color:var(--pink)}
+.prod-price .old{text-decoration:line-through;color:var(--t4);font-size:.75rem;font-weight:400;margin-inline-start:.3rem}
+.prod-size{font-size:.62rem;color:var(--t3);padding:.14rem .5rem;background:var(--bg2);border-radius:50px;font-weight:600}
+.prod-match{display:inline-flex;align-items:center;gap:.2rem;font-size:.6rem;font-weight:600;margin-bottom:.5rem;padding:.18rem .5rem;border-radius:50px}
+.prod-match.perf{background:var(--sage3);color:var(--sage)}
+.prod-match.good{background:var(--gold4);color:var(--gold)}
+.prod-actions{display:flex;gap:.35rem}
+.prod-act-btn{flex:1;padding:.5rem;border:1.5px solid var(--line2);border-radius:var(--radius);background:transparent;font-family:var(--fc);font-size:.72rem;font-weight:700;cursor:pointer;transition:all .3s;color:var(--t2)}
+.prod-act-btn:hover{border-color:var(--pink);color:var(--pink);background:var(--pink5)}
+.prod-act-btn.primary{background:var(--pink);color:#fff;border-color:var(--pink)}
+.prod-act-btn.primary:hover{background:var(--pink2);border-color:var(--pink2)}
+
+/* List view card */
+.prod-grid.list-view .prod-card{display:grid;grid-template-columns:220px 1fr}
+.prod-grid.list-view .prod-img{aspect-ratio:auto;height:100%}
+.prod-grid.list-view .prod-body{padding:1.5rem}
+.prod-grid.list-view .prod-name{font-size:1rem}
+.prod-grid.list-view .prod-price{font-size:1.2rem}
+
+/* ====== EMPTY STATE ====== */
+.empty-state{text-align:center;padding:4rem 2rem;grid-column:1/-1}
+.empty-state-icon{font-size:3.5rem;margin-bottom:1rem}
+.empty-state h3{font-family:var(--fp);font-size:1.2rem;font-weight:700;margin-bottom:.5rem}
+.empty-state p{font-size:.9rem;color:var(--t2)}
+
+/* ====== PAGINATION ====== */
+.pagination{display:flex;justify-content:center;gap:.5rem;margin-top:2.5rem;padding-bottom:1rem}
+.page-btn{width:38px;height:38px;border:2px solid var(--line);border-radius:var(--radius);background:#fff;cursor:pointer;display:grid;place-items:center;font-size:.82rem;font-weight:600;transition:all .3s;color:var(--t2);font-family:var(--fc)}
+.page-btn:hover{border-color:var(--pink3);color:var(--pink)}
+.page-btn.active{background:var(--pink);border-color:var(--pink);color:#fff}
+.page-btn.disabled{opacity:.4;cursor:not-allowed}
+
+/* ====== FOOTER ====== */
+.ft{padding:3.5rem 2.5rem 1.2rem;background:#fff;border-top:1px solid var(--line)}
+.ft-g{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem}
+.ft-brand .nv-logo{margin-bottom:.6rem;display:inline-flex}
+.ft-brand p{font-size:.75rem;color:var(--t3);line-height:1.8;max-width:260px}
+.ft-social{display:flex;gap:.6rem;margin-top:1rem}
+.ft-social-btn{width:36px;height:36px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;text-decoration:none;font-size:.85rem;transition:all .3s}
+.ft-social-btn:hover{background:var(--pink4);transform:translateY(-2px)}
+.ft-col h4{font-size:.72rem;color:var(--t1);font-weight:700;margin-bottom:.7rem;text-transform:uppercase;letter-spacing:.05em}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:.45rem}
+.ft-col a{color:var(--t3);text-decoration:none;font-size:.78rem;transition:color .3s}
+.ft-col a:hover{color:var(--pink)}
+.ft-newsletter{background:var(--pink5);border-radius:var(--radius);padding:1rem;border:1px solid var(--pink4);margin-top:.8rem}
+.ft-newsletter p{font-size:.72rem;color:var(--t2);margin-bottom:.6rem;line-height:1.6}
+.ft-nl-form{display:flex;gap:.4rem}
+.ft-nl-input{flex:1;padding:.5rem .7rem;background:#fff;border:2px solid var(--line);border-radius:var(--radius);font-family:var(--fc);font-size:.75rem;outline:none;transition:all .3s;min-width:0}
+.ft-nl-input:focus{border-color:var(--pink3)}
+.ft-nl-btn{padding:.5rem .9rem;background:var(--pink);color:#fff;border:none;border-radius:var(--radius);font-family:var(--fc);font-size:.72rem;font-weight:700;cursor:pointer;transition:all .3s;white-space:nowrap}
+.ft-nl-btn:hover{background:var(--pink2)}
+.ft-bot{display:flex;justify-content:space-between;align-items:center;padding-top:1.2rem;border-top:1px solid var(--line);font-size:.65rem;color:var(--t3)}
+.ft-pay{display:flex;gap:.5rem;align-items:center}
+.ft-pay-icon{height:20px;background:var(--bg2);border-radius:4px;padding:0 .5rem;display:grid;place-items:center;font-size:.6rem;font-weight:700;color:var(--t2);border:1px solid var(--line)}
+
+/* ====== ANIMATIONS ====== */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.rv{opacity:0;transform:translateY(22px);transition:all .7s var(--ease)}
+.rv.vis{opacity:1;transform:translateY(0)}
+.rv-d1{transition-delay:.1s}.rv-d2{transition-delay:.2s}.rv-d3{transition-delay:.3s}.rv-d4{transition-delay:.4s}
+
+/* ====== BUTTONS ====== */
+.btn-p{padding:.7rem 1.8rem;background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff;border:none;border-radius:var(--radius);font-family:var(--fc);font-size:.85rem;font-weight:700;cursor:pointer;transition:all .3s var(--ease);box-shadow:0 4px 15px rgba(233,30,99,.2)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(233,30,99,.3)}
+
+/* ====== RESPONSIVE ====== */
+@media(max-width:1100px){
+  .page-body{grid-template-columns:1fr;padding:1.5rem}
+  .sidebar{position:static}
+  .prod-grid{grid-template-columns:repeat(3,1fr)}
+  .ft-g{grid-template-columns:1fr 1fr}
+  .nv-links{display:none}
+  .nv-burger{display:flex}
+  .search-bar-wrap{padding:1rem 1.5rem}
+  .page-header{padding:2rem 1.5rem 1.5rem}
+}
+@media(max-width:768px){
+  .prod-grid{grid-template-columns:repeat(2,1fr)}
+  .prod-grid.list-view .prod-card{grid-template-columns:1fr}
+  .prod-grid.list-view .prod-img{height:200px}
+  .sort-wrap{flex-wrap:wrap;gap:.4rem}
+  .search-bar-inner{flex-wrap:wrap}
+  .search-input-wrap{max-width:100%;width:100%}
+  .nv{padding:.7rem 1.2rem}
+  .ft-g{grid-template-columns:1fr}
+  .ft{padding:2.5rem 1.2rem 1rem}
+}
+@media(max-width:480px){
+  .prod-grid{grid-template-columns:1fr}
+  .page-header-stats{gap:1rem}
+  .ft-bot{flex-direction:column;gap:.5rem;text-align:center}
+  .size-grid{grid-template-columns:repeat(3,1fr)}
+}
+</style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="tryon.html">Try On</a></li>
-            <li><a href="wallet.html">Wallet</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="sell.html">Sell</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
-    </nav>
-    
-    <main>
-        <h1>Our Products</h1>
-        <div class="product-list">
-            <div class="product-card">
-                <img src="😃" alt="Product 1" />
-                <h2>Product 1</h2>
-                <p>Price: $10.00</p>
-                <button>Try On</button>
-            </div>
-            <div class="product-card">
-                <img src="😎" alt="Product 2" />
-                <h2>Product 2</h2>
-                <p>Price: $15.00</p>
-                <button>Try On</button>
-            </div>
-            <div class="product-card">
-                <img src="🤩" alt="Product 3" />
-                <h2>Product 3</h2>
-                <p>Price: $20.00</p>
-                <button>Try On</button>
-            </div>
-            <div class="product-card">
-                <img src="🎉" alt="Product 4" />
-                <h2>Product 4</h2>
-                <p>Price: $25.00</p>
-                <button>Try On</button>
-            </div>
+
+<!-- NAVIGATION -->
+<nav class="nv" id="nv">
+  <a class="nv-logo" href="index.html">
+    <div class="nv-logo-icon">S</div>
+    <span class="nv-logo-text">Style<span>Loop</span></span>
+  </a>
+  <ul class="nv-links">
+    <li><a href="index.html">الرئيسية</a></li>
+    <li><a href="products.html" class="active">المنتجات</a></li>
+    <li><a href="tryon.html">جرّبي الآن</a></li>
+    <li><a href="sell.html">بيعي ملابسك</a></li>
+    <li><a href="about.html">من نحن</a></li>
+    <li><a href="contact.html">تواصل معنا</a></li>
+  </ul>
+  <div class="nv-actions">
+    <button class="nv-search-btn" onclick="toggleSearch()" title="بحث">🔍</button>
+    <button class="nv-cart" onclick="window.location='cart.html'">🛒<span class="nv-cart-badge">3</span></button>
+    <a class="nv-user" href="dashboard.html" title="حسابي">س</a>
+    <button class="btn-p" onclick="window.location='tryon.html'" style="padding:.5rem 1.2rem;font-size:.8rem">✨ جرّبي الآن</button>
+  </div>
+  <button class="nv-burger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" onclick="toggleMenu()">✕</button>
+  <a href="index.html" onclick="toggleMenu()">الرئيسية</a>
+  <a href="products.html" onclick="toggleMenu()">المنتجات</a>
+  <a href="tryon.html" onclick="toggleMenu()">جرّبي الآن</a>
+  <a href="sell.html" onclick="toggleMenu()">بيعي ملابسك</a>
+  <a href="wallet.html" onclick="toggleMenu()">محفظتي</a>
+  <a href="dashboard.html" onclick="toggleMenu()">حسابي</a>
+  <a href="about.html" onclick="toggleMenu()">من نحن</a>
+  <a href="contact.html" onclick="toggleMenu()">تواصل معنا</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb">
+      <a href="index.html">الرئيسية</a>
+      <span>›</span>
+      <span style="color:var(--t1);font-weight:600">المنتجات</span>
+    </div>
+    <h1>استكشفي <em>أحدث</em> المنتجات</h1>
+    <p>آلاف القطع المختارة بعناية تنتظرك — جرّبي أي قطعة عليك بالذكاء الاصطناعي قبل الشراء</p>
+    <div class="page-header-stats">
+      <div class="ph-stat"><div class="ph-stat-dot"></div><strong>٢,٤٨٦</strong> منتج متاح</div>
+      <div class="ph-stat"><div class="ph-stat-dot" style="background:var(--gold)"></div><strong>١٢٤</strong> منتج جديد هذا الأسبوع</div>
+      <div class="ph-stat"><div class="ph-stat-dot" style="background:var(--coral)"></div><strong>٣٨</strong> عرض مميز</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH & SORT BAR -->
+<div class="search-bar-wrap">
+  <div class="search-bar-inner">
+    <div class="search-input-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="ابحثي عن فستان، جاكت، حقيبة..." oninput="filterProducts()">
+    </div>
+    <div class="sort-wrap">
+      <span class="sort-label">ترتيب حسب:</span>
+      <select class="sort-select" id="sortSelect" onchange="sortProducts()">
+        <option value="latest">الأحدث</option>
+        <option value="price-asc">السعر: من الأقل</option>
+        <option value="price-desc">السعر: من الأعلى</option>
+        <option value="rating">الأعلى تقييماً</option>
+        <option value="popular">الأكثر شعبية</option>
+      </select>
+      <span class="results-count" id="resultsCount">عرض ٢٤ منتج</span>
+      <div class="view-toggle">
+        <button class="view-btn active" id="gridViewBtn" onclick="setView('grid')" title="عرض شبكة">⊞</button>
+        <button class="view-btn" id="listViewBtn" onclick="setView('list')" title="عرض قائمة">≡</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="page-body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar rv" id="sidebar">
+    <div class="sidebar-header">
+      <h3>🔧 الفلاتر</h3>
+      <button class="sidebar-clear" onclick="clearAllFilters()">مسح الكل</button>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="filter-section" id="catFilter">
+      <div class="filter-title" onclick="toggleFilter('catFilter')">
+        <h4>الفئة</h4>
+        <span class="filter-arrow">▾</span>
+      </div>
+      <div class="filter-body">
+        <div class="cat-list" id="catList">
+          <button class="cat-item active" data-cat="all" onclick="filterByCategory(this, 'all')">
+            <span class="cat-item-label"><span class="cat-item-icon">🛍️</span>الكل</span>
+            <span class="cat-item-count">٢٤</span>
+          </button>
+          <button class="cat-item" data-cat="dresses" onclick="filterByCategory(this, 'dresses')">
+            <span class="cat-item-label"><span class="cat-item-icon">👗</span>فساتين</span>
+            <span class="cat-item-count">٦</span>
+          </button>
+          <button class="cat-item" data-cat="tops" onclick="filterByCategory(this, 'tops')">
+            <span class="cat-item-label"><span class="cat-item-icon">👚</span>توبات وبلوزات</span>
+            <span class="cat-item-count">٥</span>
+          </button>
+          <button class="cat-item" data-cat="outerwear" onclick="filterByCategory(this, 'outerwear')">
+            <span class="cat-item-label"><span class="cat-item-icon">🧥</span>جاكيتات ومعاطف</span>
+            <span class="cat-item-count">٤</span>
+          </button>
+          <button class="cat-item" data-cat="pants" onclick="filterByCategory(this, 'pants')">
+            <span class="cat-item-label"><span class="cat-item-icon">👖</span>بناطيل وتنانير</span>
+            <span class="cat-item-count">٤</span>
+          </button>
+          <button class="cat-item" data-cat="shoes" onclick="filterByCategory(this, 'shoes')">
+            <span class="cat-item-label"><span class="cat-item-icon">👠</span>أحذية</span>
+            <span class="cat-item-count">٣</span>
+          </button>
+          <button class="cat-item" data-cat="bags" onclick="filterByCategory(this, 'bags')">
+            <span class="cat-item-label"><span class="cat-item-icon">👜</span>حقائب وإكسسوار</span>
+            <span class="cat-item-count">٢</span>
+          </button>
         </div>
-    </main>
-    
-    <footer>
-        <p>&copy; 2026 Your Company Name. All rights reserved.</p>
-    </footer>
+      </div>
+    </div>
+
+    <!-- Price Filter -->
+    <div class="filter-section" id="priceFilter">
+      <div class="filter-title" onclick="toggleFilter('priceFilter')">
+        <h4>نطاق السعر</h4>
+        <span class="filter-arrow">▾</span>
+      </div>
+      <div class="filter-body">
+        <div class="price-inputs">
+          <input type="number" class="price-input" id="priceMin" placeholder="من" min="0" oninput="filterProducts()">
+          <input type="number" class="price-input" id="priceMax" placeholder="إلى" min="0" oninput="filterProducts()">
+        </div>
+        <input type="range" class="price-range" id="priceRange" min="0" max="500" value="500" oninput="updatePriceRange(this.value)">
+        <div class="price-labels">
+          <span>٠ ر.س</span>
+          <span id="priceRangeLabel">٥٠٠ ر.س</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Size Filter -->
+    <div class="filter-section" id="sizeFilter">
+      <div class="filter-title" onclick="toggleFilter('sizeFilter')">
+        <h4>المقاس</h4>
+        <span class="filter-arrow">▾</span>
+      </div>
+      <div class="filter-body">
+        <div class="size-grid">
+          <button class="size-btn" data-size="XS" onclick="toggleSize(this)">XS</button>
+          <button class="size-btn" data-size="S" onclick="toggleSize(this)">S</button>
+          <button class="size-btn" data-size="M" onclick="toggleSize(this)">M</button>
+          <button class="size-btn" data-size="L" onclick="toggleSize(this)">L</button>
+          <button class="size-btn" data-size="XL" onclick="toggleSize(this)">XL</button>
+          <button class="size-btn" data-size="XXL" onclick="toggleSize(this)">XXL</button>
+          <button class="size-btn" data-size="36" onclick="toggleSize(this)">٣٦</button>
+          <button class="size-btn" data-size="38" onclick="toggleSize(this)">٣٨</button>
+          <button class="size-btn" data-size="40" onclick="toggleSize(this)">٤٠</button>
+          <button class="size-btn" data-size="42" onclick="toggleSize(this)">٤٢</button>
+          <button class="size-btn" data-size="44" onclick="toggleSize(this)">٤٤</button>
+          <button class="size-btn" data-size="one" onclick="toggleSize(this)">فري سايز</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Color Filter -->
+    <div class="filter-section" id="colorFilter">
+      <div class="filter-title" onclick="toggleFilter('colorFilter')">
+        <h4>اللون</h4>
+        <span class="filter-arrow">▾</span>
+      </div>
+      <div class="filter-body">
+        <div class="color-grid" id="colorGrid">
+          <button class="color-btn" data-color="pink" style="background:#E91E63" onclick="toggleColor(this)" title="وردي"></button>
+          <button class="color-btn" data-color="red" style="background:#F44336" onclick="toggleColor(this)" title="أحمر"></button>
+          <button class="color-btn" data-color="orange" style="background:#FF9800" onclick="toggleColor(this)" title="برتقالي"></button>
+          <button class="color-btn" data-color="yellow" style="background:#FFC107" onclick="toggleColor(this)" title="أصفر"></button>
+          <button class="color-btn" data-color="green" style="background:#4CAF50" onclick="toggleColor(this)" title="أخضر"></button>
+          <button class="color-btn" data-color="blue" style="background:#2196F3" onclick="toggleColor(this)" title="أزرق"></button>
+          <button class="color-btn" data-color="purple" style="background:#9C27B0" onclick="toggleColor(this)" title="بنفسجي"></button>
+          <button class="color-btn" data-color="black" style="background:#212121" onclick="toggleColor(this)" title="أسود"></button>
+          <button class="color-btn" data-color="white" style="background:#F5F5F5;border:2px solid #eee" onclick="toggleColor(this)" title="أبيض"></button>
+          <button class="color-btn" data-color="beige" style="background:#D4B896" onclick="toggleColor(this)" title="بيج"></button>
+          <button class="color-btn" data-color="navy" style="background:#1A237E" onclick="toggleColor(this)" title="كحلي"></button>
+          <button class="color-btn" data-color="gold" style="background:#C9A96E" onclick="toggleColor(this)" title="ذهبي"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rating Filter -->
+    <div class="filter-section" id="ratingFilter">
+      <div class="filter-title" onclick="toggleFilter('ratingFilter')">
+        <h4>التقييم</h4>
+        <span class="filter-arrow">▾</span>
+      </div>
+      <div class="filter-body">
+        <div class="rating-list">
+          <div class="rating-item" data-min-rating="4" onclick="toggleRating(this)">
+            <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+            <span class="rating-count">(٥ نجوم)</span>
+            <div class="rating-check">✓</div>
+          </div>
+          <div class="rating-item" data-min-rating="4" onclick="toggleRating(this)">
+            <div class="rating-stars">⭐⭐⭐⭐</div>
+            <span class="rating-count">(٤+ نجوم)</span>
+            <div class="rating-check">✓</div>
+          </div>
+          <div class="rating-item" data-min-rating="3" onclick="toggleRating(this)">
+            <div class="rating-stars">⭐⭐⭐</div>
+            <span class="rating-count">(٣+ نجوم)</span>
+            <div class="rating-check">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Badge Filter -->
+    <div class="filter-section" id="badgeFilter">
+      <div class="filter-title" onclick="toggleFilter('badgeFilter')">
+        <h4>العروض الخاصة</h4>
+        <span class="filter-arrow">▾</span>
+      </div>
+      <div class="filter-body">
+        <div class="badge-list">
+          <div class="badge-filter-item">
+            <input type="checkbox" id="filterNew" onchange="filterProducts()">
+            <label for="filterNew"><span class="badge-pill badge-new">جديد</span> المنتجات الجديدة</label>
+          </div>
+          <div class="badge-filter-item">
+            <input type="checkbox" id="filterSale" onchange="filterProducts()">
+            <label for="filterSale"><span class="badge-pill badge-sale">خصم</span> تخفيضات وعروض</label>
+          </div>
+          <div class="badge-filter-item">
+            <input type="checkbox" id="filterHot" onchange="filterProducts()">
+            <label for="filterHot"><span class="badge-pill badge-hot">الأكثر طلبًا</span> الأكثر مبيعًا</label>
+          </div>
+          <div class="badge-filter-item">
+            <input type="checkbox" id="filterEco" onchange="filterProducts()">
+            <label for="filterEco"><span class="badge-pill badge-eco">صديقة البيئة</span> منتجات مستدامة</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- PRODUCTS AREA -->
+  <div class="products-area">
+
+    <!-- Active Filters -->
+    <div class="active-filters" id="activeFilters"></div>
+
+    <!-- Product Grid -->
+    <div class="prod-grid rv" id="prodGrid">
+
+      <!-- Card 1 -->
+      <div class="prod-card" data-cat="dresses" data-price="120" data-size="M" data-rating="5" data-badge="new" data-name="فستان زهري صيفي" data-brand="Zara">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#F8BBD0,#FCE4EC)">👗</div>
+          <span class="prod-badge new">جديد</span>
+          <button class="prod-wishlist" onclick="toggleWishlist(this)">🤍</button>
+          <button class="prod-tryon" onclick="window.location='tryon.html'">✨ جرّبي عليك</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Zara</div>
+          <div class="prod-name">فستان زهري صيفي</div>
+          <div class="prod-rating">
+            <div class="prod-stars">⭐⭐⭐⭐⭐</div>
+            <span class="prod-rating-val">٥.٠</span>
+            <span class="prod-rating-count">(٤٢ تقييم)</span>
+          </div>
+          <div class="prod-bottom">
+            <span class="prod-price">١٢٠ ر.س</span>
+            <span class="prod-size">M</span>
+          </div>
+          <div class="prod-match perf">✓ يناسب مقاسك ١٠٠٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn primary" onclick="addToCart(this)">🛒 أضيفي للسلة</button>
+            <button class="prod-act-btn" onclick="window.location='tryon.html'">✨ جرّبي</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="prod-card" data-cat="outerwear" data-price="180" data-size="M" data-rating="5" data-badge="hot" data-name="جاكت جلد أسود" data-brand="Mango">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#424242,#757575)">🧥</div>
+          <span class="prod-badge hot">الأكثر طلبًا</span>
+          <button class="prod-wishlist" onclick="toggleWishlist(this)">🤍</button>
+          <button class="prod-tryon" onclick="window.location='tryon.html'">✨ جرّبي عليك</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Mango</div>
+          <div class="prod-name">جاكت جلد أسود</div>
+          <div class="prod-rating">
+            <div class="prod-stars">⭐⭐⭐⭐⭐</div>
+            <span class="prod-rating-val">٤.٨</span>
+            <span class="prod-rating-count">(٨٧ تقييم)</span>
+          </div>
+          <div class="prod-bottom">
+            <span class="prod-price">١٨٠ ر.س</span>
+            <span class="prod-size">M</span>
+          </div>
+          <div class="prod-match perf">✓ يناسب مقاسك ٩٨٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn primary" onclick="addToCart(this)">🛒 أضيفي للسلة</button>
+            <button class="prod-act-btn" onclick="window.location='tryon.html'">✨ جرّبي</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="prod-card" data-cat="tops" data-price="85" data-size="S" data-rating="4" data-badge="sale" data-name="بلوزة حرير بنفسجية" data-brand="H&M">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#E1BEE7,#F3E5F5)">👚</div>
+          <span class="prod-badge sale">خصم ٢٩٪</span>
+          <button class="prod-wishlist" onclick="toggleWishlist(this)">🤍</button>
+          <button class="prod-tryon" onclick="window.location='tryon.html'">✨ جرّبي عليك</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">H&M</div>
+          <div class="prod-name">بلوزة حرير بنفسجية</div>
+          <div class="prod-rating">
+            <div class="prod-stars">⭐⭐⭐⭐</div>
+            <span class="prod-rating-val">٤.٢</span>
+            <span class="prod-rating-count">(٣١ تقييم)</span>
+          </div>
+          <div class="prod-bottom">
+            <span class="prod-price">٨٥ ر.س <span class="old">١٢٠</span></span>
+            <span class="prod-size">S</span>
+          </div>
+          <div class="prod-match good">~ يناسب مقاسك ٨٥٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn primary" onclick="addToCart(this)">🛒 أضيفي للسلة</button>
+            <button class="prod-act-btn" onclick="window.location='tryon.html'">✨ جرّبي</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="prod-card" data-cat="shoes" data-price="200" data-size="38" data-rating="5" data-badge="" data-name="حذاء رياضي أبيض" data-brand="Nike">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#ECEFF1,#F5F5F5)">👟</div>
+          <button class="prod-wishlist" onclick="toggleWishlist(this)">🤍</button>
+          <button class="prod-tryon" onclick="window.location='tryon.html'">✨ جرّبي عليك</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Nike</div>
+          <div class="prod-name">حذاء رياضي أبيض</div>
+          <div class="prod-rating">
+            <div class="prod-stars">⭐⭐⭐⭐⭐</div>
+            <span class="prod-rating-val">٤.٩</span>
+            <span class="prod-rating-count">(١٢٣ تقييم)</span>
+          </div>
+          <div class="prod-bottom">
+            <span class="prod-price">٢٠٠ ر.س</span>
+            <span class="prod-size">EU ٣٨</span>
+          </div>
+          <div class="prod-match perf">✓ يناسب مقاسك ١٠٠٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn primary" onclick="addToCart(this)">🛒 أضيفي للسلة</button>
+            <button class="prod-act-btn" onclick="window.location='tryon.html'">✨ جرّبي</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="prod-card" data-cat="dresses" data-price="95" data-size="S" data-rating="4" data-badge="new" data-name="فستان ماكسي بيج" data-brand="Massimo Dutti">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#F5E6C8,#FFF8E1)">👘</div>
+          <span class="prod-badge new">جديد</span>
+          <button class="prod-wishlist" onclick="toggleWishlist(this)">🤍</button>
+          <button class="prod-tryon" onclick="window.location='tryon.html'">✨ جرّبي عليك</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Massimo Dutti</div>
+          <div class="prod-name">فستان ماكسي بيج</div>
+          <div class="prod-rating">
+            <div class="prod-stars">⭐⭐⭐⭐</div>
+            <span class="prod-rating-val">٤.٥</span>
+            <span class="prod-rating-count">(١٩ تقييم)</span>
+          </div>
+          <div class="prod-bottom">
+            <span class="prod-price">٩٥ ر.س</span>
+            <span class="prod-size">S</span>
+          </div>
+          <div class="prod-match good">~ يناسب مقاسك ٩٠٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn primary" onclick="addToCart(this)">🛒 أضيفي للسلة</button>
+            <button class="prod-act-btn" onclick="window.location='tryon.html'">✨ جرّبي</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="prod-card" data-cat="bags" data-price="150" data-size="one" data-rating="5" data-badge="" data-name="حقيبة يد جلد ذهبي" data-brand="Coach">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#C9A96E,#D4AF37)">👜</div>
+          <button class="prod-wishlist" onclick="toggleWishlist(this)">🤍</button>
+          <button class="prod-tryon" onclick="window.location='tryon.html'">✨ جرّبي عليك</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Coach</div>
+          <div class="prod-name">حقيبة يد جلد ذهبي</div>
+          <div class="prod-rating">
+            <div class="prod-stars">⭐⭐⭐⭐⭐</div>
+            <span class="prod-rating-val">٥.٠</span>
+            <span class="prod-rating-count">(٥٦ تقييم)</span>
+          </div>
+          <div class="prod-bottom">
+            <span class="prod-price">١٥٠ ر.س</span>
+            <span class="prod-size">فري سايز</span>
+          </div>
+          <div class="prod-match perf">✓ إكسسوار مثالي</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn primary" onclick="addToCart(this)">🛒 أضيفي للسلة</button>
+            <button class="prod-act-btn" onclick="window.location='tryon.html'">✨ جرّبي</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="prod-card" data-cat="pants" data-price="110" data-size="M" data-rating="4" data-badge="eco" data-name="بنطال كلاسيك أبيض" data-brand="Bershka">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#E8F5E9,#C8E6C9)">👖</div>
+          <span class="prod-badge eco">صديق البيئة</span>
+          <button class="prod-wishlist" onclick="toggleWishlist(this)">🤍</button>
+          <button class="prod-tryon" onclick="window.location='tryon.html'">✨ جرّبي عليك</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Bershka</div>
+          <div class="prod-name">بنطال كلاسيك أبيض</div>
+          <div class="prod-rating">
+            <div class="prod-stars">⭐⭐⭐⭐</div>
+            <span class="prod-rating-val">٤.٣</span>
+            <span class="prod-rating-count">(٢٨ تقييم)</span>
+          </div>
+          <div class="prod-bottom">
+            <span class="prod-price">١١٠ ر.س</span>
+            <span class="prod-size">M</span>
+          </div>
+          <div class="prod-match good">~ يناسب مقاسك ٩٢٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn primary" onclick="addToCart(this)">🛒 أضيفي للسلة</button>
+            <button class="prod-act-btn" onclick="window.location='tryon.html'">✨ جرّبي</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 8 -->
+      <div class="prod-card" data-cat="tops" data-price="65" data-size="L" data-rating="4" data-badge="sale" data-name="تيشيرت أزرق كروب" data-brand="Pull&Bear">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#BBDEFB,#E3F2FD)">👕</div>
+          <span class="prod-badge sale">خصم ٣٥٪</span>
+          <button class="prod-wishlist" onclick="toggleWishlist(this)">🤍</button>
+          <button class="prod-tryon" onclick="window.location='tryon.html'">✨ جرّبي عليك</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Pull&Bear</div>
+          <div class="prod-name">تيشيرت أزرق كروب</div>
+          <div class="prod-rating">
+            <div class="prod-stars">⭐⭐⭐⭐</div>
+            <span class="prod-rating-val">٤.١</span>
+            <span class="prod-rating-count">(١٤ تقييم)</span>
+          </div>
+          <div class="prod-bottom">
+            <span class="prod-price">٦٥ ر.س <span class="old">١٠٠</span></span>
+            <span class="prod-size">L</span>
+          </div>
+          <div class="prod-match perf">✓ يناسب مقاسك ٩٥٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn primary" onclick="addToCart(this)">🛒 أضيفي للسلة</button>
+            <button class="prod-act-btn" onclick="window.location='tryon.html'">✨ جرّبي</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 9 -->
+      <div class="prod-card" data-cat="dresses" data-price="220" data-size="M" data-rating="5" data-badge="hot" data-name="فستان سهرة أسود" data-brand="Guess">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#212121,#424242)">🥻</div>
+          <span class="prod-badge hot">الأكثر طلبًا</span>
+          <button class="prod-wishlist" onclick="toggleWishlist(this)">🤍</button>
+          <button class="prod-tryon" onclick="window.location='tryon.html'">✨ جرّبي عليك</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Guess</div>
+          <div class="prod-name">فستان سهرة أسود</div>
+          <div class="prod-rating">
+            <div class="prod-stars">⭐⭐⭐⭐⭐</div>
+            <span class="prod-rating-val">٤.٧</span>
+            <span class="prod-rating-count">(٦٣ تقييم)</span>
+          </div>
+          <div class="prod-bottom">
+            <span class="prod-price">٢٢٠ ر.س</span>
+            <span class="prod-size">M</span>
+          </div>
+          <div class="prod-match perf">✓ يناسب مقاسك ١٠٠٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn primary" onclick="addToCart(this)">🛒 أضيفي للسلة</button>
+            <button class="prod-act-btn" onclick="window.location='tryon.html'">✨ جرّبي</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 10 -->
+      <div class="prod-card" data-cat="outerwear" data-price="280" data-size="L" data-rating="5" data-badge="new" data-name="معطف كاشمير كريمي" data-brand="Max Mara">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#EFEBE9,#D7CCC8)">🧣</div>
+          <span class="prod-badge new">جديد</span>
+          <button class="prod-wishlist" onclick="toggleWishlist(this)">🤍</button>
+          <button class="prod-tryon" onclick="window.location='tryon.html'">✨ جرّبي عليك</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Max Mara</div>
+          <div class="prod-name">معطف كاشمير كريمي</div>
+          <div class="prod-rating">
+            <div class="prod-stars">⭐⭐⭐⭐⭐</div>
+            <span class="prod-rating-val">٥.٠</span>
+            <span class="prod-rating-count">(٣٩ تقييم)</span>
+          </div>
+          <div class="prod-bottom">
+            <span class="prod-price">٢٨٠ ر.س</span>
+            <span class="prod-size">L</span>
+          </div>
+          <div class="prod-match good">~ يناسب مقاسك ٩٠٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn primary" onclick="addToCart(this)">🛒 أضيفي للسلة</button>
+            <button class="prod-act-btn" onclick="window.location='tryon.html'">✨ جرّبي</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 11 -->
+      <div class="prod-card" data-cat="pants" data-price="75" data-size="S" data-rating="4" data-badge="sale" data-name="تنورة قصيرة وردية" data-brand="Stradivarius">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#F48FB1,#F8BBD0)">🩱</div>
+          <span class="prod-badge sale">خصم ٢٥٪</span>
+          <button class="prod-wishlist" onclick="toggleWishlist(this)">🤍</button>
+          <button class="prod-tryon" onclick="window.location='tryon.html'">✨ جرّبي عليك</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Stradivarius</div>
+          <div class="prod-name">تنورة قصيرة وردية</div>
+          <div class="prod-rating">
+            <div class="prod-stars">⭐⭐⭐⭐</div>
+            <span class="prod-rating-val">٤.٤</span>
+            <span class="prod-rating-count">(٢٢ تقييم)</span>
+          </div>
+          <div class="prod-bottom">
+            <span class="prod-price">٧٥ ر.س <span class="old">١٠٠</span></span>
+            <span class="prod-size">S</span>
+          </div>
+          <div class="prod-match perf">✓ يناسب مقاسك ١٠٠٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn primary" onclick="addToCart(this)">🛒 أضيفي للسلة</button>
+            <button class="prod-act-btn" onclick="window.location='tryon.html'">✨ جرّبي</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 12 -->
+      <div class="prod-card" data-cat="shoes" data-price="160" data-size="38" data-rating="4" data-badge="" data-name="كعب عالي ذهبي" data-brand="Steve Madden">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(135deg,#F5E6C8,#C9A96E)">👡</div>
+          <button class="prod-wishlist" onclick="toggleWishlist(this)">🤍</button>
+          <button class="prod-tryon" onclick="window.location='tryon.html'">✨ جرّبي عليك</button>
+        </div>
+        <div class="prod-body">
+          <div class="prod-brand">Steve Madden</div>
+          <div class="prod-name">كعب عالي ذهبي</div>
+          <div class="prod-rating">
+            <div class="prod-stars">⭐⭐⭐⭐</div>
+            <span class="prod-rating-val">٤.٦</span>
+            <span class="prod-rating-count">(٤٧ تقييم)</span>
+          </div>
+          <div class="prod-bottom">
+            <span class="prod-price">١٦٠ ر.س</span>
+            <span class="prod-size">EU ٣٨</span>
+          </div>
+          <div class="prod-match good">~ يناسب مقاسك ٩٣٪</div>
+          <div class="prod-actions">
+            <button class="prod-act-btn primary" onclick="addToCart(this)">🛒 أضيفي للسلة</button>
+            <button class="prod-act-btn" onclick="window.location='tryon.html'">✨ جرّبي</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end prod-grid -->
+
+    <!-- Pagination -->
+    <div class="pagination rv rv-d2">
+      <button class="page-btn disabled">‹ السابق</button>
+      <button class="page-btn active">١</button>
+      <button class="page-btn" onclick="changePage(this)">٢</button>
+      <button class="page-btn" onclick="changePage(this)">٣</button>
+      <button class="page-btn" onclick="changePage(this)">٤</button>
+      <button class="page-btn" onclick="changePage(this)">٥</button>
+      <button class="page-btn" onclick="changePage(this)">التالي ›</button>
+    </div>
+
+  </div><!-- end products-area -->
+</div><!-- end page-body -->
+
+<!-- FOOTER -->
+<footer class="ft">
+  <div class="ft-g">
+    <div class="ft-brand">
+      <a class="nv-logo" href="index.html">
+        <div class="nv-logo-icon">S</div>
+        <span class="nv-logo-text">Style<span>Loop</span></span>
+      </a>
+      <p>منصة ذكية لتسوق الملابس المستعملة بثقة. جرّبي الملابس بالذكاء الاصطناعي قبل الشراء.</p>
+      <div class="ft-social">
+        <a href="#" class="ft-social-btn" title="إنستغرام">📷</a>
+        <a href="#" class="ft-social-btn" title="تويتر">🐦</a>
+        <a href="#" class="ft-social-btn" title="تيك توك">🎵</a>
+        <a href="#" class="ft-social-btn" title="يوتيوب">▶️</a>
+      </div>
+    </div>
+    <div class="ft-col">
+      <h4>تسوق</h4>
+      <ul>
+        <li><a href="products.html">جميع المنتجات</a></li>
+        <li><a href="products.html">الوافدة حديثاً</a></li>
+        <li><a href="products.html">التخفيضات</a></li>
+        <li><a href="products.html">الأكثر مبيعًا</a></li>
+        <li><a href="tryon.html">استوديو التجربة</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h4>حسابي</h4>
+      <ul>
+        <li><a href="dashboard.html">لوحة التحكم</a></li>
+        <li><a href="cart.html">سلة التسوق</a></li>
+        <li><a href="wallet.html">محفظتي الذكية</a></li>
+        <li><a href="sell.html">بيع ملابسي</a></li>
+        <li><a href="dashboard.html">طلباتي</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h4>تواصلي معنا</h4>
+      <ul>
+        <li><a href="about.html">من نحن</a></li>
+        <li><a href="contact.html">اتصلي بنا</a></li>
+        <li><a href="#">سياسة الخصوصية</a></li>
+        <li><a href="#">شروط الاستخدام</a></li>
+      </ul>
+      <div class="ft-newsletter" style="margin-top:1rem">
+        <p>اشتركي في نشرتنا لأحدث العروض</p>
+        <div class="ft-nl-form">
+          <input class="ft-nl-input" type="email" placeholder="بريدك الإلكتروني">
+          <button class="ft-nl-btn">اشتركي</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ft-bot">
+    <span>© ٢٠٢٦ StyleLoop — جميع الحقوق محفوظة</span>
+    <div class="ft-pay">
+      <span>وسائل الدفع:</span>
+      <span class="ft-pay-icon">VISA</span>
+      <span class="ft-pay-icon">مدى</span>
+      <span class="ft-pay-icon">Apple Pay</span>
+      <span class="ft-pay-icon">STC Pay</span>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast" style="position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#2A2A2A;color:#fff;padding:.7rem 1.5rem;border-radius:var(--radius);font-size:.85rem;font-weight:600;z-index:9999;opacity:0;transition:opacity .3s var(--ease);pointer-events:none;white-space:nowrap"></div>
+
+<script>
+// =====================
+// REVEAL ON SCROLL
+// =====================
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.rv').forEach(el => revealObserver.observe(el));
+
+// =====================
+// MOBILE MENU
+// =====================
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// =====================
+// SEARCH TOGGLE
+// =====================
+function toggleSearch() {
+  const input = document.getElementById('searchInput');
+  input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  input.focus();
+}
+
+// =====================
+// VIEW TOGGLE (Grid / List)
+// =====================
+function setView(mode) {
+  const grid = document.getElementById('prodGrid');
+  const gridBtn = document.getElementById('gridViewBtn');
+  const listBtn = document.getElementById('listViewBtn');
+  if (mode === 'list') {
+    grid.classList.add('list-view');
+    listBtn.classList.add('active');
+    gridBtn.classList.remove('active');
+  } else {
+    grid.classList.remove('list-view');
+    gridBtn.classList.add('active');
+    listBtn.classList.remove('active');
+  }
+}
+
+// =====================
+// FILTER SECTION TOGGLE
+// =====================
+function toggleFilter(id) {
+  document.getElementById(id).classList.toggle('collapsed');
+}
+
+// =====================
+// CATEGORY FILTER
+// =====================
+let activeCategory = 'all';
+function filterByCategory(btn, cat) {
+  document.querySelectorAll('.cat-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeCategory = cat;
+  filterProducts();
+}
+
+// =====================
+// SIZE FILTER
+// =====================
+let activeSizes = [];
+function toggleSize(btn) {
+  const size = btn.dataset.size;
+  btn.classList.toggle('active');
+  if (activeSizes.includes(size)) {
+    activeSizes = activeSizes.filter(s => s !== size);
+  } else {
+    activeSizes.push(size);
+  }
+  filterProducts();
+}
+
+// =====================
+// COLOR FILTER
+// =====================
+let activeColors = [];
+function toggleColor(btn) {
+  const color = btn.dataset.color;
+  btn.classList.toggle('active');
+  if (activeColors.includes(color)) {
+    activeColors = activeColors.filter(c => c !== color);
+  } else {
+    activeColors.push(color);
+  }
+  filterProducts();
+}
+
+// =====================
+// RATING FILTER
+// =====================
+function toggleRating(item) {
+  item.classList.toggle('active');
+  filterProducts();
+}
+
+// =====================
+// PRICE RANGE
+// =====================
+function updatePriceRange(val) {
+  document.getElementById('priceRangeLabel').textContent = val + ' ر.س';
+  document.getElementById('priceMax').value = val;
+  filterProducts();
+}
+
+// =====================
+// MAIN FILTER FUNCTION
+// =====================
+const MAX_PRICE_DEFAULT = 99999;
+
+function filterProducts() {
+  const searchVal = document.getElementById('searchInput').value.toLowerCase();
+  const maxPrice = parseFloat(document.getElementById('priceMax').value) || MAX_PRICE_DEFAULT;
+  const minPrice = parseFloat(document.getElementById('priceMin').value) || 0;
+  const filterNew = document.getElementById('filterNew').checked;
+  const filterSale = document.getElementById('filterSale').checked;
+  const filterHot = document.getElementById('filterHot').checked;
+  const filterEco = document.getElementById('filterEco').checked;
+
+  const cards = document.querySelectorAll('#prodGrid .prod-card');
+  let visible = 0;
+
+  cards.forEach(card => {
+    const name = (card.dataset.name || '').toLowerCase();
+    const brand = (card.dataset.brand || '').toLowerCase();
+    const cat = card.dataset.cat;
+    const price = parseFloat(card.dataset.price);
+    const size = card.dataset.size;
+    const badge = card.dataset.badge;
+
+    let show = true;
+
+    // Search
+    if (searchVal && !name.includes(searchVal) && !brand.includes(searchVal)) show = false;
+
+    // Category
+    if (activeCategory !== 'all' && cat !== activeCategory) show = false;
+
+    // Price
+    if (price < minPrice || price > maxPrice) show = false;
+
+    // Size
+    if (activeSizes.length > 0 && !activeSizes.includes(size)) show = false;
+
+    // Badge filters
+    if (filterNew && badge !== 'new') show = false;
+    if (filterSale && badge !== 'sale') show = false;
+    if (filterHot && badge !== 'hot') show = false;
+    if (filterEco && badge !== 'eco') show = false;
+
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+
+  // Update count
+  document.getElementById('resultsCount').textContent = 'عرض ' + visible + ' منتج';
+  updateActiveFilterTags();
+}
+
+// =====================
+// SORT PRODUCTS
+// =====================
+function sortProducts() {
+  const sortVal = document.getElementById('sortSelect').value;
+  const grid = document.getElementById('prodGrid');
+  const cards = Array.from(grid.querySelectorAll('.prod-card'));
+
+  cards.sort((a, b) => {
+    const priceA = parseFloat(a.dataset.price);
+    const priceB = parseFloat(b.dataset.price);
+    const ratingA = parseFloat(a.dataset.rating);
+    const ratingB = parseFloat(b.dataset.rating);
+
+    if (sortVal === 'price-asc') return priceA - priceB;
+    if (sortVal === 'price-desc') return priceB - priceA;
+    if (sortVal === 'rating') return ratingB - ratingA;
+    return 0;
+  });
+
+  cards.forEach(card => grid.appendChild(card));
+}
+
+// =====================
+// CLEAR ALL FILTERS
+// =====================
+function clearAllFilters() {
+  activeCategory = 'all';
+  activeSizes = [];
+  activeColors = [];
+
+  document.querySelectorAll('.cat-item').forEach(b => b.classList.remove('active'));
+  document.querySelector('.cat-item[data-cat="all"]').classList.add('active');
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.rating-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('filterNew').checked = false;
+  document.getElementById('filterSale').checked = false;
+  document.getElementById('filterHot').checked = false;
+  document.getElementById('filterEco').checked = false;
+  document.getElementById('searchInput').value = '';
+  document.getElementById('priceMin').value = '';
+  document.getElementById('priceMax').value = '';
+  document.getElementById('priceRange').value = 500;
+  document.getElementById('priceRangeLabel').textContent = '٥٠٠ ر.س';
+
+  filterProducts();
+  showToast('تم مسح جميع الفلاتر ✓');
+}
+
+// =====================
+// ACTIVE FILTER TAGS
+// =====================
+function updateActiveFilterTags() {
+  const container = document.getElementById('activeFilters');
+  container.innerHTML = '';
+
+  if (activeCategory !== 'all') {
+    const btn = document.querySelector('.cat-item[data-cat="'+activeCategory+'"]');
+    const label = btn ? btn.querySelector('.cat-item-label').textContent.trim() : activeCategory;
+    addTag(container, label, () => { filterByCategory(document.querySelector('.cat-item[data-cat="all"]'), 'all'); });
+  }
+
+  activeSizes.forEach(size => {
+    addTag(container, 'مقاس: ' + size, () => {
+      activeSizes = activeSizes.filter(s => s !== size);
+      document.querySelector('.size-btn[data-size="'+size+'"]').classList.remove('active');
+      filterProducts();
+    });
+  });
+}
+
+function addTag(container, label, onRemove) {
+  const tag = document.createElement('div');
+  tag.className = 'active-filter-tag';
+  const removeBtn = document.createElement('button');
+  removeBtn.textContent = '✕';
+  removeBtn.addEventListener('click', () => {
+    tag.remove();
+    onRemove();
+  });
+  tag.appendChild(document.createTextNode(label));
+  tag.appendChild(removeBtn);
+  container.appendChild(tag);
+}
+
+// =====================
+// ADD TO CART
+// =====================
+let cartCount = 3;
+function addToCart(btn) {
+  cartCount++;
+  document.querySelector('.nv-cart-badge').textContent = cartCount;
+  const card = btn.closest('.prod-card');
+  const name = card.dataset.name || 'المنتج';
+  showToast('✓ تمت الإضافة: ' + name);
+  btn.textContent = '✓ في السلة';
+  btn.style.background = 'var(--sage)';
+  btn.style.borderColor = 'var(--sage)';
+  setTimeout(() => {
+    btn.textContent = '🛒 أضيفي للسلة';
+    btn.style.background = '';
+    btn.style.borderColor = '';
+  }, 2500);
+}
+
+// =====================
+// WISHLIST
+// =====================
+function toggleWishlist(btn) {
+  const isActive = btn.textContent === '❤️';
+  btn.textContent = isActive ? '🤍' : '❤️';
+  showToast(isActive ? 'تمت الإزالة من المفضلة' : '❤️ تمت الإضافة للمفضلة');
+}
+
+// =====================
+// PAGINATION
+// =====================
+function changePage(btn) {
+  document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// =====================
+// TOAST
+// =====================
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2500);
+}
+</script>
+
 </body>
 </html>
