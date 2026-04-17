@@ -1,64 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us</title>
+    <title>من نحن - StyleLoop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="assets/js/nav.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8e0e0;
-            color: #333;
+        body { font-family: 'Cairo', sans-serif; background: #FAFAF8; color: #2A2A2A; line-height: 1.8; }
+        .page-wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+        h1 { font-size: 2rem; font-weight: 800; color: #E91E63; margin-bottom: 1.2rem; }
+        h2 { font-size: 1.25rem; font-weight: 700; color: #2A2A2A; margin: 2rem 0 .6rem; border-inline-start: 4px solid #E91E63; padding-inline-start: .7rem; }
+        p { color: #555; font-size: .97rem; margin-bottom: 1rem; }
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .team-card {
+            background: #fff; border-radius: 16px; padding: 1.2rem; text-align: center;
+            border: 1px solid #F0E8EA; box-shadow: 0 2px 10px rgba(0,0,0,.04);
         }
-        header {
-            background-color: #d084b1;
-            padding: 20px;
-            text-align: center;
-        }
-        nav {
-            margin: 20px 0;
-        }
-        nav a {
-            margin: 0 15px;
-            text-decoration: none;
-            color: #fff;
-            font-weight: bold;
-        }
-        section {
-            margin: 20px;
-        }
+        .team-card .avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #F8BBD0, #FCE4EC); display: grid; place-items: center; font-size: 1.5rem; margin: 0 auto .6rem; }
+        .team-card .name { font-weight: 700; font-size: .95rem; }
+        .team-card .role { font-size: .8rem; color: #999; }
     </style>
 </head>
 <body>
-    <header>
-        <h1>About Our Company</h1>
-        <nav>
-            <a href="#story">Our Story</a>
-            <a href="#mission">Mission</a>
-            <a href="#vision">Vision</a>
-            <a href="#team">Team</a>
-        </nav>
-    </header>
-    <section id="story">
-        <h2>Our Story</h2>
-        <p>Founded in [Year], we embarked on a journey to provide innovative solutions that bring people together. Our roots trace back to a small team of passionate individuals who believed in the power of collaboration.</p>
-    </section>
-    <section id="mission">
-        <h2>Mission</h2>
-        <p>Our mission is to empower individuals and organizations by providing tools that foster creativity and connection with a focus on user-friendly design.</p>
-    </section>
-    <section id="vision">
-        <h2>Vision</h2>
-        <p>We envision a world where technology is seamlessly integrated into daily life, enhancing productivity while maintaining simplicity.</p>
-    </section>
-    <section id="team">
-        <h2>Team Members</h2>
-        <ul>
-            <li>Jane Doe - CEO</li>
-            <li>John Smith - CTO</li>
-            <li>Mary Johnson - CFO</li>
-            <li>Michael Brown - Lead Developer</li>
-        </ul>
-    </section>
+    <!-- shared nav injected by assets/js/nav.js -->
+    <div class="page-wrap">
+        <h1>🌟 من نحن</h1>
+        <p>StyleLoop منصة ذكية لتسوق الملابس المستعملة والجديدة بثقة. نجمع الذكاء الاصطناعي مع شغف الموضة لنمنحك تجربة تسوق لا مثيل لها.</p>
+
+        <h2>قصتنا</h2>
+        <p>تأسست StyleLoop بهدف حل مشكلة يواجهها كل متسوق: كيف تختارين الملابس المناسبة دون تجربتها؟ بفضل تقنية AI Try-On، أصبح بإمكانك رؤية نفسك بأي قطعة قبل الشراء.</p>
+
+        <h2>رسالتنا</h2>
+        <p>تمكين كل شخص من التسوق بذكاء — تجربي الملابس رقمياً، بيعي ما لا تحتاجينه، واكتشفي قطعاً جديدة تناسب مقاساتك تماماً.</p>
+
+        <h2>رؤيتنا</h2>
+        <p>عالم تُجرَّب فيه كل قطعة ملابس قبل شرائها — بدون إرجاع، بدون إضاعة وقت، وبدون خيبة أمل.</p>
+
+        <h2>فريقنا</h2>
+        <div class="team-grid">
+            <div class="team-card"><div class="avatar">👩</div><div class="name">Jane Doe</div><div class="role">CEO</div></div>
+            <div class="team-card"><div class="avatar">👨</div><div class="name">John Smith</div><div class="role">CTO</div></div>
+            <div class="team-card"><div class="avatar">👩</div><div class="name">Mary Johnson</div><div class="role">CFO</div></div>
+            <div class="team-card"><div class="avatar">👨</div><div class="name">Michael Brown</div><div class="role">Lead Dev</div></div>
+        </div>
+    </div>
 </body>
 </html>

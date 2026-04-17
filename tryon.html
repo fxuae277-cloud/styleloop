@@ -1,54 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Try-On Studio</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>استوديو التجربة - StyleLoop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="assets/js/nav.js"></script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: #FAFAF8; color: #2A2A2A; line-height: 1.7; }
+        .page-wrap { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+        h1 { font-size: 2rem; font-weight: 800; color: #E91E63; margin-bottom: 1.5rem; }
+        h2 { font-size: 1.2rem; font-weight: 700; margin: 1.5rem 0 .7rem; color: #2A2A2A; }
+        h3 { font-size: 1rem; font-weight: 600; margin: 1rem 0 .4rem; color: #666; }
+        label { font-weight: 600; }
+        input[type="file"] { margin-top: .4rem; display: block; }
+        .clothing-selector button {
+            margin: .25rem;
+            padding: .4rem .9rem;
+            border: 1.5px solid #F8BBD0;
+            border-radius: 20px;
+            background: #FFF0F5;
+            color: #E91E63;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .3s;
+        }
+        .clothing-selector button:hover { background: #E91E63; color: #fff; border-color: #E91E63; }
+        #try-on-button {
+            margin-top: 1.5rem;
+            padding: .7rem 2rem;
+            background: linear-gradient(135deg, #E91E63, #F06292);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .3s;
+            box-shadow: 0 4px 15px rgba(233,30,99,.25);
+        }
+        #try-on-button:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(233,30,99,.35); }
+        #results { margin-top: 1.5rem; min-height: 60px; }
+    </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="products.html">Products</a></li>
-                <li><a href="tryon.html">Try-On</a></li>
-                <li><a href="wallet.html">Wallet</a></li>
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="sell.html">Sell</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <h1>Welcome to the AI Try-On Studio</h1>
+    <!-- shared nav injected by assets/js/nav.js -->
+    <div class="page-wrap">
+        <h1>✨ استوديو التجربة بالذكاء الاصطناعي</h1>
         <div>
-            <label for="photo-upload">Upload your photo: </label>
+            <label for="photo-upload">ارفعي صورتك:</label>
             <input type="file" id="photo-upload" accept="image/*">
         </div>
-        <h2>Select Clothing Items</h2>
+        <h2>اختاري قطعة ملابس</h2>
         <div class="clothing-selector">
-            <h3>Shirts</h3>
-            <button>Shirt 1</button>
-            <button>Shirt 2</button>
-            <button>Shirt 3</button>
-            <h3>Ties</h3>
-            <button>Tie 1</button>
-            <button>Tie 2</button>
-            <h3>Dresses</h3>
-            <button>Dress 1</button>
-            <button>Dress 2</button>
-            <h3>Jeans</h3>
-            <button>Jeans 1</button>
-            <button>Jeans 2</button>
+            <h3>قمصان</h3>
+            <button>قميص 1</button>
+            <button>قميص 2</button>
+            <button>قميص 3</button>
+            <h3>فساتين</h3>
+            <button>فستان 1</button>
+            <button>فستان 2</button>
+            <h3>جينز</h3>
+            <button>جينز 1</button>
+            <button>جينز 2</button>
         </div>
-        <button id="try-on-button">Try On</button>
+        <button id="try-on-button">✨ جرّبي الآن</button>
         <div id="results"></div>
-    </main>
-    <footer>
-        <p>&copy; 2026 AI Try-On Studio. All rights reserved.</p>
-    </footer>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@
 <title>StyleLoop — جرّبي الملابس قبل الشراء</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="assets/js/nav.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -381,23 +382,7 @@ body{font-family:var(--fc);background:var(--bg);color:var(--t1);line-height:1.8;
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nv" id="nv">
-  <a class="nv-logo" onclick="go('hero')"><div class="nv-logo-icon">S</div><span class="nv-logo-text">Style<span>Loop</span></span></a>
-  <ul class="nv-links">
-    <li><a href="#products">المنتجات</a></li>
-    <li><a href="#tryon">جرّبي الآن</a></li>
-    <li><a href="#sell">بيعي ملابسك</a></li>
-    <li><a href="#register">التسجيل</a></li>
-    <li><a href="#dash">حسابي</a></li>
-  </ul>
-  <div class="nv-actions">
-    <button class="nv-cart" onclick="go('dash')">🛒<span class="nv-cart-badge">3</span></button>
-    <button class="btn-p" onclick="go('register')">سجّلي الآن</button>
-    <div class="nv-user">س</div>
-  </div>
-  <button class="nv-burger"><span></span><span></span><span></span></button>
-</nav>
+<!-- shared nav injected by assets/js/nav.js -->
 
 <!-- HERO -->
 <section class="hero" id="hero">
@@ -406,9 +391,9 @@ body{font-family:var(--fc);background:var(--bg);color:var(--t1);line-height:1.8;
     <h1 class="hero-h1"><em>جرّبي</em> ملابسك<span class="hl">بالذكاء الاصطناعي قبل لا تشترين</span></h1>
     <p class="hero-p">StyleLoop — منصة ذكية تخلّيكي تشوفين نفسك بالملابس قبل ما تدفعين. سجّلي مقاساتك، جرّبي أي قطعة، واشتري بثقة.</p>
     <div class="hero-acts">
-      <button class="btn-p" onclick="go('tryon')">✨ جرّبي الآن مجانًا</button>
-      <button class="btn-s" onclick="go('products')">تصفحي المنتجات</button>
-      <button class="btn-g" onclick="go('sell')">💰 بيعي ملابسك</button>
+      <button class="btn-p" onclick="window.location='tryon.html'">✨ جرّبي الآن مجانًا</button>
+      <button class="btn-s" onclick="window.location='products.html'">تصفحي المنتجات</button>
+      <button class="btn-g" onclick="window.location='sell.html'">💰 بيعي ملابسك</button>
     </div>
     <div class="hero-features">
       <div class="hf"><div class="hf-icon">🤖</div><div class="hf-text"><strong>AI Try-On</strong>جرّبي أي قطعة عليك</div></div>
@@ -638,17 +623,17 @@ body{font-family:var(--fc);background:var(--bg);color:var(--t1);line-height:1.8;
 <!-- FOOTER -->
 <footer class="ft">
   <div class="ft-g">
-    <div class="ft-brand"><a class="nv-logo"><div class="nv-logo-icon">S</div><span class="nv-logo-text">Style<span>Loop</span></span></a><p>جرّبي الملابس عليك بالذكاء الاصطناعي قبل ما تشترون. بيعي، استبدلي، واشتري بثقة.</p></div>
-    <div class="ft-col"><h4>StyleLoop</h4><ul><li><a href="#">المنتجات</a></li><li><a href="#">جرّبي الآن</a></li><li><a href="#">بيعي ملابسك</a></li><li><a href="#">الأسعار</a></li></ul></div>
-    <div class="ft-col"><h4>حسابي</h4><ul><li><a href="#">التسجيل</a></li><li><a href="#">المحفظة</a></li><li><a href="#">مقاساتي</a></li><li><a href="#">الطلبات</a></li></ul></div>
-    <div class="ft-col"><h4>الدعم</h4><ul><li><a href="#">مركز المساعدة</a></li><li><a href="#">الشروط</a></li><li><a href="#">الخصوصية</a></li><li><a href="#">تواصلي</a></li></ul></div>
+    <div class="ft-brand"><a class="nv-logo" href="index.html"><div class="nv-logo-icon">S</div><span class="nv-logo-text">Style<span>Loop</span></span></a><p>جرّبي الملابس عليك بالذكاء الاصطناعي قبل ما تشترون. بيعي، استبدلي، واشتري بثقة.</p></div>
+    <div class="ft-col"><h4>StyleLoop</h4><ul><li><a href="products.html">المنتجات</a></li><li><a href="tryon.html">جرّبي الآن</a></li><li><a href="sell.html">بيعي ملابسك</a></li><li><a href="cart.html">السلة</a></li></ul></div>
+    <div class="ft-col"><h4>حسابي</h4><ul><li><a href="dashboard.html">لوحة التحكم</a></li><li><a href="wallet.html">المحفظة</a></li><li><a href="dashboard.html">مقاساتي</a></li><li><a href="dashboard.html">الطلبات</a></li></ul></div>
+    <div class="ft-col"><h4>الدعم</h4><ul><li><a href="about.html">من نحن</a></li><li><a href="contact.html">تواصلي</a></li><li><a href="#">الشروط</a></li><li><a href="#">الخصوصية</a></li></ul></div>
   </div>
   <div class="ft-bot"><span>© ٢٠٢٦ StyleLoop. جميع الحقوق محفوظة.</span><span>صُنع بـ 💗 لمستقبل أجمل</span></div>
 </footer>
 
 <script>
-const nv=document.getElementById('nv');
-window.addEventListener('scroll',()=>{nv.classList.toggle('scrolled',window.scrollY>40)});
+const nv=document.getElementById('sl-nav');
+window.addEventListener('scroll',()=>{if(nv)nv.classList.toggle('scrolled',window.scrollY>40)});
 const ro=new IntersectionObserver(e=>{e.forEach(n=>{if(n.isIntersecting)n.target.classList.add('vis')})},{threshold:.08});
 document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
 function go(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'})}

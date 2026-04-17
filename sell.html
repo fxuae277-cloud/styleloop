@@ -1,46 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sell Your Clothes</title>
+    <title>بيع ملابسك - StyleLoop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="assets/js/nav.js"></script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: #FAFAF8; color: #2A2A2A; line-height: 1.7; }
+        .page-wrap { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+        h1 { font-size: 2rem; font-weight: 800; color: #E91E63; margin-bottom: 1.5rem; }
+        label { display: block; font-weight: 600; margin-bottom: .3rem; margin-top: 1rem; }
+        input[type="text"], input[type="file"], select {
+            width: 100%;
+            padding: .6rem 1rem;
+            border: 1.5px solid #F8BBD0;
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: .95rem;
+            outline: none;
+            transition: border-color .3s;
+            background: #fff;
+        }
+        input:focus, select:focus { border-color: #E91E63; }
+        button[type="submit"] {
+            margin-top: 1.5rem;
+            padding: .75rem 2rem;
+            background: linear-gradient(135deg, #E91E63, #F06292);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .3s;
+            box-shadow: 0 4px 15px rgba(233,30,99,.25);
+        }
+        button[type="submit"]:hover { transform: translateY(-2px); }
+    </style>
 </head>
 <body>
-    <h1>Sell Your Clothes</h1>
-    <form id="sell-form">
-        <label for="brand">Brand:</label><br>
-        <input type="text" id="brand" name="brand" required><br><br>
+    <!-- shared nav injected by assets/js/nav.js -->
+    <div class="page-wrap">
+        <h1>💰 بيع ملابسك</h1>
+        <form id="sell-form">
+            <label for="brand">الماركة:</label>
+            <input type="text" id="brand" name="brand" required>
 
-        <label for="size">Size:</label><br>
-        <input type="text" id="size" name="size" required><br><br>
+            <label for="size">المقاس:</label>
+            <input type="text" id="size" name="size" required>
 
-        <label for="condition">Condition:</label><br>
-        <select id="condition" name="condition" required>
-            <option value="new">New</option>
-            <option value="like new">Like New</option>
-            <option value="used">Used</option>
-            <option value="worn">Worn</option>
-        </select><br><br>
+            <label for="condition">الحالة:</label>
+            <select id="condition" name="condition" required>
+                <option value="new">جديد</option>
+                <option value="like new">كالجديد</option>
+                <option value="used">مستعمل</option>
+                <option value="worn">بالٍ</option>
+            </select>
 
-        <label for="photos">Upload Photos:</label><br>
-        <input type="file" id="photos" name="photos" accept="image/*" multiple required><br><br>
+            <label for="photos">ارفعي الصور:</label>
+            <input type="file" id="photos" name="photos" accept="image/*" multiple required>
 
-        <label for="price-estimate">AI Price Estimate:</label><br>
-        <input type="text" id="price-estimate" name="price-estimate" readonly><br><br>
-        <button type="submit">Get Price Estimate</button>
-    </form>
+            <label for="price-estimate">تقدير السعر بالذكاء الاصطناعي:</label>
+            <input type="text" id="price-estimate" name="price-estimate" readonly placeholder="سيظهر بعد التقديم">
 
+            <button type="submit">احصلي على تقدير السعر</button>
+        </form>
+    </div>
     <script>
-        // Placeholder for AI price estimation logic
         document.getElementById('sell-form').onsubmit = function(event) {
             event.preventDefault();
-            // Here the AI logic would estimate price
-            const brand = document.getElementById('brand').value;
-            const size = document.getElementById('size').value;
-            const condition = document.getElementById('condition').value;
-            // Simple mock price estimation
-            const estimatedPrice = 50; // Should be computed by your AI
-            document.getElementById('price-estimate').value = '$' + estimatedPrice;
+            const estimatedPrice = 50;
+            document.getElementById('price-estimate').value = estimatedPrice + ' ر.س';
         };
     </script>
 </body>
