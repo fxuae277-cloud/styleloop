@@ -6,6 +6,7 @@
 <title>المنتجات - StyleLoop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="assets/js/nav.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -295,41 +296,7 @@ body{font-family:var(--fc);background:var(--bg2);color:var(--t1);line-height:1.8
 </head>
 <body>
 
-<!-- NAVIGATION -->
-<nav class="nv" id="nv">
-  <a class="nv-logo" href="index.html">
-    <div class="nv-logo-icon">S</div>
-    <span class="nv-logo-text">Style<span>Loop</span></span>
-  </a>
-  <ul class="nv-links">
-    <li><a href="index.html">الرئيسية</a></li>
-    <li><a href="products.html" class="active">المنتجات</a></li>
-    <li><a href="tryon.html">جرّبي الآن</a></li>
-    <li><a href="sell.html">بيعي ملابسك</a></li>
-    <li><a href="about.html">من نحن</a></li>
-    <li><a href="contact.html">تواصل معنا</a></li>
-  </ul>
-  <div class="nv-actions">
-    <button class="nv-search-btn" onclick="toggleSearch()" title="بحث">🔍</button>
-    <button class="nv-cart" onclick="window.location='cart.html'">🛒<span class="nv-cart-badge">3</span></button>
-    <a class="nv-user" href="dashboard.html" title="حسابي">س</a>
-    <button class="btn-p" onclick="window.location='tryon.html'" style="padding:.5rem 1.2rem;font-size:.8rem">✨ جرّبي الآن</button>
-  </div>
-  <button class="nv-burger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
-</nav>
-
-<!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobileMenu">
-  <button class="mobile-menu-close" onclick="toggleMenu()">✕</button>
-  <a href="index.html" onclick="toggleMenu()">الرئيسية</a>
-  <a href="products.html" onclick="toggleMenu()">المنتجات</a>
-  <a href="tryon.html" onclick="toggleMenu()">جرّبي الآن</a>
-  <a href="sell.html" onclick="toggleMenu()">بيعي ملابسك</a>
-  <a href="wallet.html" onclick="toggleMenu()">محفظتي</a>
-  <a href="dashboard.html" onclick="toggleMenu()">حسابي</a>
-  <a href="about.html" onclick="toggleMenu()">من نحن</a>
-  <a href="contact.html" onclick="toggleMenu()">تواصل معنا</a>
-</div>
+<!-- shared nav injected by assets/js/nav.js -->
 
 <!-- PAGE HEADER -->
 <div class="page-header">
@@ -983,10 +950,10 @@ const revealObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll('.rv').forEach(el => revealObserver.observe(el));
 
 // =====================
-// MOBILE MENU
+// MOBILE MENU (delegated to shared nav.js)
 // =====================
 function toggleMenu() {
-  document.getElementById('mobileMenu').classList.toggle('open');
+  if (typeof slToggleMenu === 'function') slToggleMenu();
 }
 
 // =====================
