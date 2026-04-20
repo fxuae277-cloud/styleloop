@@ -1,55 +1,645 @@
 <!DOCTYPE html>
-<html lang="en">
+<!--
+  admin-products.html — StyleLoop Admin Panel Products Management
+  Product grid/table views with add/edit modal, bulk actions, and view toggle.
+  Depends on: admin-styles.css, admin-common.js
+-->
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Management</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        .product-card {
-            background: white;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .button-danger {
-            background-color: #dc3545;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="إدارة المنتجات — StyleLoop Admin" />
+
+  <title>المنتجات — لوحة تحكم StyleLoop</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="admin-styles.css" />
+
+  <style>
+    /* ── Products page-specific styles ──────────────────────────── */
+    .products__toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+    .products__toolbar .form-control { flex: 1; min-width: 180px; max-width: 300px; }
+    .products__toolbar .form-select  { width: 160px; }
+
+    .products__stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: var(--space-5);
+    }
+    .products__stat {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      text-align: center;
+    }
+    .products__stat-value { font-size: var(--font-size-2xl); font-weight: 700; color: var(--color-text-primary); }
+    .products__stat-label { font-size: var(--font-size-sm); color: var(--color-text-muted); margin-top: var(--space-1); }
+
+    /* View toggle */
+    .view-toggle { display: flex; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+    .view-toggle__btn {
+      padding: var(--space-2) var(--space-3);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      transition: background var(--transition-fast), color var(--transition-fast);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+    }
+    .view-toggle__btn--active { background: var(--color-primary); color: #fff; }
+
+    /* Bulk actions bar */
+    .products__bulk-bar {
+      display: none;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-primary-alpha-10);
+      border: 1px solid var(--color-primary-alpha-20);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-3);
+    }
+    .products__bulk-bar--visible { display: flex; }
+
+    /* Product grid cards */
+    .products__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: var(--space-4);
+    }
+    @media (max-width: 480px) {
+      .products__grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .product-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+    }
+    .product-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .product-card__select-wrap {
+      position: absolute;
+      top: var(--space-2);
+      right: var(--space-2);
+    }
+    .product-card__img-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+    .product-card__body { padding: var(--space-3); }
+    .product-card__name { font-weight: 700; font-size: var(--font-size-sm); margin: 0 0 var(--space-1); color: var(--color-text-primary); }
+    .product-card__cat  { font-size: var(--font-size-xs); color: var(--color-text-muted); margin-bottom: var(--space-2); }
+    .product-card__price { font-size: var(--font-size-base); font-weight: 700; color: var(--color-primary); }
+
+    /* Stock level bar */
+    .stock-bar { height: 4px; border-radius: 2px; background: var(--color-border); margin: var(--space-2) 0; overflow: hidden; }
+    .stock-bar__fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
+
+    /* Toggle switch */
+    .toggle-switch { position: relative; display: inline-flex; align-items: center; cursor: pointer; gap: var(--space-2); }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-switch__track {
+      width: 36px; height: 20px;
+      background: var(--color-border);
+      border-radius: 10px;
+      transition: background var(--transition-fast);
+      flex-shrink: 0;
+    }
+    .toggle-switch input:checked ~ .toggle-switch__track { background: var(--color-success); }
+    .toggle-switch__thumb {
+      position: absolute;
+      left: 2px; top: 2px;
+      width: 16px; height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: left var(--transition-fast);
+    }
+    .toggle-switch input:checked ~ .toggle-switch__track .toggle-switch__thumb { left: 18px; }
+    .toggle-switch__label { font-size: var(--font-size-xs); color: var(--color-text-muted); }
+
+    .product-card__actions { display: flex; gap: var(--space-1); padding: 0 var(--space-3) var(--space-3); }
+
+    /* Form */
+    .form-error { display: none; color: var(--color-danger); font-size: var(--font-size-xs); margin-top: 4px; }
+    .form-group--error .form-control,
+    .form-group--error .form-select { border-color: var(--color-danger); }
+    .form-group--error .form-error { display: block; }
+  </style>
 </head>
 <body>
-    <h1>Product Management System</h1>
-    <button class="button">Add Product</button>
-    <button class="button">Export</button>
-    <div class="product-grid">
-        <!-- Sample product entries -->
-        ${Array.from({length: 10}, (_, i) => `
-        <div class="product-card">
-            <h2>Product ${i + 1}</h2>
-            <p>Price: $${(i + 1) * 10}.00</p>
-            <p>Stock: ${i + 1} units</p>
-            <button class="button">Edit</button>
-            <button class="button button-danger">Delete</button>
-        </div>`).join('')}
+  <div class="admin-layout" id="adminLayout">
+
+    <aside class="sidebar" id="sidebar" aria-label="القائمة الجانبية">
+      <a href="admin-dashboard.html" class="sidebar__logo">
+        <span class="sidebar__logo-img" style="width:36px;height:36px;background:linear-gradient(135deg,#E91E63,#ad1457);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-family:Poppins,sans-serif;font-size:1rem;flex-shrink:0;">SL</span>
+        <span class="sidebar__logo-text">StyleLoop</span>
+        <span class="sidebar__logo-badge">Admin</span>
+      </a>
+      <nav class="sidebar__nav" aria-label="التنقل الرئيسي">
+        <p class="sidebar__section-label">الرئيسية</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-dashboard.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🏠</span>
+              <span class="sidebar__link-label">لوحة التحكم</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-pos.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🛒</span>
+              <span class="sidebar__link-label">نقطة البيع</span>
+            </a>
+          </li>
+        </ul>
+        <p class="sidebar__section-label">الإدارة</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-orders.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">📋</span>
+              <span class="sidebar__link-label">الطلبات</span>
+              <span class="sidebar__link-badge">12</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-customers.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">👥</span>
+              <span class="sidebar__link-label">العملاء</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-products.html" class="sidebar__link sidebar__link--active" aria-current="page">
+              <span class="sidebar__link-icon" aria-hidden="true">👗</span>
+              <span class="sidebar__link-label">المنتجات</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-branches.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🏪</span>
+              <span class="sidebar__link-label">الفروع</span>
+            </a>
+          </li>
+        </ul>
+        <p class="sidebar__section-label">النظام</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-login.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🚪</span>
+              <span class="sidebar__link-label">تسجيل الخروج</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <button class="sidebar__toggle-btn" id="sidebarToggleBtn" aria-label="طي الشريط الجانبي">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11 8L6 3l-1 1 4 4-4 4 1 1z"/></svg>
+      </button>
+    </aside>
+
+    <header class="header" role="banner">
+      <div class="header__brand">
+        <button class="header__hamburger" id="hamburgerBtn" aria-label="فتح القائمة" aria-expanded="false" aria-controls="sidebar">
+          <span class="header__hamburger-line"></span>
+          <span class="header__hamburger-line"></span>
+          <span class="header__hamburger-line"></span>
+        </button>
+        <span class="header__page-title">المنتجات</span>
+      </div>
+      <div class="header__actions">
+        <button class="header__action-btn" id="themeToggleBtn" aria-label="تبديل الوضع المظلم" data-action="toggle-theme">
+          <svg class="header__theme-icon header__theme-icon--dark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="header__theme-icon header__theme-icon--light" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <div class="header__user-menu" id="userMenu">
+          <button class="header__user-btn" aria-haspopup="true" aria-expanded="false" aria-controls="userDropdown">
+            <span class="header__avatar" aria-hidden="true">أ</span>
+            <span class="header__user-name">المدير</span>
+          </button>
+          <ul class="header__dropdown" id="userDropdown" role="menu">
+            <li role="menuitem"><a href="admin-login.html">تسجيل الخروج</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <main class="main-content" id="mainContent">
+
+      <!-- Page header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-3);margin-bottom:var(--space-6);">
+        <div>
+          <h1 style="font-size:var(--font-size-2xl);font-weight:700;color:var(--color-text-primary);margin:0;">المنتجات</h1>
+          <nav style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--font-size-sm);color:var(--color-text-muted);margin-top:var(--space-1);" aria-label="مسار التنقل">
+            <a href="admin-dashboard.html" style="color:var(--color-primary);text-decoration:none;">الرئيسية</a>
+            <span aria-hidden="true">›</span>
+            <span aria-current="page">المنتجات</span>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="products__toolbar">
+        <input type="search" class="form-control" id="productSearch" placeholder="ابحث عن منتج..." aria-label="البحث عن منتج" oninput="filterProducts(this.value)" />
+        <select class="form-select" id="categoryFilter" aria-label="فلترة حسب الفئة" onchange="filterProducts(document.getElementById('productSearch').value)">
+          <option value="">كل الفئات</option>
+          <option>فساتين</option>
+          <option>بلوزات</option>
+          <option>بنطلونات</option>
+          <option>إكسسوار</option>
+          <option>عبايات</option>
+        </select>
+        <div class="view-toggle" role="group" aria-label="طريقة العرض">
+          <button class="view-toggle__btn view-toggle__btn--active" id="gridViewBtn" onclick="setView('grid')" title="عرض شبكي" aria-pressed="true" aria-label="عرض شبكي">⊞</button>
+          <button class="view-toggle__btn" id="tableViewBtn" onclick="setView('table')" title="عرض جدول" aria-pressed="false" aria-label="عرض جدول">☰</button>
+        </div>
+        <div style="margin-right:auto;display:flex;gap:var(--space-2);">
+          <button class="btn btn--secondary btn--sm" onclick="exportProducts()">📥 تصدير</button>
+          <button class="btn btn--primary" onclick="openAddModal()">+ إضافة منتج</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="products__stats" role="region" aria-label="إحصائيات المنتجات">
+        <div class="products__stat"><div class="products__stat-value">386</div><div class="products__stat-label">إجمالي المنتجات</div></div>
+        <div class="products__stat"><div class="products__stat-value" style="color:var(--color-success);">342</div><div class="products__stat-label">نشط</div></div>
+        <div class="products__stat"><div class="products__stat-value" style="color:var(--color-danger);">8</div><div class="products__stat-label">نفذ المخزون</div></div>
+        <div class="products__stat"><div class="products__stat-value" style="color:var(--color-text-muted);">36</div><div class="products__stat-label">معطل</div></div>
+      </div>
+
+      <!-- Bulk actions bar -->
+      <div class="products__bulk-bar" id="bulkBar" role="toolbar" aria-label="إجراءات مجمعة">
+        <span style="font-weight:600;color:var(--color-primary);font-size:var(--font-size-sm);" id="bulkCount"></span>
+        <button class="btn btn--secondary btn--sm" onclick="bulkActivate()">✔ تفعيل</button>
+        <button class="btn btn--secondary btn--sm" onclick="bulkDeactivate()">⊘ تعطيل</button>
+        <button class="btn btn--danger btn--sm" onclick="bulkDelete()">🗑 حذف</button>
+        <button class="btn btn--ghost btn--sm" onclick="clearBulkSelection()">إلغاء التحديد</button>
+      </div>
+
+      <!-- Grid view -->
+      <div id="gridView">
+        <div class="products__grid" id="productsGrid" aria-label="شبكة المنتجات" role="list"></div>
+      </div>
+
+      <!-- Table view (hidden by default) -->
+      <div id="tableView" style="display:none;">
+        <div class="card">
+          <div class="card__header">
+            <h2 class="card__title">قائمة المنتجات</h2>
+            <span id="productTableCount" style="font-size:var(--font-size-sm);color:var(--color-text-muted);"></span>
+          </div>
+          <div class="card__body" style="padding:0;">
+            <div style="overflow-x:auto;">
+              <table class="data-table__table" aria-label="جدول المنتجات">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width:40px;"><input type="checkbox" id="selectAllTable" aria-label="تحديد الكل" onchange="toggleSelectAllTable(this)" /></th>
+                    <th scope="col">المنتج</th>
+                    <th scope="col">الفئة</th>
+                    <th scope="col">السعر</th>
+                    <th scope="col">المخزون</th>
+                    <th scope="col">الحالة</th>
+                    <th scope="col">الإجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="productsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       ADD / EDIT PRODUCT MODAL
+  ═══════════════════════════════════════════ -->
+  <div class="modal" id="productFormModal" role="dialog" aria-modal="true" aria-labelledby="productFormTitle">
+    <div class="modal__backdrop" onclick="closeFormModal()"></div>
+    <div class="modal__box" style="max-width:600px;width:92%;">
+      <div class="modal__header">
+        <h3 class="modal__title" id="productFormTitle">إضافة منتج جديد</h3>
+        <button class="modal__close" onclick="closeFormModal()" aria-label="إغلاق النافذة">✕</button>
+      </div>
+      <div class="modal__body">
+        <form id="productForm" novalidate>
+          <input type="hidden" id="editProductId" />
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group" id="fgProdName" style="grid-column:1/-1;">
+              <label class="form-label" for="inputProdName">اسم المنتج <span style="color:var(--color-danger);" aria-hidden="true">*</span></label>
+              <input type="text" class="form-control" id="inputProdName" placeholder="فستان سهرة ذهبي" required />
+              <span class="form-error" id="errProdName">اسم المنتج مطلوب</span>
+            </div>
+            <div class="form-group" id="fgProdCat">
+              <label class="form-label" for="inputProdCat">الفئة <span style="color:var(--color-danger);" aria-hidden="true">*</span></label>
+              <select class="form-select" id="inputProdCat" required>
+                <option value="">اختر الفئة</option>
+                <option>فساتين</option>
+                <option>بلوزات</option>
+                <option>بنطلونات</option>
+                <option>إكسسوار</option>
+                <option>عبايات</option>
+              </select>
+              <span class="form-error" id="errProdCat">الفئة مطلوبة</span>
+            </div>
+            <div class="form-group" id="fgProdPrice">
+              <label class="form-label" for="inputProdPrice">السعر (ر.س) <span style="color:var(--color-danger);" aria-hidden="true">*</span></label>
+              <input type="number" class="form-control" id="inputProdPrice" placeholder="299" min="1" required />
+              <span class="form-error" id="errProdPrice">سعر صالح مطلوب</span>
+            </div>
+            <div class="form-group" id="fgProdStock">
+              <label class="form-label" for="inputProdStock">الكمية في المخزون <span style="color:var(--color-danger);" aria-hidden="true">*</span></label>
+              <input type="number" class="form-control" id="inputProdStock" placeholder="20" min="0" required />
+              <span class="form-error" id="errProdStock">الكمية مطلوبة</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="inputProdDesc">الوصف</label>
+            <textarea class="form-control" id="inputProdDesc" rows="3" placeholder="وصف مختصر للمنتج..." style="resize:vertical;"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="inputProdStatus">الحالة</label>
+            <select class="form-select" id="inputProdStatus">
+              <option value="نشط">نشط</option>
+              <option value="معطل">معطل</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--ghost" onclick="closeFormModal()">إلغاء</button>
+        <button class="btn btn--primary" onclick="saveProduct()">حفظ المنتج</button>
+      </div>
     </div>
+  </div>
+
+  <script src="admin-common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', AdminApp.initAdminPage);
+
+    // ─── Data ─────────────────────────────────────────────────────
+    const PRODUCTS_DATA = [
+      { id: 1,  name: 'فستان سهرة ذهبي',          cat: 'فساتين',    price: 650,  stock: 8,  status: 'نشط',   emoji: '👗', bg: '#FFF8E1', desc: 'فستان سهرة أنيق مزين بالترتر الذهبي' },
+      { id: 2,  name: 'بلوزة حرير وردية',          cat: 'بلوزات',    price: 220,  stock: 15, status: 'نشط',   emoji: '👚', bg: '#FCE4EC', desc: 'بلوزة حرير فاخرة بقصة عصرية' },
+      { id: 3,  name: 'بنطلون كلاسيك أسود',        cat: 'بنطلونات',  price: 180,  stock: 20, status: 'نشط',   emoji: '👖', bg: '#ECEFF1', desc: 'بنطلون كلاسيك مريح للعمل والإطلالات اليومية' },
+      { id: 4,  name: 'فستان كاجوال أزرق',         cat: 'فساتين',    price: 380,  stock: 5,  status: 'نشط',   emoji: '👗', bg: '#E3F2FD', desc: 'فستان كاجوال خفيف مناسب للإطلالات اليومية' },
+      { id: 5,  name: 'حقيبة يد جلدية بيج',        cat: 'إكسسوار',   price: 420,  stock: 12, status: 'نشط',   emoji: '👜', bg: '#EFEBE9', desc: 'حقيبة جلدية أصلية بتصميم أنيق' },
+      { id: 6,  name: 'بلوزة دانتيل بيضاء',        cat: 'بلوزات',    price: 195,  stock: 0,  status: 'نشط',   emoji: '👚', bg: '#F3E5F5', desc: 'بلوزة من الدانتيل الناعم تناسب المناسبات' },
+      { id: 7,  name: 'بنطلون جينز واسع',          cat: 'بنطلونات',  price: 240,  stock: 9,  status: 'نشط',   emoji: '👖', bg: '#E8EAF6', desc: 'جينز واسع بقصة عصرية ومريحة' },
+      { id: 8,  name: 'عباية مطرزة فاخرة',         cat: 'عبايات',    price: 890,  stock: 3,  status: 'نشط',   emoji: '🥻', bg: '#F9FBE7', desc: 'عباية مطرزة يدوياً بخيوط ذهبية فاخرة' },
+      { id: 9,  name: 'حذاء كعب عالٍ ذهبي',       cat: 'إكسسوار',   price: 350,  stock: 7,  status: 'نشط',   emoji: '👠', bg: '#FFFDE7', desc: 'حذاء بكعب عالٍ مناسب للحفلات' },
+      { id: 10, name: 'شال كشمير ناعم',            cat: 'إكسسوار',   price: 160,  stock: 25, status: 'نشط',   emoji: '🧣', bg: '#FBE9E7', desc: 'شال من الكشمير الفاخر لفصل الشتاء' },
+      { id: 11, name: 'فستان ماكسي مورد',          cat: 'فساتين',    price: 510,  stock: 6,  status: 'نشط',   emoji: '👗', bg: '#E8F5E9', desc: 'فستان ماكسي بنقشة زهرية رومانسية' },
+      { id: 12, name: 'بلوزة مخطط صيفية',          cat: 'بلوزات',    price: 140,  stock: 0,  status: 'معطل',  emoji: '👚', bg: '#E1F5FE', desc: 'بلوزة صيفية خفيفة بخطوط ملونة' },
+    ];
+
+    let filteredProds = [...PRODUCTS_DATA];
+    let selectedProdIds = new Set();
+    let currentView = 'grid';
+    let nextProdId = PRODUCTS_DATA.length + 1;
+
+    const CAT_COLORS = {
+      'فساتين':    'badge--info',
+      'بلوزات':    'badge--success',
+      'بنطلونات':  'badge--neutral',
+      'إكسسوار':   'badge--warning',
+      'عبايات':    'badge--info',
+    };
+
+    // ─── Rendering ────────────────────────────────────────────────
+    function renderGrid(data) {
+      const grid = document.getElementById('productsGrid');
+      if (data.length === 0) {
+        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--color-text-muted);padding:var(--space-8) 0;">لا توجد منتجات مطابقة</p>';
+        return;
+      }
+      grid.innerHTML = data.map(p => {
+        const stockPct = Math.min(100, (p.stock / 30) * 100);
+        const stockColor = p.stock === 0 ? 'var(--color-danger)' : p.stock < 5 ? 'var(--color-warning)' : 'var(--color-success)';
+        return `
+        <div class="product-card" role="listitem" aria-label="${p.name}">
+          <div class="product-card__img-wrap" style="background:${p.bg};">
+            <input type="checkbox" class="product-card__select-wrap" value="${p.id}" aria-label="تحديد ${p.name}" onchange="toggleProdSelect(this)" style="position:absolute;top:8px;right:8px;" />
+            <span aria-hidden="true">${p.emoji}</span>
+          </div>
+          <div class="product-card__body">
+            <p class="product-card__name">${p.name}</p>
+            <p class="product-card__cat"><span class="badge ${CAT_COLORS[p.cat] || 'badge--neutral'}">${p.cat}</span></p>
+            <p class="product-card__price">${p.price.toLocaleString('ar-SA')} ر.س</p>
+            <div class="stock-bar" title="المخزون: ${p.stock}"><div class="stock-bar__fill" style="width:${stockPct}%;background:${stockColor};"></div></div>
+            <p style="font-size:var(--font-size-xs);color:${stockColor};">${p.stock === 0 ? 'نفذ المخزون' : `المخزون: ${p.stock}`}</p>
+            <label class="toggle-switch" style="margin-top:var(--space-2);">
+              <input type="checkbox" ${p.status === 'نشط' ? 'checked' : ''} onchange="toggleStatus(${p.id})" aria-label="تفعيل/تعطيل ${p.name}" />
+              <span class="toggle-switch__track"><span class="toggle-switch__thumb"></span></span>
+              <span class="toggle-switch__label">${p.status}</span>
+            </label>
+          </div>
+          <div class="product-card__actions">
+            <button class="btn btn--ghost btn--sm" style="flex:1;" onclick="openEditModal(${p.id})" aria-label="تعديل ${p.name}">تعديل</button>
+            <button class="btn btn--danger btn--sm" onclick="deleteProduct(${p.id})" aria-label="حذف ${p.name}">حذف</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderTable(data) {
+      const tbody = document.getElementById('productsTableBody');
+      document.getElementById('productTableCount').textContent = `${data.length} منتج`;
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:var(--space-8);color:var(--color-text-muted);">لا توجد منتجات مطابقة</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.map(p => `
+        <tr>
+          <td><input type="checkbox" class="prod-table-cb" value="${p.id}" aria-label="تحديد ${p.name}" onchange="toggleProdSelect(this)" ${selectedProdIds.has(p.id) ? 'checked' : ''} /></td>
+          <td><div style="display:flex;align-items:center;gap:var(--space-2);"><span style="font-size:1.5rem;background:${p.bg};padding:4px;border-radius:6px;">${p.emoji}</span><strong>${p.name}</strong></div></td>
+          <td><span class="badge ${CAT_COLORS[p.cat] || 'badge--neutral'}">${p.cat}</span></td>
+          <td><strong>${p.price.toLocaleString('ar-SA')} ر.س</strong></td>
+          <td><span style="color:${p.stock === 0 ? 'var(--color-danger)' : p.stock < 5 ? 'var(--color-warning)' : 'var(--color-success)'};font-weight:600;">${p.stock === 0 ? 'نفذ' : p.stock}</span></td>
+          <td><span class="badge ${p.status === 'نشط' ? 'badge--success' : 'badge--neutral'}">${p.status}</span></td>
+          <td style="white-space:nowrap;">
+            <button class="btn btn--ghost btn--sm" onclick="openEditModal(${p.id})" aria-label="تعديل ${p.name}">تعديل</button>
+            <button class="btn btn--danger btn--sm" onclick="deleteProduct(${p.id})" aria-label="حذف ${p.name}">حذف</button>
+          </td>
+        </tr>`).join('');
+    }
+
+    function render(data) {
+      renderGrid(data);
+      renderTable(data);
+    }
+
+    // ─── Filtering ────────────────────────────────────────────────
+    function filterProducts(q) {
+      const query = q.trim().toLowerCase();
+      const cat   = document.getElementById('categoryFilter').value;
+      filteredProds = PRODUCTS_DATA.filter(p =>
+        (!query || p.name.toLowerCase().includes(query)) &&
+        (!cat   || p.cat === cat)
+      );
+      render(filteredProds);
+    }
+
+    // ─── View toggle ─────────────────────────────────────────────
+    function setView(view) {
+      currentView = view;
+      document.getElementById('gridView').style.display  = view === 'grid' ? '' : 'none';
+      document.getElementById('tableView').style.display = view === 'table' ? '' : 'none';
+      document.getElementById('gridViewBtn').classList.toggle('view-toggle__btn--active', view === 'grid');
+      document.getElementById('tableViewBtn').classList.toggle('view-toggle__btn--active', view === 'table');
+      document.getElementById('gridViewBtn').setAttribute('aria-pressed', view === 'grid');
+      document.getElementById('tableViewBtn').setAttribute('aria-pressed', view === 'table');
+    }
+
+    // ─── Selection ────────────────────────────────────────────────
+    function toggleProdSelect(cb) {
+      const id = parseInt(cb.value);
+      if (cb.checked) selectedProdIds.add(id);
+      else selectedProdIds.delete(id);
+      updateBulkBar();
+      syncCheckboxes(id, cb.checked);
+    }
+
+    function syncCheckboxes(id, checked) {
+      document.querySelectorAll(`input[value="${id}"]`).forEach(cb => cb.checked = checked);
+    }
+
+    function toggleSelectAllTable(cb) {
+      document.querySelectorAll('.prod-table-cb').forEach(box => {
+        box.checked = cb.checked;
+        const id = parseInt(box.value);
+        if (cb.checked) selectedProdIds.add(id);
+        else selectedProdIds.delete(id);
+      });
+      updateBulkBar();
+    }
+
+    function updateBulkBar() {
+      const bar = document.getElementById('bulkBar');
+      const cnt = document.getElementById('bulkCount');
+      if (selectedProdIds.size > 0) {
+        bar.classList.add('products__bulk-bar--visible');
+        cnt.textContent = `${selectedProdIds.size} منتج محدد`;
+      } else {
+        bar.classList.remove('products__bulk-bar--visible');
+      }
+    }
+
+    function clearBulkSelection() {
+      selectedProdIds.clear();
+      document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+      updateBulkBar();
+    }
+
+    function bulkActivate()   { selectedProdIds.forEach(id => { const p = PRODUCTS_DATA.find(x => x.id === id); if (p) p.status = 'نشط'; }); clearBulkSelection(); filterProducts(document.getElementById('productSearch').value); }
+    function bulkDeactivate() { selectedProdIds.forEach(id => { const p = PRODUCTS_DATA.find(x => x.id === id); if (p) p.status = 'معطل'; }); clearBulkSelection(); filterProducts(document.getElementById('productSearch').value); }
+    function bulkDelete()     {
+      if (!confirm(`هل تريد حذف ${selectedProdIds.size} منتج؟`)) return;
+      selectedProdIds.forEach(id => { const idx = PRODUCTS_DATA.findIndex(x => x.id === id); if (idx !== -1) PRODUCTS_DATA.splice(idx, 1); });
+      clearBulkSelection();
+      filterProducts(document.getElementById('productSearch').value);
+    }
+
+    // ─── Status toggle ────────────────────────────────────────────
+    function toggleStatus(id) {
+      const p = PRODUCTS_DATA.find(x => x.id === id);
+      if (p) p.status = p.status === 'نشط' ? 'معطل' : 'نشط';
+      filterProducts(document.getElementById('productSearch').value);
+    }
+
+    // ─── CRUD ─────────────────────────────────────────────────────
+    function openAddModal() {
+      document.getElementById('productFormTitle').textContent = 'إضافة منتج جديد';
+      document.getElementById('editProductId').value = '';
+      document.getElementById('productForm').reset();
+      clearProdErrors();
+      document.getElementById('productFormModal').classList.add('modal--open');
+    }
+
+    function openEditModal(id) {
+      const p = PRODUCTS_DATA.find(x => x.id === id);
+      if (!p) return;
+      document.getElementById('productFormTitle').textContent = `تعديل: ${p.name}`;
+      document.getElementById('editProductId').value = id;
+      document.getElementById('inputProdName').value   = p.name;
+      document.getElementById('inputProdCat').value    = p.cat;
+      document.getElementById('inputProdPrice').value  = p.price;
+      document.getElementById('inputProdStock').value  = p.stock;
+      document.getElementById('inputProdDesc').value   = p.desc;
+      document.getElementById('inputProdStatus').value = p.status;
+      clearProdErrors();
+      document.getElementById('productFormModal').classList.add('modal--open');
+    }
+
+    function closeFormModal() { document.getElementById('productFormModal').classList.remove('modal--open'); }
+
+    function clearProdErrors() {
+      ['fgProdName','fgProdCat','fgProdPrice','fgProdStock'].forEach(id =>
+        document.getElementById(id).classList.remove('form-group--error')
+      );
+    }
+
+    function saveProduct() {
+      const name   = document.getElementById('inputProdName').value.trim();
+      const cat    = document.getElementById('inputProdCat').value;
+      const price  = parseFloat(document.getElementById('inputProdPrice').value);
+      const stock  = parseInt(document.getElementById('inputProdStock').value);
+      const desc   = document.getElementById('inputProdDesc').value.trim();
+      const status = document.getElementById('inputProdStatus').value;
+
+      let valid = true;
+      clearProdErrors();
+
+      if (!name)            { document.getElementById('fgProdName').classList.add('form-group--error'); valid = false; }
+      if (!cat)             { document.getElementById('fgProdCat').classList.add('form-group--error'); valid = false; }
+      if (!price || price < 1) { document.getElementById('fgProdPrice').classList.add('form-group--error'); valid = false; }
+      if (isNaN(stock) || stock < 0) { document.getElementById('fgProdStock').classList.add('form-group--error'); valid = false; }
+      if (!valid) return;
+
+      const editId = parseInt(document.getElementById('editProductId').value);
+      const emoji  = { 'فساتين': '👗', 'بلوزات': '👚', 'بنطلونات': '👖', 'إكسسوار': '👜', 'عبايات': '🥻' }[cat] || '🛍';
+      const bg     = { 'فساتين': '#FCE4EC', 'بلوزات': '#F3E5F5', 'بنطلونات': '#ECEFF1', 'إكسسوار': '#EFEBE9', 'عبايات': '#F9FBE7' }[cat] || '#F5F5F5';
+
+      if (editId) {
+        const idx = PRODUCTS_DATA.findIndex(x => x.id === editId);
+        if (idx !== -1) Object.assign(PRODUCTS_DATA[idx], { name, cat, price, stock, desc, status, emoji, bg });
+      } else {
+        PRODUCTS_DATA.push({ id: nextProdId++, name, cat, price, stock, desc, status, emoji, bg });
+      }
+      closeFormModal();
+      filterProducts(document.getElementById('productSearch').value);
+    }
+
+    function deleteProduct(id) {
+      if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
+      const idx = PRODUCTS_DATA.findIndex(x => x.id === id);
+      if (idx !== -1) PRODUCTS_DATA.splice(idx, 1);
+      filterProducts(document.getElementById('productSearch').value);
+    }
+
+    function exportProducts() { alert('جاري تصدير بيانات المنتجات...'); }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFormModal(); });
+
+    render(filteredProds);
+  </script>
 </body>
 </html>

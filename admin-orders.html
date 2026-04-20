@@ -1,180 +1,551 @@
 <!DOCTYPE html>
-<html lang="en">
+<!--
+  admin-orders.html — StyleLoop Admin Panel Orders Management
+  Full orders list with filtering, status updates, and detail modal.
+  Depends on: admin-styles.css, admin-common.js
+-->
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Orders</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <style>
-        .badge-pending { background-color: orange; }
-        .badge-completed { background-color: green; }
-        .badge-cancelled { background-color: red; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="إدارة الطلبات — StyleLoop Admin" />
+
+  <title>الطلبات — لوحة تحكم StyleLoop</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="admin-styles.css" />
+
+  <style>
+    /* ── Orders page-specific styles ────────────────────────────── */
+    .orders__filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+      padding: var(--space-4);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+    .orders__filter-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      flex: 1 1 160px;
+    }
+    .orders__filter-field label {
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .orders__stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: var(--space-5);
+    }
+    .orders__stat {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      text-align: center;
+    }
+    .orders__stat-value {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+    .orders__stat-label {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+      margin-top: var(--space-1);
+    }
+
+    .orders__actions-bar {
+      display: none;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-primary-alpha-10);
+      border: 1px solid var(--color-primary-alpha-20);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-3);
+    }
+    .orders__actions-bar--visible { display: flex; }
+    .orders__selected-count { font-weight: 600; color: var(--color-primary); font-size: var(--font-size-sm); }
+
+    .orders__table-wrapper { overflow-x: auto; }
+
+    /* Modal detail */
+    .order-detail__section { margin-bottom: var(--space-5); }
+    .order-detail__section-title {
+      font-size: var(--font-size-sm);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-3);
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .order-detail__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+    @media (max-width: 640px) {
+      .order-detail__grid { grid-template-columns: 1fr; }
+    }
+    .order-detail__field label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .order-detail__field span {
+      font-weight: 600;
+      color: var(--color-text-primary);
+      font-size: var(--font-size-sm);
+    }
+
+    .order-detail__status-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+    }
+  </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>Orders Management System</h2>
-        <input type="text" id="searchBox" class="form-control mb-3" placeholder="Search orders...">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Customer Name</th>
-                    <th>Date</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="ordersTable">
-                <!-- Sample Orders -->
-                <tr>
-                    <td>1</td>
-                    <td>John Doe</td>
-                    <td>2026-04-01</td>
-                    <td>$100</td>
-                    <td><span class="badge badge-pending">Pending</span></td>
-                    <td>
-                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(1)">View</button>
-                        <button class="btn btn-warning">Print Invoice</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Jane Smith</td>
-                    <td>2026-04-02</td>
-                    <td>$200</td>
-                    <td><span class="badge badge-completed">Completed</span></td>
-                    <td>
-                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(2)">View</button>
-                        <button class="btn btn-warning">Print Invoice</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Bob Johnson</td>
-                    <td>2026-04-03</td>
-                    <td>$150</td>
-                    <td><span class="badge badge-cancelled">Cancelled</span></td>
-                    <td>
-                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(3)">View</button>
-                        <button class="btn btn-warning">Print Invoice</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>Alice Blue</td>
-                    <td>2026-04-04</td>
-                    <td>$300</td>
-                    <td><span class="badge badge-pending">Pending</span></td>
-                    <td>
-                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(4)">View</button>
-                        <button class="btn btn-warning">Print Invoice</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>Chris Green</td>
-                    <td>2026-04-05</td>
-                    <td>$80</td>
-                    <td><span class="badge badge-completed">Completed</span></td>
-                    <td>
-                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(5)">View</button>
-                        <button class="btn btn-warning">Print Invoice</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>Emily White</td>
-                    <td>2026-04-06</td>
-                    <td>$250</td>
-                    <td><span class="badge badge-completed">Completed</span></td>
-                    <td>
-                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(6)">View</button>
-                        <button class="btn btn-warning">Print Invoice</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>Michael Black</td>
-                    <td>2026-04-07</td>
-                    <td>$90</td>
-                    <td><span class="badge badge-pending">Pending</span></td>
-                    <td>
-                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(7)">View</button>
-                        <button class="btn btn-warning">Print Invoice</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>8</td>
-                    <td>Olivia Red</td>
-                    <td>2026-04-08</td>
-                    <td>$340</td>
-                    <td><span class="badge badge-completed">Completed</span></td>
-                    <td>
-                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(8)">View</button>
-                        <button class="btn btn-warning">Print Invoice</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>9</td>
-                    <td>James Gray</td>
-                    <td>2026-04-09</td>
-                    <td>$120</td>
-                    <td><span class="badge badge-cancelled">Cancelled</span></td>
-                    <td>
-                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(9)">View</button>
-                        <button class="btn btn-warning">Print Invoice</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>10</td>
-                    <td>Linda Orange</td>
-                    <td>2026-04-10</td>
-                    <td>$500</td>
-                    <td><span class="badge badge-completed">Completed</span></td>
-                    <td>
-                        <button class="btn btn-info" data-toggle="modal" data-target="#detailsModal" onclick="viewDetails(10)">View</button>
-                        <button class="btn btn-warning">Print Invoice</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <button class="btn btn-primary" onclick="exportToCSV()">Export to CSV</button>
-    </div>
+  <div class="admin-layout" id="adminLayout">
 
-    <!-- Modal for Order Details -->
-    <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detailsModalLabel">Order Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="orderDetails"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
+    <aside class="sidebar" id="sidebar" aria-label="القائمة الجانبية">
+      <a href="admin-dashboard.html" class="sidebar__logo">
+        <span class="sidebar__logo-img" style="width:36px;height:36px;background:linear-gradient(135deg,#E91E63,#ad1457);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-family:Poppins,sans-serif;font-size:1rem;flex-shrink:0;">SL</span>
+        <span class="sidebar__logo-text">StyleLoop</span>
+        <span class="sidebar__logo-badge">Admin</span>
+      </a>
+      <nav class="sidebar__nav" aria-label="التنقل الرئيسي">
+        <p class="sidebar__section-label">الرئيسية</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-dashboard.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🏠</span>
+              <span class="sidebar__link-label">لوحة التحكم</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-pos.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🛒</span>
+              <span class="sidebar__link-label">نقطة البيع</span>
+            </a>
+          </li>
+        </ul>
+        <p class="sidebar__section-label">الإدارة</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-orders.html" class="sidebar__link sidebar__link--active" aria-current="page">
+              <span class="sidebar__link-icon" aria-hidden="true">📋</span>
+              <span class="sidebar__link-label">الطلبات</span>
+              <span class="sidebar__link-badge">12</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-customers.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">👥</span>
+              <span class="sidebar__link-label">العملاء</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-products.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">👗</span>
+              <span class="sidebar__link-label">المنتجات</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="admin-branches.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🏪</span>
+              <span class="sidebar__link-label">الفروع</span>
+            </a>
+          </li>
+        </ul>
+        <p class="sidebar__section-label">النظام</p>
+        <ul role="list">
+          <li class="sidebar__item">
+            <a href="admin-login.html" class="sidebar__link">
+              <span class="sidebar__link-icon" aria-hidden="true">🚪</span>
+              <span class="sidebar__link-label">تسجيل الخروج</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <button class="sidebar__toggle-btn" id="sidebarToggleBtn" aria-label="طي الشريط الجانبي">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11 8L6 3l-1 1 4 4-4 4 1 1z"/></svg>
+      </button>
+    </aside>
+
+    <header class="header" role="banner">
+      <div class="header__brand">
+        <button class="header__hamburger" id="hamburgerBtn" aria-label="فتح القائمة" aria-expanded="false" aria-controls="sidebar">
+          <span class="header__hamburger-line"></span>
+          <span class="header__hamburger-line"></span>
+          <span class="header__hamburger-line"></span>
+        </button>
+        <span class="header__page-title">الطلبات</span>
+      </div>
+      <div class="header__actions">
+        <button class="header__action-btn" id="themeToggleBtn" aria-label="تبديل الوضع المظلم" data-action="toggle-theme">
+          <svg class="header__theme-icon header__theme-icon--dark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="header__theme-icon header__theme-icon--light" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <div class="header__user-menu" id="userMenu">
+          <button class="header__user-btn" aria-haspopup="true" aria-expanded="false" aria-controls="userDropdown">
+            <span class="header__avatar" aria-hidden="true">أ</span>
+            <span class="header__user-name">المدير</span>
+          </button>
+          <ul class="header__dropdown" id="userDropdown" role="menu">
+            <li role="menuitem"><a href="admin-login.html">تسجيل الخروج</a></li>
+          </ul>
         </div>
+      </div>
+    </header>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <main class="main-content" id="mainContent">
+
+      <!-- Page header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-3);margin-bottom:var(--space-6);">
+        <div>
+          <h1 style="font-size:var(--font-size-2xl);font-weight:700;color:var(--color-text-primary);margin:0;">الطلبات</h1>
+          <nav style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--font-size-sm);color:var(--color-text-muted);margin-top:var(--space-1);" aria-label="مسار التنقل">
+            <a href="admin-dashboard.html" style="color:var(--color-primary);text-decoration:none;">الرئيسية</a>
+            <span aria-hidden="true">›</span>
+            <span aria-current="page">الطلبات</span>
+          </nav>
+        </div>
+        <div style="display:flex;gap:var(--space-2);">
+          <button class="btn btn--secondary btn--sm" onclick="exportOrders()">📥 تصدير</button>
+          <button class="btn btn--primary btn--sm" onclick="window.location.href='admin-pos.html'">+ طلب جديد</button>
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <form class="orders__filter-bar" id="filterForm" onsubmit="applyFilters(event)" aria-label="فلترة الطلبات" novalidate>
+        <div class="orders__filter-field">
+          <label for="searchInput">البحث</label>
+          <input type="search" class="form-control" id="searchInput" placeholder="رقم الطلب أو اسم العميل..." aria-label="البحث في الطلبات" />
+        </div>
+        <div class="orders__filter-field" style="flex:0 1 160px;">
+          <label for="statusFilter">الحالة</label>
+          <select class="form-select" id="statusFilter" aria-label="فلترة حسب الحالة">
+            <option value="">الكل</option>
+            <option value="معلق">معلق</option>
+            <option value="مكتمل">مكتمل</option>
+            <option value="ملغى">ملغى</option>
+            <option value="قيد التوصيل">قيد التوصيل</option>
+          </select>
+        </div>
+        <div class="orders__filter-field" style="flex:0 1 140px;">
+          <label for="dateFrom">من تاريخ</label>
+          <input type="date" class="form-control" id="dateFrom" aria-label="من تاريخ" />
+        </div>
+        <div class="orders__filter-field" style="flex:0 1 140px;">
+          <label for="dateTo">إلى تاريخ</label>
+          <input type="date" class="form-control" id="dateTo" aria-label="إلى تاريخ" />
+        </div>
+        <button type="submit" class="btn btn--primary" style="align-self:flex-end;">فلترة</button>
+        <button type="button" class="btn btn--ghost" style="align-self:flex-end;" onclick="resetFilters()">إعادة تعيين</button>
+      </form>
+
+      <!-- Stats row -->
+      <div class="orders__stats" role="region" aria-label="إحصائيات الطلبات">
+        <div class="orders__stat"><div class="orders__stat-value">248</div><div class="orders__stat-label">إجمالي الطلبات</div></div>
+        <div class="orders__stat"><div class="orders__stat-value" style="color:var(--color-warning);">12</div><div class="orders__stat-label">معلق</div></div>
+        <div class="orders__stat"><div class="orders__stat-value" style="color:var(--color-success);">218</div><div class="orders__stat-label">مكتمل</div></div>
+        <div class="orders__stat"><div class="orders__stat-value" style="color:var(--color-danger);">18</div><div class="orders__stat-label">ملغى</div></div>
+      </div>
+
+      <!-- Bulk actions bar -->
+      <div class="orders__actions-bar" id="bulkActionsBar" role="toolbar" aria-label="إجراءات مجمعة">
+        <span class="orders__selected-count" id="selectedCount"></span>
+        <button class="btn btn--secondary btn--sm" onclick="bulkUpdateStatus('مكتمل')">✔ تحديد كمكتمل</button>
+        <button class="btn btn--danger btn--sm" onclick="bulkUpdateStatus('ملغى')">✕ إلغاء المحدد</button>
+        <button class="btn btn--ghost btn--sm" onclick="clearSelection()">إلغاء التحديد</button>
+      </div>
+
+      <!-- Orders table -->
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">قائمة الطلبات</h2>
+          <span id="ordersResultCount" style="font-size:var(--font-size-sm);color:var(--color-text-muted);"></span>
+        </div>
+        <div class="card__body" style="padding:0;">
+          <div class="orders__table-wrapper">
+            <table class="data-table__table" id="ordersTable" aria-label="جدول الطلبات">
+              <thead>
+                <tr>
+                  <th scope="col" style="width:40px;">
+                    <input type="checkbox" id="selectAll" aria-label="تحديد الكل" onchange="toggleSelectAll(this)" />
+                  </th>
+                  <th scope="col">رقم الطلب</th>
+                  <th scope="col">العميل</th>
+                  <th scope="col">التاريخ</th>
+                  <th scope="col">المنتجات</th>
+                  <th scope="col">المبلغ</th>
+                  <th scope="col">طريقة الدفع</th>
+                  <th scope="col">الحالة</th>
+                  <th scope="col">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       ORDER DETAILS MODAL
+  ═══════════════════════════════════════════ -->
+  <div class="modal" id="orderDetailModal" role="dialog" aria-modal="true" aria-labelledby="orderDetailTitle">
+    <div class="modal__backdrop" onclick="closeModal()"></div>
+    <div class="modal__box" style="max-width:640px;width:90%;">
+      <div class="modal__header">
+        <h3 class="modal__title" id="orderDetailTitle">تفاصيل الطلب</h3>
+        <button class="modal__close" onclick="closeModal()" aria-label="إغلاق النافذة">✕</button>
+      </div>
+      <div class="modal__body" id="orderDetailBody">
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--ghost" onclick="closeModal()">إغلاق</button>
+        <button class="btn btn--primary" onclick="printOrder()">🖨 طباعة</button>
+      </div>
     </div>
+  </div>
 
-    <script>
-        function viewDetails(orderId) {
-            // Fetch order details based on orderId and display in modal
-            const details = `Order ID: ${orderId} <br/> Customer: John Doe <br/> Items: Item 1, Item 2 <br/> Status: Pending <br/> Total: $100`;
-            document.getElementById('orderDetails').innerHTML = details;
-        }
+  <script src="admin-common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', AdminApp.initAdminPage);
 
-        function exportToCSV() {
-            // Logic to export orders to CSV
-            alert('Export to CSV feature is not implemented in this demo.');
-        }
-    </script>
+    // ─── Data ─────────────────────────────────────────────────────
+    const ORDERS_DATA = [
+      { id: '#ORD-2841', customer: 'نورة الشمري',  date: '2025-01-15', products: 'فستان سهرة ذهبي × 1',          amount: 650,   payment: 'بطاقة ائتمان', status: 'مكتمل',      city: 'الرياض',  phone: '0501234567', address: 'حي النخيل، شارع الملك فهد' },
+      { id: '#ORD-2840', customer: 'سارة العتيبي', date: '2025-01-15', products: 'عباية مطرزة فاخرة × 1, شال كشمير × 2', amount: 1210,  payment: 'محفظة إلكترونية', status: 'قيد التوصيل', city: 'جدة',     phone: '0557891234', address: 'حي الروضة، شارع التحلية' },
+      { id: '#ORD-2839', customer: 'منى الزهراني', date: '2025-01-14', products: 'بلوزة حرير وردية × 2',          amount: 440,   payment: 'نقداً',          status: 'معلق',       city: 'الدمام',  phone: '0539876543', address: 'حي الشاطئ، شارع الأمير محمد' },
+      { id: '#ORD-2838', customer: 'هيا القحطاني', date: '2025-01-14', products: 'فستان كاجوال أزرق × 2',         amount: 760,   payment: 'بطاقة ائتمان', status: 'مكتمل',      city: 'الرياض',  phone: '0502345678', address: 'حي العليا، طريق الملك عبدالعزيز' },
+      { id: '#ORD-2837', customer: 'ريم الدوسري',  date: '2025-01-13', products: 'حقيبة يد جلدية × 1, حذاء × 1', amount: 770,   payment: 'محفظة إلكترونية', status: 'مكتمل',      city: 'الخبر',   phone: '0558765432', address: 'حي الراكة، شارع الأمير فيصل' },
+      { id: '#ORD-2836', customer: 'لمياء الحربي', date: '2025-01-13', products: 'بلوزة مخطط صيفية × 2',          amount: 280,   payment: 'نقداً',          status: 'ملغى',       city: 'مكة',     phone: '0543214321', address: 'حي العزيزية، شارع المسجد الحرام' },
+      { id: '#ORD-2835', customer: 'أميرة السلمي', date: '2025-01-12', products: 'عباية مطرزة فاخرة × 1, بنطلون × 1', amount: 1070,  payment: 'بطاقة ائتمان', status: 'قيد التوصيل', city: 'الرياض',  phone: '0501112222', address: 'حي الملقا، شارع أنس بن مالك' },
+      { id: '#ORD-2834', customer: 'دانة المطيري', date: '2025-01-12', products: 'فستان ماكسي مورد × 1',           amount: 510,   payment: 'نقداً',          status: 'مكتمل',      city: 'الرياض',  phone: '0509988776', address: 'حي الياسمين، شارع الخزامى' },
+      { id: '#ORD-2833', customer: 'غدير الرشيدي', date: '2025-01-11', products: 'بلوزة دانتيل × 1, بنطلون جينز × 1', amount: 435,  payment: 'محفظة إلكترونية', status: 'مكتمل',      city: 'المدينة', phone: '0551122334', address: 'حي قباء، شارع أبي ذر الغفاري' },
+      { id: '#ORD-2832', customer: 'ولاء العنزي',  date: '2025-01-10', products: 'حذاء كعب عالٍ × 1',             amount: 350,   payment: 'بطاقة ائتمان', status: 'معلق',       city: 'جدة',     phone: '0567788990', address: 'حي الحمراء، شارع فلسطين' },
+    ];
+
+    let filteredOrders = [...ORDERS_DATA];
+    let selectedIds = new Set();
+
+    const STATUS_BADGE = {
+      'مكتمل':       'badge--success',
+      'معلق':        'badge--warning',
+      'ملغى':        'badge--danger',
+      'قيد التوصيل': 'badge--info',
+    };
+
+    function renderTable(data) {
+      const tbody = document.getElementById('ordersTableBody');
+      document.getElementById('ordersResultCount').textContent = `${data.length} طلب`;
+
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:var(--space-8);color:var(--color-text-muted);">لا توجد طلبات مطابقة</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map(order => `
+        <tr data-id="${order.id}">
+          <td><input type="checkbox" class="row-checkbox" value="${order.id}" aria-label="تحديد الطلب ${order.id}" onchange="toggleRowSelect(this)" ${selectedIds.has(order.id) ? 'checked' : ''} /></td>
+          <td><strong>${order.id}</strong></td>
+          <td>${order.customer}</td>
+          <td>${new Date(order.date).toLocaleDateString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+          <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${order.products}">${order.products}</td>
+          <td><strong>${order.amount.toLocaleString('ar-SA')} ر.س</strong></td>
+          <td>${order.payment}</td>
+          <td><span class="badge ${STATUS_BADGE[order.status] || 'badge--neutral'}">${order.status}</span></td>
+          <td style="white-space:nowrap;">
+            <button class="btn btn--ghost btn--sm" onclick="viewOrder('${order.id}')" aria-label="عرض تفاصيل الطلب ${order.id}">عرض</button>
+            <button class="btn btn--secondary btn--sm" onclick="quickStatus('${order.id}')" aria-label="تحديث حالة الطلب ${order.id}">تحديث</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function applyFilters(e) {
+      if (e) e.preventDefault();
+      const search = document.getElementById('searchInput').value.trim().toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      const from   = document.getElementById('dateFrom').value;
+      const to     = document.getElementById('dateTo').value;
+
+      filteredOrders = ORDERS_DATA.filter(o => {
+        const matchSearch = !search || o.id.toLowerCase().includes(search) || o.customer.toLowerCase().includes(search);
+        const matchStatus = !status || o.status === status;
+        const matchFrom   = !from  || o.date >= from;
+        const matchTo     = !to    || o.date <= to;
+        return matchSearch && matchStatus && matchFrom && matchTo;
+      });
+
+      selectedIds.clear();
+      updateBulkBar();
+      renderTable(filteredOrders);
+    }
+
+    function resetFilters() {
+      document.getElementById('filterForm').reset();
+      filteredOrders = [...ORDERS_DATA];
+      selectedIds.clear();
+      updateBulkBar();
+      renderTable(filteredOrders);
+    }
+
+    function toggleSelectAll(cb) {
+      const checkboxes = document.querySelectorAll('.row-checkbox');
+      checkboxes.forEach(box => {
+        box.checked = cb.checked;
+        if (cb.checked) selectedIds.add(box.value);
+        else selectedIds.delete(box.value);
+      });
+      updateBulkBar();
+    }
+
+    function toggleRowSelect(cb) {
+      if (cb.checked) selectedIds.add(cb.value);
+      else selectedIds.delete(cb.value);
+      const all = document.querySelectorAll('.row-checkbox');
+      document.getElementById('selectAll').checked = all.length > 0 && [...all].every(c => c.checked);
+      updateBulkBar();
+    }
+
+    function updateBulkBar() {
+      const bar = document.getElementById('bulkActionsBar');
+      const cnt = document.getElementById('selectedCount');
+      if (selectedIds.size > 0) {
+        bar.classList.add('orders__actions-bar--visible');
+        cnt.textContent = `${selectedIds.size} طلب محدد`;
+      } else {
+        bar.classList.remove('orders__actions-bar--visible');
+      }
+    }
+
+    function clearSelection() {
+      selectedIds.clear();
+      document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = false);
+      document.getElementById('selectAll').checked = false;
+      updateBulkBar();
+    }
+
+    function bulkUpdateStatus(newStatus) {
+      const count = selectedIds.size;
+      selectedIds.forEach(id => {
+        const order = ORDERS_DATA.find(o => o.id === id);
+        if (order) order.status = newStatus;
+      });
+      clearSelection();
+      applyFilters();
+      alert(`تم تحديث ${count} طلب إلى "${newStatus}"`);
+    }
+
+    function quickStatus(orderId) {
+      const order = ORDERS_DATA.find(o => o.id === orderId);
+      if (!order) return;
+      const statuses = ['معلق', 'قيد التوصيل', 'مكتمل', 'ملغى'];
+      const current  = statuses.indexOf(order.status);
+      const next     = statuses[(current + 1) % statuses.length];
+      order.status   = next;
+      applyFilters();
+    }
+
+    function viewOrder(orderId) {
+      const order = ORDERS_DATA.find(o => o.id === orderId);
+      if (!order) return;
+
+      document.getElementById('orderDetailTitle').textContent = `تفاصيل الطلب ${order.id}`;
+      document.getElementById('orderDetailBody').innerHTML = `
+        <div class="order-detail__section">
+          <div class="order-detail__section-title">معلومات الطلب</div>
+          <div class="order-detail__grid">
+            <div class="order-detail__field"><label>رقم الطلب</label><span>${order.id}</span></div>
+            <div class="order-detail__field"><label>التاريخ</label><span>${new Date(order.date).toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' })}</span></div>
+            <div class="order-detail__field"><label>الحالة</label><span><span class="badge ${STATUS_BADGE[order.status]}">${order.status}</span></span></div>
+            <div class="order-detail__field"><label>طريقة الدفع</label><span>${order.payment}</span></div>
+          </div>
+        </div>
+        <div class="order-detail__section">
+          <div class="order-detail__section-title">معلومات العميلة</div>
+          <div class="order-detail__grid">
+            <div class="order-detail__field"><label>الاسم</label><span>${order.customer}</span></div>
+            <div class="order-detail__field"><label>المدينة</label><span>${order.city}</span></div>
+            <div class="order-detail__field"><label>الهاتف</label><span>${order.phone}</span></div>
+            <div class="order-detail__field"><label>العنوان</label><span>${order.address}</span></div>
+          </div>
+        </div>
+        <div class="order-detail__section">
+          <div class="order-detail__section-title">المنتجات</div>
+          <table class="data-table__table" style="width:100%;">
+            <thead><tr><th>المنتج</th><th>المبلغ الإجمالي</th></tr></thead>
+            <tbody>
+              <tr><td>${order.products}</td><td><strong>${order.amount.toLocaleString('ar-SA')} ر.س</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="order-detail__section">
+          <div class="order-detail__section-title">تحديث الحالة</div>
+          <div class="order-detail__status-buttons">
+            ${['معلق','قيد التوصيل','مكتمل','ملغى'].map(s =>
+              `<button class="btn btn--sm ${s === order.status ? 'btn--primary' : 'btn--secondary'}" onclick="updateOrderStatus('${order.id}','${s}')" aria-pressed="${s === order.status}">${s}</button>`
+            ).join('')}
+          </div>
+        </div>
+      `;
+
+      document.getElementById('orderDetailModal').classList.add('modal--open');
+      document.getElementById('orderDetailModal').setAttribute('aria-hidden', 'false');
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      const order = ORDERS_DATA.find(o => o.id === orderId);
+      if (order) {
+        order.status = newStatus;
+        viewOrder(orderId);
+        applyFilters();
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('orderDetailModal').classList.remove('modal--open');
+      document.getElementById('orderDetailModal').setAttribute('aria-hidden', 'true');
+    }
+
+    function printOrder() { window.print(); }
+
+    function exportOrders() {
+      alert('جاري تصدير البيانات...');
+    }
+
+    // Close on Escape
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // Init
+    renderTable(filteredOrders);
+  </script>
 </body>
 </html>
